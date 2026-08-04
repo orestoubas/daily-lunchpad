@@ -1,7 +1,5 @@
 # 🚀 Morning Launchpad
 
-**Live: https://orestoubas.github.io/daily-lunchpad/**
-
 A zero-dependency start page that turns the first 30 minutes of your workday into a
 habit: **10 min French → 10 min EU knowledge → 10 min verbal/numerical reasoning**,
 with statistics, streaks and progress toward three goals:
