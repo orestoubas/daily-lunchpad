@@ -8,8 +8,15 @@ const LEVELS = ["A2", "B1", "B2"];
 const MODULES = {
   french:    { name: "French",       color: "var(--c-french)",    icon: "🇫🇷" },
   eu:        { name: "EU Knowledge", color: "var(--c-eu)",        icon: "🇪🇺" },
-  reasoning: { name: "Reasoning",    color: "var(--c-verbal)",    icon: "🧠" }
+  reasoning: { name: "Reasoning",    color: "var(--c-verbal)",    icon: "🧠" },
+  epso:      { name: "Digital & SJT", color: "var(--c-abstract)", icon: "💼" }
 };
+
+/* Optional 4th block — does not gate the daily routine. */
+function epsoBankAvailable() {
+  return (typeof DIGITAL_QUESTIONS !== "undefined" && DIGITAL_QUESTIONS.length > 0) ||
+         (typeof SJT_QUESTIONS !== "undefined" && SJT_QUESTIONS.length > 0);
+}
 
 /* ---------- SRS (French vocabulary) ---------- */
 
@@ -205,6 +212,28 @@ function buildVerbalItem(q, rng) {
   };
 }
 
+function buildDigitalItem(q, rng) {
+  const shuffled = seededShuffle(q.options.map((_, i) => i), rng);
+  return {
+    kind: "digital", id: q.id, area: q.area,
+    prompt: q.q,
+    options: shuffled.map(i => q.options[i]),
+    answer: shuffled.indexOf(q.a),
+    expl: q.expl
+  };
+}
+
+function buildSjtItem(q, rng) {
+  const shuffled = seededShuffle(q.options.map((_, i) => i), rng);
+  return {
+    kind: "sjt", id: q.id, competency: q.competency,
+    prompt: q.q,
+    options: shuffled.map(i => q.options[i]),
+    answer: shuffled.indexOf(q.a),
+    expl: q.expl
+  };
+}
+
 function buildNumericalItem(q, rng) {
   const idx = q.options.map((_, i) => i);
   const shuffled = seededShuffle(idx, rng);
@@ -291,6 +320,24 @@ function buildReasoningSession(state) {
   return { module: "reasoning", items };
 }
 
+function buildEpsoSession(state) {
+  const rng = dailyRng("epso", state.seq);
+  const items = [];
+  if (typeof DIGITAL_QUESTIONS !== "undefined" && DIGITAL_QUESTIONS.length) {
+    const ids = DIGITAL_QUESTIONS.map(q => q.id);
+    const picks = drawFromBank(state, "digital", ids, 6, rng);
+    const map = Object.fromEntries(DIGITAL_QUESTIONS.map(q => [q.id, q]));
+    items.push(...picks.map(id => buildDigitalItem(map[id], rng)));
+  }
+  if (typeof SJT_QUESTIONS !== "undefined" && SJT_QUESTIONS.length) {
+    const ids = SJT_QUESTIONS.map(q => q.id);
+    const picks = drawFromBank(state, "sjt", ids, 4, rng);
+    const map = Object.fromEntries(SJT_QUESTIONS.map(q => [q.id, q]));
+    items.push(...picks.map(id => buildSjtItem(map[id], rng)));
+  }
+  return { module: "epso", items: seededShuffle(items, rng) };
+}
+
 /* ---------- Recording results ---------- */
 
 function recordSession(state, session, results, seconds, completed) {
@@ -317,6 +364,13 @@ function recordSession(state, session, results, seconds, completed) {
   }
   if (session.module === "reasoning") {
     rec.sub = { verbal: { c: 0, t: 0 }, numerical: { c: 0, t: 0 }, abstract: { c: 0, t: 0 } };
+    for (const r of answered) {
+      const s = rec.sub[r.item.kind];
+      if (s) { s.t++; if (r.correct) s.c++; }
+    }
+  }
+  if (session.module === "epso") {
+    rec.sub = { digital: { c: 0, t: 0 }, sjt: { c: 0, t: 0 } };
     for (const r of answered) {
       const s = rec.sub[r.item.kind];
       if (s) { s.t++; if (r.correct) s.c++; }
@@ -370,12 +424,14 @@ function computeStreak(state) {
 }
 
 const REASONING_SUBS = ["verbal", "numerical", "abstract"];
+const EPSO_SUBS = ["digital", "sjt"];
 
 function rollingAvg(state, module, k) {
   const scores = [];
   for (const s of state.sessions) {
-    if (REASONING_SUBS.includes(module)) {
-      if (s.module === "reasoning" && s.sub && s.sub[module] && s.sub[module].t > 0) {
+    if (REASONING_SUBS.includes(module) || EPSO_SUBS.includes(module)) {
+      const parent = REASONING_SUBS.includes(module) ? "reasoning" : "epso";
+      if (s.module === parent && s.sub && s.sub[module] && s.sub[module].t > 0) {
         scores.push(pct(s.sub[module].c, s.sub[module].t));
       }
     } else if (s.module === module) {
@@ -390,8 +446,9 @@ function rollingAvg(state, module, k) {
 function scoreSeries(state, module, k) {
   const out = [];
   for (const s of state.sessions) {
-    if (REASONING_SUBS.includes(module)) {
-      if (s.module === "reasoning" && s.sub && s.sub[module] && s.sub[module].t > 0) {
+    if (REASONING_SUBS.includes(module) || EPSO_SUBS.includes(module)) {
+      const parent = REASONING_SUBS.includes(module) ? "reasoning" : "epso";
+      if (s.module === parent && s.sub && s.sub[module] && s.sub[module].t > 0) {
         out.push({ label: s.date, y: pct(s.sub[module].c, s.sub[module].t) });
       }
     } else if (s.module === module) {

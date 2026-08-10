@@ -255,6 +255,18 @@ function buildChallengeSession(state) {
   const nMap = Object.fromEntries(NUMERICAL_QUESTIONS.map(q => [q.id, q]));
   items.push(...nIds.map(id => buildNumericalItem(nMap[id], rng)));
 
+  // once available, swap two EU slots for a digital-skills and an SJT item
+  if (typeof DIGITAL_QUESTIONS !== "undefined" && DIGITAL_QUESTIONS.length) {
+    const dId = seededShuffle(DIGITAL_QUESTIONS.map(q => q.id), rng)[0];
+    const dMap = Object.fromEntries(DIGITAL_QUESTIONS.map(q => [q.id, q]));
+    items.splice(0, 1, buildDigitalItem(dMap[dId], rng));
+  }
+  if (typeof SJT_QUESTIONS !== "undefined" && SJT_QUESTIONS.length) {
+    const sId = seededShuffle(SJT_QUESTIONS.map(q => q.id), rng)[0];
+    const sMap = Object.fromEntries(SJT_QUESTIONS.map(q => [q.id, q]));
+    items.splice(1, 1, buildSjtItem(sMap[sId], rng));
+  }
+
   return { module: "challenge", items: seededShuffle(items, rng), challenge: true };
 }
 

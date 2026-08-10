@@ -64,6 +64,10 @@ function renderHome() {
     { key: "reasoning", color: "var(--c-verbal)", icon: "🧠", title: "Reasoning",
       desc: "Verbal, numerical and abstract questions at EPSO pace." }
   ];
+  if (epsoBankAvailable()) missions.push({
+    key: "epso", color: "var(--c-abstract)", icon: "💼", title: "Digital & SJT",
+    desc: "EPSO digital-skills questions and situational judgement scenarios.", optional: true
+  });
 
   $app.innerHTML = `
     <div class="topbar">
@@ -119,7 +123,7 @@ function renderHome() {
           <div class="m-track"><div class="f" style="width:${lv.pct}%"></div></div>
           <div class="m-foot">
             <span>${lv.into} / ${lv.need} XP</span>
-            <span>${done[m.key] ? "✓ done today" : ""}</span>
+            <span>${done[m.key] ? "✓ done today" : m.optional ? "optional" : ""}</span>
           </div>
           <button data-start="${m.key}">${done[m.key] ? "Practise again" : "Start"}</button>
         </div>`;
@@ -169,7 +173,7 @@ function renderHome() {
 function startSession(module, chained) {
   if (!chained) App.chain = [];
   App.state.seq = (App.state.seq || 0) + 1;
-  const builders = { french: buildFrenchSession, eu: buildEuSession, reasoning: buildReasoningSession };
+  const builders = { french: buildFrenchSession, eu: buildEuSession, reasoning: buildReasoningSession, epso: buildEpsoSession };
   const s = builders[module](App.state);
   if (!s.items.length) { alert("Question bank is empty for this module."); return; }
   beginSession(s, module);
@@ -213,14 +217,16 @@ function renderSession() {
   const s = App.session;
   const it = s.items[s.idx];
   const modName = s.challenge ? "🛡️ Weekly challenge" :
-    { french: "🇫🇷 French", eu: "🇪🇺 EU Knowledge", reasoning: "🧠 Reasoning" }[s.module];
+    { french: "🇫🇷 French", eu: "🇪🇺 EU Knowledge", reasoning: "🧠 Reasoning", epso: "💼 Digital & SJT" }[s.module];
   const kindColor = { vocab: "var(--c-french)", grammar: "var(--c-french)", conj: "var(--c-french)",
-    eu: "var(--c-eu)", verbal: "var(--c-verbal)", numerical: "var(--c-numerical)", abstract: "var(--c-abstract)" }[it.kind];
+    eu: "var(--c-eu)", verbal: "var(--c-verbal)", numerical: "var(--c-numerical)", abstract: "var(--c-abstract)",
+    digital: "var(--c-abstract)", sjt: "var(--c-abstract)" }[it.kind];
   const kindLabel = {
     vocab: it.listen ? `Listening ${it.level} · FR audio` : `Vocabulary ${it.level} · ${it.direction}${it.isNew ? " · NEW WORD" : ""}`,
     grammar: `Grammar ${it.level}`, conj: `Conjugation ${it.level}`,
     eu: `EU · ${it.topic}`, verbal: "Verbal reasoning",
-    numerical: "Numerical reasoning", abstract: "Abstract reasoning"
+    numerical: "Numerical reasoning", abstract: "Abstract reasoning",
+    digital: `Digital skills · ${it.area}`, sjt: `Situational judgement · ${it.competency}`
   }[it.kind];
 
   let body = "";
@@ -294,7 +300,8 @@ function answer(choice) {
   s.combo = correct ? s.combo + 1 : 0;
 
   if (it.kind === "vocab") applySrsResult(App.state, it.id, correct);
-  const bankOf = { grammar: "grammar", conj: "conj", eu: "eu", verbal: "verbal", numerical: "numerical" };
+  const bankOf = { grammar: "grammar", conj: "conj", eu: "eu", verbal: "verbal", numerical: "numerical",
+    digital: "digital", sjt: "sjt" };
   if (bankOf[it.kind]) {
     recordQuestionResult(App.state, it.id, correct);
     if (!correct) markWrong(App.state, bankOf[it.kind], it.id);
@@ -364,7 +371,7 @@ function finishSession(completed) {
   if (routineNow) ensureGame(st).routineDay = today;
 
   const xp = computeSessionXp(st, s.module, s.results, routineNow);
-  const treeKey = s.challenge ? "eu" : s.module;
+  const treeKey = s.challenge ? "eu" : (s.module === "epso" ? "reasoning" : s.module);
   const lvl = awardXp(st, treeKey, xp.total);
 
   // quests
@@ -426,7 +433,7 @@ function renderSummary() {
   const sm = App.lastSummary;
   const x = sm.xp;
   const title = sm.challenge ? "🛡️ Weekly challenge" :
-    { french: "🇫🇷 French", eu: "🇪🇺 EU Knowledge", reasoning: "🧠 Reasoning" }[sm.module];
+    { french: "🇫🇷 French", eu: "🇪🇺 EU Knowledge", reasoning: "🧠 Reasoning", epso: "💼 Digital & SJT" }[sm.module];
   const chainNext = App.chain.length ? App.chain[0] : null;
   const rewards = [];
   if (sm.levelUp) rewards.push({ ic: "⬆️", name: `${TREES[sm.levelUp.tree].name} level ${sm.levelUp.to}!`, desc: "Your skill tree grew." });
@@ -460,7 +467,7 @@ function renderSummary() {
         </div>`).join("")}</div>` : ""}
       <div style="margin-top:18px">
         ${chainNext
-          ? `<button class="primary big" id="chain-next">▶ Next: ${{ french: "French", eu: "EU Knowledge", reasoning: "Reasoning" }[chainNext]}</button>
+          ? `<button class="primary big" id="chain-next">▶ Next: ${{ french: "French", eu: "EU Knowledge", reasoning: "Reasoning", epso: "Digital & SJT" }[chainNext]}</button>
              <button class="ghost" id="home" style="width:100%;margin-top:8px">Stop here</button>`
           : `<button class="primary big" id="home">← Back to dashboard</button>`}
       </div>
@@ -572,6 +579,9 @@ function renderStats() {
       <div class="card chart-card"><h3 style="color:var(--c-verbal)">📖 Verbal</h3>${svgLineChart(scoreSeries(st, "verbal", 30), "var(--c-verbal)", 90)}</div>
       <div class="card chart-card"><h3 style="color:var(--c-numerical)">🔢 Numerical</h3>${svgLineChart(scoreSeries(st, "numerical", 30), "var(--c-numerical)", 90)}</div>
       <div class="card chart-card"><h3 style="color:var(--c-abstract)">🔷 Abstract</h3>${svgLineChart(scoreSeries(st, "abstract", 30), "var(--c-abstract)", 90)}</div>
+      ${epsoBankAvailable() ? `
+      <div class="card chart-card"><h3 style="color:var(--c-abstract)">💻 Digital skills</h3>${svgLineChart(scoreSeries(st, "digital", 30), "var(--c-abstract)", 90)}</div>
+      <div class="card chart-card"><h3 style="color:var(--c-abstract)">🤝 Situational judgement</h3>${svgLineChart(scoreSeries(st, "sjt", 30), "var(--c-abstract)", 90)}</div>` : ""}
       <div class="card chart-card"><h3 style="color:var(--c-french)">🇫🇷 French accuracy ${bests.french ? `<span class="muted">· best ${bests.french}%</span>` : ""}</h3>${svgLineChart(scoreSeries(st, "french", 30), "var(--c-french)", 85)}</div>
     </div>
 
@@ -601,7 +611,10 @@ function renderStats() {
         { label: "Numerical", color: "var(--c-numerical)", m: bankMastery(st, NUMERICAL_QUESTIONS.map(q => q.id)) },
         { label: "Grammar", color: "var(--c-french)", m: bankMastery(st, FRENCH_GRAMMAR.map(q => q.id)) },
         { label: "Conjugation", color: "var(--c-french)", m: bankMastery(st, FRENCH_CONJ.map(q => q.id)) }
-      ].map(b => meterRow(b.label, b.color, Math.round(100 * b.m.retired / Math.max(1, b.m.total)), 100, `${b.m.retired}/${b.m.total}`)).join("")}
+      ].concat(epsoBankAvailable() ? [
+        { label: "Digital skills", color: "var(--c-abstract)", m: bankMastery(st, DIGITAL_QUESTIONS.map(q => q.id)) },
+        { label: "Situational judgement", color: "var(--c-abstract)", m: bankMastery(st, SJT_QUESTIONS.map(q => q.id)) }
+      ] : []).map(b => meterRow(b.label, b.color, Math.round(100 * b.m.retired / Math.max(1, b.m.total)), 100, `${b.m.retired}/${b.m.total}`)).join("")}
     </div>
     <p class="small muted">Retires after ${st.settings.retireStreak || 3} correct answers in a row; one miss brings it back.</p>
 
@@ -615,7 +628,9 @@ function renderStats() {
             <td>${s.date}</td>
             <td><span class="mdot" style="background:${modColor[s.module]}"></span>${MODULES[s.module] ? MODULES[s.module].name : s.module}</td>
             <td>${s.pct}% (${s.correct}/${s.total})</td>
-            <td class="muted small">${s.sub ? `V ${s.sub.verbal.c}/${s.sub.verbal.t} · N ${s.sub.numerical.c}/${s.sub.numerical.t}${s.sub.abstract ? ` · A ${s.sub.abstract.c}/${s.sub.abstract.t}` : ""}` : ""}</td>
+            <td class="muted small">${s.sub ? (s.sub.verbal
+              ? `V ${s.sub.verbal.c}/${s.sub.verbal.t} · N ${s.sub.numerical.c}/${s.sub.numerical.t}${s.sub.abstract ? ` · A ${s.sub.abstract.c}/${s.sub.abstract.t}` : ""}`
+              : `D ${s.sub.digital.c}/${s.sub.digital.t} · S ${s.sub.sjt.c}/${s.sub.sjt.t}`) : ""}</td>
             <td>${fmtClock(s.seconds || 0)}</td>
           </tr>`).join("")}</tbody>
       </table>`}
@@ -690,7 +705,7 @@ function renderSettings() {
         <button id="btn-reset" style="color:var(--status-critical)">Reset</button>
       </div>
     </div>
-    <p class="small muted" style="margin-top:14px">Banks: ${FRENCH_VOCAB.length} words · ${FRENCH_GRAMMAR.length} grammar · ${FRENCH_CONJ.length} conjugation · ${EU_QUESTIONS.length} EU (each with a mini-lesson) · ${VERBAL_QUESTIONS.length} verbal · ${NUMERICAL_QUESTIONS.length} numerical · unlimited generated abstract.</p>
+    <p class="small muted" style="margin-top:14px">Banks: ${FRENCH_VOCAB.length} words · ${FRENCH_GRAMMAR.length} grammar · ${FRENCH_CONJ.length} conjugation · ${EU_QUESTIONS.length} EU (each with a mini-lesson) · ${VERBAL_QUESTIONS.length} verbal · ${NUMERICAL_QUESTIONS.length} numerical · ${typeof DIGITAL_QUESTIONS !== "undefined" ? DIGITAL_QUESTIONS.length : 0} digital skills · ${typeof SJT_QUESTIONS !== "undefined" ? SJT_QUESTIONS.length : 0} situational judgement · unlimited generated abstract.</p>
   `;
 
   document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
