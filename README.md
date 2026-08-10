@@ -71,13 +71,21 @@ any static host) and use the URL as your start page on every machine.
 
 | File | Contents |
 |---|---|
-| `data/french-vocab.js` | 300 CEFR-tagged words (100 × A2/B1/B2) with example sentences; review items sometimes become 🔊 listening drills |
-| `data/french-grammar.js` | 90 grammar drills with explanations |
+| `data/french-vocab.js` | 500 CEFR-tagged words (100 A2 / 160 B1 / 240 B2) with example sentences |
+| `data/french-grammar.js` | 90 grammar drills |
 | `data/french-conj.js` | 60 conjugation drills (présent → subjonctif passé) |
-| `data/eu.js` | 300 EPSO-style EU MCQs across 6 topics |
-| `data/verbal.js` | 50 verbal reasoning passages |
-| `data/numerical.js` | 60 numerical reasoning questions |
-| `js/abstract.js` | **Abstract reasoning generator** — EPSO-style figure sequences created procedurally, so the supply is unlimited |
+| `data/dictation.js` | 90 listening/dictation sentences with near-homophone distractors |
+| `data/reading.js` | 35 French reading-comprehension passages (B1/B2), all in French |
+| `data/eu.js` + `data/eu-learn.js` | 300 EPSO-style EU MCQs, each with a mini-lesson paragraph |
+| `data/verbal.js` | 110 verbal reasoning passages |
+| `data/numerical.js` | 120 numerical reasoning questions |
+| `data/digital.js` | 60 digital-skills questions (DigComp areas) |
+| `data/sjt.js` | 45 situational-judgement scenarios (8 EPSO competencies) |
+| `data/writing.js` | 40 EUFTE-style writing prompts with key points and pitfalls |
+| `js/abstract.js` | **Abstract reasoning generator** — unlimited procedurally generated figure sequences |
+| `js/mock.js` | Four full-length mock exams run under exam conditions |
+
+**~1,450 items** plus unlimited generated abstract questions.
 
 Each file is a plain JS array — append new objects with a unique `id` and reload.
 The engine picks them up automatically (banks can grow without breaking saved

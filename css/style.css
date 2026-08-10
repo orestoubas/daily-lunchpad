@@ -305,3 +305,26 @@ table.logtable td .mdot { display: inline-block; width: 8px; height: 8px; border
   .badgegrid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
   .summary-hero .sh-score { font-size: 2.6rem; }
 }
+
+/* ---- Mock exam mode ---- */
+.options button.sel-mock { border-color: var(--c-french); background: #eef4fd; box-shadow: 0 3px 0 #c3d8f5; }
+.kbdhint { font-size: .74rem; color: var(--text-muted); font-weight: 600; }
+
+/* ---- Library ---- */
+.libitem { padding: 14px 0; border-bottom: 1px solid var(--grid); }
+.libitem:last-child { border-bottom: none; }
+.libtop { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.libtop .qbadge { margin-bottom: 0; }
+.libstat { font-size: .72rem; color: var(--text-muted); font-weight: 700; }
+.libq { font-weight: 700; margin: 6px 0 4px; line-height: 1.45; }
+.liba { color: var(--good-text); font-size: .89rem; font-weight: 600; }
+.libitem .learn { margin-top: 8px; }
+
+/* ---- Writing ---- */
+#draft:focus { outline: none; border-color: var(--c-french); }
+.learn ul { line-height: 1.6; }
+
+@media (max-width: 700px) {
+  .kbdhint { display: none; }
+  .next-row { justify-content: flex-end; }
+}

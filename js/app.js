@@ -20,6 +20,10 @@ function render() {
   else if (App.view === "summary") renderSummary();
   else if (App.view === "stats") renderStats();
   else if (App.view === "badges") renderBadges();
+  else if (App.view === "mocks") renderMocks();
+  else if (App.view === "mockresult") renderMockResult();
+  else if (App.view === "library") renderLibrary();
+  else if (App.view === "writing") renderWriting();
   else if (App.view === "settings") renderSettings();
   window.scrollTo(0, 0);
 }
@@ -73,8 +77,10 @@ function renderHome() {
     <div class="topbar">
       <div><h1>${greeting()}, Orestis 👋</h1><p class="sub">${dateStr}</p></div>
       <div class="nav">
-        <button class="ghost" data-nav="badges">🏅 Badges</button>
-        <button class="ghost" data-nav="stats">📊 Stats</button>
+        <button class="ghost" data-nav="mocks">🏁 Mocks</button>
+        <button class="ghost" data-nav="library">📖 Library</button>
+        <button class="ghost" data-nav="badges">🏅</button>
+        <button class="ghost" data-nav="stats">📊</button>
         <button class="ghost" data-nav="settings">⚙️</button>
       </div>
     </div>
@@ -148,6 +154,23 @@ function renderHome() {
       </div>
     </div>
 
+    ${writingAvailable() ? `
+    <h2>Writing practice</h2>
+    <div class="card">
+      <div class="m-desc" style="margin-bottom:10px">Timed EUFTE-style tasks: policy notes, essays, summaries and replies — with the key points a strong answer covers.</div>
+      <button data-nav="writing">✍️ Open writing practice</button>
+    </div>` : ""}
+
+    ${backupOverdue(st) ? `
+    <div class="card" style="margin-top:16px;border-color:#f0cf8e;background:linear-gradient(180deg,#fff8e8,var(--surface-1))">
+      <b>💾 Back up your progress</b>
+      <div class="muted small" style="margin-top:4px">Your ${st.sessions.length} sessions live only in this browser. Clearing site data would erase them.</div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <button id="quick-export">⬇ Export now</button>
+        <button class="ghost" id="snooze-backup">Remind me later</button>
+      </div>
+    </div>` : ""}
+
     <h2>Countdown</h2>
     <div class="exams">
       ${exams.length ? exams.map(e => `
@@ -166,6 +189,33 @@ function renderHome() {
   if (sr) sr.onclick = () => { App.chain = pending.slice(); startSession(App.chain.shift(), true); };
   const cb = document.getElementById("challenge-btn");
   if (cb && !challengeDone(st)) cb.onclick = () => startChallenge();
+  const qe = document.getElementById("quick-export");
+  if (qe) qe.onclick = () => { exportState(App.state); markBackedUp(App.state); renderHome(); };
+  const sb = document.getElementById("snooze-backup");
+  if (sb) sb.onclick = () => { snoozeBackup(App.state); renderHome(); };
+}
+
+function writingAvailable() {
+  return typeof WRITING_PROMPTS !== "undefined" && WRITING_PROMPTS.length > 0;
+}
+
+/* Nudge a backup every 20 sessions, and never in the first week of use. */
+function backupOverdue(st) {
+  const g = ensureGame(st);
+  if (st.sessions.length < 10) return false;
+  if (g.backupSnoozedUntil && todayKey() < g.backupSnoozedUntil) return false;
+  return st.sessions.length - (g.lastBackupSessions || 0) >= 20;
+}
+function markBackedUp(st) {
+  const g = ensureGame(st);
+  g.lastBackupSessions = st.sessions.length;
+  g.backupSnoozedUntil = null;
+  saveState(st);
+}
+function snoozeBackup(st) {
+  const g = ensureGame(st);
+  g.backupSnoozedUntil = addDays(todayKey(), 3);
+  saveState(st);
 }
 
 /* ============================ SESSION ============================ */
@@ -177,6 +227,21 @@ function startSession(module, chained) {
   const s = builders[module](App.state);
   if (!s.items.length) { alert("Question bank is empty for this module."); return; }
   beginSession(s, module);
+}
+
+function startMock(examId) {
+  const s = buildMockSession(App.state, examId);
+  if (!s || !s.items.length) { alert("Not enough questions for this mock yet."); return; }
+  if (!confirm(`${s.exam.name}: ${s.items.length} questions in ${s.exam.minutes} minutes.\n\nNo explanations until the end and the clock does not stop. Start now?`)) return;
+  App.chain = [];
+  App.session = {
+    module: "mock", examId, exam: s.exam, items: s.items, idx: 0, mock: true,
+    results: s.items.map(it => ({ item: it, answered: false, correct: false })),
+    secondsLeft: s.exam.minutes * 60,
+    answeredCurrent: false, combo: 0, startedAt: Date.now()
+  };
+  go("session");
+  startTick();
 }
 
 function startChallenge() {
@@ -216,21 +281,25 @@ function stopTick() { if (tickId) { clearInterval(tickId); tickId = null; } }
 function renderSession() {
   const s = App.session;
   const it = s.items[s.idx];
-  const modName = s.challenge ? "🛡️ Weekly challenge" :
+  const modName = s.mock ? `${s.exam.icon} ${s.exam.name} — MOCK` : s.challenge ? "🛡️ Weekly challenge" :
     { french: "🇫🇷 French", eu: "🇪🇺 EU Knowledge", reasoning: "🧠 Reasoning", epso: "💼 Digital & SJT" }[s.module];
   const kindColor = { vocab: "var(--c-french)", grammar: "var(--c-french)", conj: "var(--c-french)",
     eu: "var(--c-eu)", verbal: "var(--c-verbal)", numerical: "var(--c-numerical)", abstract: "var(--c-abstract)",
-    digital: "var(--c-abstract)", sjt: "var(--c-abstract)" }[it.kind];
+    digital: "var(--c-abstract)", sjt: "var(--c-abstract)",
+    dictation: "var(--c-french)", reading: "var(--c-french)" }[it.kind];
   const kindLabel = {
     vocab: it.listen ? `Listening ${it.level} · FR audio` : `Vocabulary ${it.level} · ${it.direction}${it.isNew ? " · NEW WORD" : ""}`,
     grammar: `Grammar ${it.level}`, conj: `Conjugation ${it.level}`,
     eu: `EU · ${it.topic}`, verbal: "Verbal reasoning",
     numerical: "Numerical reasoning", abstract: "Abstract reasoning",
-    digital: `Digital skills · ${it.area}`, sjt: `Situational judgement · ${it.competency}`
+    digital: `Digital skills · ${it.area}`, sjt: `Situational judgement · ${it.competency}`,
+    dictation: `Dictée ${it.level} · listening`, reading: `Compréhension écrite ${it.level}`
   }[it.kind];
 
   let body = "";
-  if (it.kind === "verbal") body += `<div class="passage">${esc(it.passage)}</div>`;
+  if (it.kind === "verbal" || it.kind === "reading") body += `<div class="passage">${esc(it.passage)}</div>`;
+  if (it.kind === "dictation") body += `<p class="question"><button class="listen-big" id="dict-play">🔊 Écouter</button>
+    <button class="ghost small" id="dict-slow">🐢 slower</button></p>`;
   if (it.kind === "numerical") body += renderDataTable(it.table);
   if (it.kind === "abstract") body += `<div class="ab-seq">${it.sequenceSvgs.join("")}<div class="ab-cell ab-unknown">?</div></div>`;
   if (it.kind === "vocab" && it.listen) {
@@ -263,7 +332,10 @@ function renderSession() {
     <div class="card">
       <span class="qbadge" style="--qc:${kindColor}">${esc(kindLabel)}</span>
       ${body}
-      <div class="next-row"><button class="primary" id="next" disabled>${s.idx === s.items.length - 1 ? "Finish" : "Next"} →</button></div>
+      <div class="next-row">
+        <span class="kbdhint">1–4 to answer · Enter for next</span>
+        <button class="primary" id="next" disabled>${s.idx === s.items.length - 1 ? "Finish" : "Next"} →</button>
+      </div>
     </div>
   `;
 
@@ -276,6 +348,12 @@ function renderSession() {
     btn.onclick = () => answer(parseInt(btn.dataset.opt, 10)));
   document.getElementById("next").onclick = nextQuestion;
 
+  if (it.kind === "dictation") {
+    const play = r => speakFrench(it.fr, r);
+    document.getElementById("dict-play").onclick = () => play(0.95);
+    document.getElementById("dict-slow").onclick = () => play(0.6);
+    setTimeout(() => play(0.95), 350);
+  }
   if (it.kind === "vocab" && it.listen) {
     const play = () => speakFrench(it.fr);
     document.getElementById("listen-play").onclick = play;
@@ -301,12 +379,24 @@ function answer(choice) {
 
   if (it.kind === "vocab") applySrsResult(App.state, it.id, correct);
   const bankOf = { grammar: "grammar", conj: "conj", eu: "eu", verbal: "verbal", numerical: "numerical",
-    digital: "digital", sjt: "sjt" };
+    digital: "digital", sjt: "sjt", dictation: "dictation", reading: "reading" };
   if (bankOf[it.kind]) {
     recordQuestionResult(App.state, it.id, correct);
     if (!correct) markWrong(App.state, bankOf[it.kind], it.id);
   }
   saveState(App.state);
+
+  if (s.mock) {
+    // exam conditions: record silently and advance
+    document.querySelectorAll("#options button").forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === choice) btn.classList.add("sel-mock");
+    });
+    const next = document.getElementById("next");
+    if (next) { next.disabled = false; next.focus(); }
+    setTimeout(() => { if (App.session === s && s.answeredCurrent) nextQuestion(); }, 220);
+    return;
+  }
 
   document.querySelectorAll("#options button").forEach((btn, i) => {
     btn.disabled = true;
@@ -325,13 +415,15 @@ function answer(choice) {
   if (it.kind === "vocab") {
     fb += `<div class="expl"><b>${esc(it.fr)}</b> — ${esc(it.en)}
       <button class="tts-btn" id="tts">🔊</button><br><i>${esc(it.ex)}</i></div>`;
+  } else if (it.kind === "dictation") {
+    fb += `<div class="expl"><b>${esc(it.fr)}</b><button class="tts-btn" id="tts">🔊</button><br>${esc(it.en)}<br><i>${esc(it.expl)}</i></div>`;
   } else if (it.expl) {
     fb += `<div class="expl">${esc(it.expl)}</div>`;
     if (it.learn) fb += `<div class="learn">📚 ${esc(it.learn)}</div>`;
   }
   document.getElementById("feedback").innerHTML = fb;
   const tts = document.getElementById("tts");
-  if (tts) tts.onclick = () => speakFrench(it.fr + ". " + it.ex);
+  if (tts) tts.onclick = () => speakFrench(it.kind === "dictation" ? it.fr : it.fr + ". " + it.ex);
 
   // refresh combo chip + dots without a full re-render
   const head = document.querySelector(".session-head .progdots");
@@ -358,6 +450,24 @@ function finishSession(completed) {
   const s = App.session;
   if (!s) return;
   const st = App.state;
+
+  if (s.mock) {
+    const seconds = Math.round((Date.now() - s.startedAt) / 1000);
+    const score = scoreMock(s.exam, s.results);
+    recordMock(st, s.examId, score, seconds);
+    // mocks award XP but never touch daily pools, streaks or rolling averages
+    const xpTotal = score.correct * XP.correct;
+    awardXp(st, "reasoning", Math.round(xpTotal * 0.5));
+    awardXp(st, "eu", Math.round(xpTotal * 0.5));
+    questProgress(st, "xp", xpTotal);
+    saveState(st);
+    App.lastMock = { exam: s.exam, score, seconds,
+      review: s.results.filter(r => r.answered && !r.correct),
+      skipped: s.results.filter(r => !r.answered).length };
+    App.session = null;
+    go("mockresult");
+    return;
+  }
   const seconds = Math.min((st.settings.minutesPerBlock || 10) * 60, Math.round((Date.now() - s.startedAt) / 1000));
   const answered = s.results.filter(r => r.answered);
 
@@ -528,6 +638,258 @@ function renderBadges() {
       </div>`).join("")}
   `;
   document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
+}
+
+
+/* ============================ MOCK EXAMS ============================ */
+
+function renderMocks() {
+  const st = App.state;
+  const hist = mockHistory(st);
+  $app.innerHTML = `
+    <div class="topbar">
+      <h1>🏁 Mock exams</h1>
+      <div class="nav"><button class="ghost" data-nav="home">← Dashboard</button></div>
+    </div>
+    <p class="sub">Real length, real clock, no explanations until the end. Nothing here affects your daily streak or rolling averages — treat it as a dress rehearsal.</p>
+
+    <div class="missions">
+      ${MOCK_EXAMS.map(e => {
+        const n = e.parts.reduce((a, p) => a + p.n, 0);
+        const last = hist.filter(m => m.examId === e.id).slice(-1)[0];
+        return `<div class="card mission" style="--mc:var(--c-abstract)">
+          <div class="m-head"><span class="m-title">${e.icon} ${esc(e.name)}</span>
+            <span class="m-lvl">${n} Q · ${e.minutes} min</span></div>
+          <div class="m-desc">${esc(e.blurb)}</div>
+          <div class="m-foot"><span>${last ? `last: ${last.pct}%` : "not attempted"}</span>
+            <span>${esc(e.note)}</span></div>
+          <button data-mock="${e.id}">Start mock</button>
+        </div>`;
+      }).join("")}
+    </div>
+
+    ${hist.length ? `
+      <h2>Mock history</h2>
+      <div class="card">
+        <table class="logtable">
+          <thead><tr><th>Date</th><th>Exam</th><th>Score</th><th>Parts</th><th>Time</th></tr></thead>
+          <tbody>${hist.slice().reverse().slice(0, 20).map(m => {
+            const ex = MOCK_EXAMS.find(x => x.id === m.examId);
+            return `<tr>
+              <td>${m.date}</td>
+              <td>${ex ? esc(ex.name) : m.examId}</td>
+              <td><b style="color:${m.passedAll ? "var(--good-text)" : "var(--status-critical)"}">${m.pct}%</b> (${m.correct}/${m.total})</td>
+              <td class="muted small">${m.parts.map(p => `${mockLabel(p.kind).slice(0, 3)} ${p.pct}%`).join(" · ")}</td>
+              <td>${fmtClock(m.seconds || 0)}</td>
+            </tr>`;
+          }).join("")}</tbody>
+        </table>
+      </div>` : ""}
+  `;
+  document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
+  document.querySelectorAll("[data-mock]").forEach(b => b.onclick = () => startMock(b.dataset.mock));
+}
+
+function renderMockResult() {
+  const r = App.lastMock;
+  const sc = r.score;
+  $app.innerHTML = `
+    <div class="topbar"><h1>${r.exam.icon} ${esc(r.exam.name)} — result</h1></div>
+    <div class="card">
+      <div class="summary-hero">
+        <div style="font-size:2.2rem">${sc.passedAll ? "🏆" : "📋"}</div>
+        <div class="sh-score" style="color:${sc.passedAll ? "var(--good-text)" : "var(--text-primary)"}">${sc.pct}%</div>
+        <div class="sh-sub">${sc.correct} of ${sc.total} correct · ${fmtClock(r.seconds)}${r.skipped ? ` · ${r.skipped} unanswered` : ""}</div>
+      </div>
+      <div class="goals" style="margin-top:18px">
+        ${sc.parts.map(p => meterRow(
+          mockLabel(p.kind), p.passed ? "var(--status-good)" : "var(--status-critical)",
+          p.pct, p.need, `${p.correct}/${p.total} · ${p.pct}%`)).join("")}
+      </div>
+      <p class="small muted" style="margin-top:10px">The marker on each bar is the indicative pass mark. ${esc(r.exam.note)}</p>
+      <div style="margin-top:18px"><button class="primary big" id="mock-home">← Back to dashboard</button></div>
+    </div>
+
+    ${r.review.length ? `
+      <h2>Review your misses (${r.review.length})</h2>
+      ${r.review.map(x => `
+        <div class="card" style="margin-bottom:10px">
+          <span class="qbadge" style="--qc:var(--c-abstract)">${esc(mockLabel(x.item.kind))}</span>
+          ${x.item.passage ? `<div class="passage">${esc(x.item.passage)}</div>` : ""}
+          ${x.item.table ? renderDataTable(x.item.table) : ""}
+          ${x.item.sequenceSvgs ? `<div class="ab-seq">${x.item.sequenceSvgs.join("")}<div class="ab-cell ab-unknown">?</div></div>` : ""}
+          <p class="question" style="font-size:.98rem">${esc(x.item.prompt)}</p>
+          ${x.item.svgOptions
+            ? `<div class="small" style="color:var(--good-text)"><b>Answer:</b><div class="ab-review">${x.item.options[x.item.answer]}</div></div>`
+            : `<p class="small" style="color:var(--good-text)"><b>Answer:</b> ${esc(x.item.options[x.item.answer])}</p>`}
+          ${x.item.expl ? `<p class="small muted">${esc(x.item.expl)}</p>` : ""}
+          ${x.item.learn ? `<div class="learn">📚 ${esc(x.item.learn)}</div>` : ""}
+        </div>`).join("")}` : ""}
+  `;
+  document.getElementById("mock-home").onclick = () => go("home");
+}
+
+/* ============================ LIBRARY ============================ */
+
+function renderLibrary() {
+  const st = App.state;
+  const q = (App.libQuery || "").toLowerCase().trim();
+  const tab = App.libTab || "eu";
+
+  let rows = "";
+  if (tab === "eu") {
+    const items = EU_QUESTIONS.filter(x =>
+      !q || x.q.toLowerCase().includes(q) || x.topic.toLowerCase().includes(q) ||
+      (EU_LEARN[x.id] || "").toLowerCase().includes(q)).slice(0, 120);
+    rows = items.map(x => `
+      <div class="libitem">
+        <div class="libtop"><span class="qbadge" style="--qc:var(--c-eu)">${esc(x.topic)}</span>
+          <span class="libstat">${questionStreak(st, x.id) >= (st.settings.retireStreak || 3) ? "✓ mastered" : ""}</span></div>
+        <div class="libq">${esc(x.q)}</div>
+        <div class="liba">${esc(x.options[x.a])}</div>
+        ${EU_LEARN[x.id] ? `<div class="learn">📚 ${esc(EU_LEARN[x.id])}</div>` : ""}
+      </div>`).join("");
+  } else {
+    const items = FRENCH_VOCAB.filter(c =>
+      !q || c.fr.toLowerCase().includes(q) || c.en.toLowerCase().includes(q)).slice(0, 200);
+    rows = items.map(c => {
+      const e = st.srs[c.id];
+      const box = e ? e.box : 0;
+      return `<div class="libitem">
+        <div class="libtop"><span class="qbadge" style="--qc:var(--c-french)">${c.level}</span>
+          <span class="libstat">${box ? `box ${box}/5` : "not seen yet"}</span></div>
+        <div class="libq">${esc(c.fr)} — <span class="muted">${esc(c.en)}</span>
+          <button class="tts-btn" data-say="${esc(c.fr)}">🔊</button></div>
+        <div class="liba"><i>${esc(c.ex)}</i></div>
+      </div>`;
+    }).join("");
+  }
+
+  $app.innerHTML = `
+    <div class="topbar">
+      <h1>📖 Library</h1>
+      <div class="nav"><button class="ghost" data-nav="home">← Dashboard</button></div>
+    </div>
+    <p class="sub">Browse and revise without a quiz — search everything you are learning.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <button class="${tab === "eu" ? "primary" : ""}" data-tab="eu">🇪🇺 EU notes</button>
+      <button class="${tab === "fr" ? "primary" : ""}" data-tab="fr">🇫🇷 Vocabulary</button>
+      <input type="text" id="lib-search" placeholder="Search…" value="${esc(App.libQuery || "")}"
+        style="flex:1;min-width:180px;font:inherit;padding:9px 12px;border-radius:var(--r-md);border:2px solid var(--grid);background:var(--surface-1)">
+    </div>
+    <div class="card">${rows || `<p class="muted">Nothing matches “${esc(q)}”.</p>`}</div>
+    <p class="small muted" style="margin-top:10px">Showing the first matches only — narrow your search to see more.</p>
+  `;
+  document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
+  document.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => { App.libTab = b.dataset.tab; renderLibrary(); });
+  document.querySelectorAll("[data-say]").forEach(b => b.onclick = () => speakFrench(b.dataset.say));
+  const si = document.getElementById("lib-search");
+  if (si) {
+    si.oninput = e => {
+      App.libQuery = e.target.value;
+      clearTimeout(App.libTimer);
+      App.libTimer = setTimeout(() => {
+        const pos = e.target.selectionStart;
+        renderLibrary();
+        const el = document.getElementById("lib-search");
+        if (el) { el.focus(); el.setSelectionRange(pos, pos); }
+      }, 250);
+    };
+  }
+}
+
+/* ============================ WRITING ============================ */
+
+function renderWriting() {
+  const st = App.state;
+  const g = ensureGame(st);
+  g.writing = g.writing || { done: {}, current: null };
+  const idx = App.writeIdx != null ? App.writeIdx : 0;
+  const p = WRITING_PROMPTS[idx];
+  const draftKey = "draft-" + p.id;
+  const saved = (g.writing.drafts && g.writing.drafts[draftKey]) || "";
+
+  $app.innerHTML = `
+    <div class="topbar">
+      <h1>✍️ Writing practice</h1>
+      <div class="nav"><button class="ghost" data-nav="home">← Dashboard</button></div>
+    </div>
+
+    <div class="card">
+      <div class="m-head" style="margin-bottom:8px">
+        <span class="qbadge" style="--qc:var(--c-eu)">${esc(p.type)} · ${esc(p.topic)}</span>
+        <span class="m-lvl">${p.minutes} min · ${esc(p.words)} words</span>
+      </div>
+      <p class="question">${esc(p.prompt)}</p>
+      <textarea id="draft" placeholder="Write your answer here… it is saved automatically in this browser."
+        style="width:100%;min-height:260px;font:inherit;line-height:1.6;padding:14px;border-radius:var(--r-md);border:2px solid var(--grid);background:var(--surface-1);color:var(--text-primary);resize:vertical">${esc(saved)}</textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap">
+        <span class="muted small" id="wc">0 words</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button id="copy-draft">📋 Copy for feedback</button>
+          <button id="show-points">💡 Show key points</button>
+        </div>
+      </div>
+      <div id="points-box"></div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;gap:8px;margin-top:14px">
+      <button id="prev-prompt" ${idx === 0 ? "disabled" : ""}>← Previous</button>
+      <span class="muted small" style="align-self:center">${idx + 1} / ${WRITING_PROMPTS.length}</span>
+      <button id="next-prompt" ${idx >= WRITING_PROMPTS.length - 1 ? "disabled" : ""}>Next →</button>
+    </div>
+    <div class="learn" style="margin-top:14px">
+      <b>How the real EUFTE works</b><br>
+      A 40-minute free-text answer in your Language 2, marked out of 10 with a pass mark of 5, and worth
+      about 15% of the final AD5 ranking. EPSO gives you a background document in advance and again on the
+      day, and you answer <i>on the basis of that documentation</i>. It scores <b>written communication</b> —
+      structure, concision, clarity, audience awareness and correct use of the source — not EU trivia or
+      language proficiency. Only papers of candidates who clear the MCQ phase get corrected.
+      <span class="muted">(Format details gathered from preparation providers summarising the competition
+      notice; confirm against the official notice before relying on the exact weights.)</span>
+    </div>
+    <p class="small muted" style="margin-top:12px">There is no automatic marking here — free text needs a human or an AI reader. Write under the clock, then use <b>Copy for feedback</b> and paste the task plus your answer into Claude asking for EPSO-style marking.</p>
+  `;
+
+  document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
+  const ta = document.getElementById("draft");
+  const wc = document.getElementById("wc");
+  const count = () => {
+    const n = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+    wc.textContent = n + " words";
+    const target = parseInt(String(p.words).split("-")[0], 10) || 0;
+    wc.style.color = n >= target ? "var(--good-text)" : "var(--text-muted)";
+  };
+  count();
+  ta.oninput = () => {
+    count();
+    clearTimeout(App.draftTimer);
+    App.draftTimer = setTimeout(() => {
+      g.writing.drafts = g.writing.drafts || {};
+      g.writing.drafts[draftKey] = ta.value;
+      saveState(st);
+    }, 400);
+  };
+  document.getElementById("copy-draft").onclick = () => {
+    const text = `EPSO ${p.type} practice — ${p.topic}\nTime: ${p.minutes} min, target ${p.words} words\n\nTASK:\n${p.prompt}\n\nMY ANSWER:\n${ta.value}\n\nPlease mark this as an EPSO assessor would: structure, argument quality, EU knowledge accuracy, clarity and register. Give a score out of 10 and three concrete improvements.`;
+    navigator.clipboard.writeText(text).then(
+      () => { const b = document.getElementById("copy-draft"); b.textContent = "✓ Copied"; setTimeout(() => b.textContent = "📋 Copy for feedback", 1600); },
+      () => alert("Copy failed — select the text manually.")
+    );
+  };
+  document.getElementById("show-points").onclick = () => {
+    document.getElementById("points-box").innerHTML = `
+      <div class="learn" style="margin-top:12px">
+        <b>A strong answer covers</b>
+        <ul style="margin:6px 0 10px 18px;padding:0">${p.points.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+        <b>Common pitfalls</b>
+        <ul style="margin:6px 0 0 18px;padding:0">${p.pitfalls.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+      </div>`;
+  };
+  const prev = document.getElementById("prev-prompt");
+  const next = document.getElementById("next-prompt");
+  if (prev) prev.onclick = () => { App.writeIdx = idx - 1; renderWriting(); };
+  if (next) next.onclick = () => { App.writeIdx = idx + 1; renderWriting(); };
 }
 
 /* ============================ STATS ============================ */
@@ -753,11 +1115,11 @@ function renderDataTable(t) {
   </table>`;
 }
 
-function speakFrench(text) {
+function speakFrench(text, rate) {
   if (!("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = "fr-FR"; u.rate = 0.9;
+  u.lang = "fr-FR"; u.rate = rate || 0.9;
   const fr = window.speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith("fr"));
   if (fr) u.voice = fr;
   window.speechSynthesis.speak(u);
@@ -792,6 +1154,43 @@ function toggleCalculator() {
   });
 }
 function removeCalculator() { const c = document.getElementById("calc"); if (c) c.remove(); }
+
+/* ---------- keyboard shortcuts ---------- */
+document.addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (tag === "input" || tag === "textarea") return;
+
+  if (App.view === "session" && App.session) {
+    const s = App.session;
+    if (!s.answeredCurrent && /^[1-4]$/.test(e.key)) {
+      const btns = document.querySelectorAll("#options button");
+      const i = parseInt(e.key, 10) - 1;
+      if (btns[i]) { e.preventDefault(); btns[i].click(); }
+      return;
+    }
+    if (!s.answeredCurrent && /^[a-dA-D]$/.test(e.key)) {
+      const btns = document.querySelectorAll("#options button");
+      const i = e.key.toLowerCase().charCodeAt(0) - 97;
+      if (btns[i]) { e.preventDefault(); btns[i].click(); }
+      return;
+    }
+    if (s.answeredCurrent && (e.key === "Enter" || e.key === " ")) {
+      const n = document.getElementById("next");
+      if (n && !n.disabled) { e.preventDefault(); n.click(); }
+      return;
+    }
+    if (e.key === "Escape") { const q = document.getElementById("quit"); if (q) q.click(); }
+    return;
+  }
+  if (App.view === "home") {
+    if (e.key === "Enter") { const b = document.getElementById("start-routine"); if (b) { e.preventDefault(); b.click(); } }
+    if (e.key.toLowerCase() === "s") go("stats");
+    if (e.key.toLowerCase() === "b") go("badges");
+  } else if (e.key === "Escape") {
+    go("home");
+  }
+});
 
 /* boot */
 ensureGame(App.state);

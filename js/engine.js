@@ -212,6 +212,29 @@ function buildVerbalItem(q, rng) {
   };
 }
 
+function buildDictationItem(q, rng) {
+  const shuffled = seededShuffle(q.options.map((_, i) => i), rng);
+  return {
+    kind: "dictation", id: q.id, level: q.level,
+    prompt: "Which sentence did you hear?",
+    fr: q.fr, en: q.en,
+    options: shuffled.map(i => q.options[i]),
+    answer: shuffled.indexOf(q.a),
+    expl: q.expl
+  };
+}
+
+function buildReadingItem(q, rng) {
+  const shuffled = seededShuffle(q.options.map((_, i) => i), rng);
+  return {
+    kind: "reading", id: q.id, level: q.level,
+    passage: q.passage, prompt: q.q,
+    options: shuffled.map(i => q.options[i]),
+    answer: shuffled.indexOf(q.a),
+    expl: q.expl
+  };
+}
+
 function buildDigitalItem(q, rng) {
   const shuffled = seededShuffle(q.options.map((_, i) => i), rng);
   return {
@@ -294,6 +317,27 @@ function buildFrenchSession(state) {
     if ((i + 1) % 3 === 0 && di < drillQueue.length) items.push(drillQueue[di++]);
   });
   while (di < drillQueue.length) items.push(drillQueue[di++]);
+
+  // listening + reading at or below the current working level
+  const canSpeak = typeof window !== "undefined" && "speechSynthesis" in window;
+  if (canSpeak && typeof DICTATION_QUESTIONS !== "undefined" && DICTATION_QUESTIONS.length) {
+    const ids = DICTATION_QUESTIONS.filter(q => gLevels.includes(q.level)).map(q => q.id);
+    if (ids.length) {
+      const picks = drawFromBank(state, "dictation", ids, 2, rng);
+      const map = Object.fromEntries(DICTATION_QUESTIONS.map(q => [q.id, q]));
+      picks.forEach(id => items.splice(Math.floor(rng() * (items.length + 1)), 0, buildDictationItem(map[id], rng)));
+    }
+  }
+  if (typeof READING_QUESTIONS !== "undefined" && READING_QUESTIONS.length) {
+    // reading starts at B1, so an A2 learner still gets gentle exposure
+    let ids = READING_QUESTIONS.filter(q => gLevels.includes(q.level)).map(q => q.id);
+    if (!ids.length) ids = READING_QUESTIONS.filter(q => q.level === "B1").map(q => q.id);
+    if (ids.length) {
+      const picks = drawFromBank(state, "reading", ids, 1, rng);
+      const map = Object.fromEntries(READING_QUESTIONS.map(q => [q.id, q]));
+      picks.forEach(id => items.push(buildReadingItem(map[id], rng)));
+    }
+  }
   return { module: "french", items };
 }
 
