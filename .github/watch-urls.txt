@@ -1,0 +1,4 @@
+ad5-notice|https://eu-careers.europa.eu/en/job-opportunities/graduate-administrators
+epso-competitions|https://eu-careers.europa.eu/en/job-opportunities/open-for-application
+epso-tests|https://eu-careers.europa.eu/en/how-to-apply/selection-procedures
+cast-permanent|https://eu-careers.europa.eu/en/job-opportunities/cast-permanent

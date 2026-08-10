@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate question banks
+        run: node test/validate-banks.cjs
+
+      - name: Install Playwright
+        run: |
+          npm install playwright-core@^1.49.0 --no-audit --no-fund
+          npx -y playwright@1.49.0 install --with-deps chromium
+
+      - name: End-to-end smoke test
+        run: |
+          CHROMIUM="$(node -e "
+            const fs=require('fs'),p=require('path');
+            const base=p.join(process.env.HOME,'.cache','ms-playwright');
+            const dir=fs.readdirSync(base).find(d=>d.startsWith('chromium'));
+            const cands=['chrome-linux/chrome','chrome-linux/headless_shell'];
+            for(const c of cands){const f=p.join(base,dir,c); if(fs.existsSync(f)){console.log(f);break;}}
+          ")"
+          echo "using $CHROMIUM"
+          CHROMIUM="$CHROMIUM" node test/smoke.mjs
+
+      - name: Verify single-file build
+        run: |
+          node build.mjs
+          test -s dist/start.html || (echo "dist/start.html empty" && exit 1)

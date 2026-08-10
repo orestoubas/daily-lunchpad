@@ -2,6 +2,7 @@
 "use strict";
 
 const LS_KEY = "launchpad.v1";
+const APP_VERSION = "1.0.0";
 
 function todayKey(d) {
   const dt = d || new Date();
@@ -86,7 +87,7 @@ function defaultState() {
     sessions: [],     // {date, module, correct, total, pct, seconds, sub:{...}, topics:{}}
     days: {},         // dateKey -> {french:bool, eu:bool, reasoning:bool}
     newCards: {},     // dateKey -> count of new vocab introduced that day
-    settings: { newPerDay: 10, minutesPerBlock: 10, weekendCounts: false, retireStreak: 3 }
+    settings: { newPerDay: 10, minutesPerBlock: 10, weekendCounts: false, retireStreak: 3, adaptive: true }
   };
 }
 
@@ -95,26 +96,98 @@ function loadState() {
     const raw = localStorage.getItem(LS_KEY);
     if (!raw) return defaultState();
     const st = JSON.parse(raw);
-    return Object.assign(defaultState(), st, {
+    return migrateState(Object.assign(defaultState(), st, {
       settings: Object.assign(defaultState().settings, st.settings || {})
-    });
+    }));
   } catch (e) {
     console.warn("state load failed, starting fresh", e);
     return defaultState();
   }
 }
 
+let saveFailed = false;
+
 function saveState(st) {
-  localStorage.setItem(LS_KEY, JSON.stringify(st));
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(st));
+    if (saveFailed) { saveFailed = false; hideSaveWarning(); }
+  } catch (e) {
+    // Almost always QuotaExceededError. Shed the least valuable data and retry
+    // rather than silently losing the user's progress.
+    console.warn("save failed, trimming state", e);
+    try {
+      if (st.sessions && st.sessions.length > 400) st.sessions = st.sessions.slice(-400);
+      if (st.game && st.game.writing && st.game.writing.drafts) {
+        const keys = Object.keys(st.game.writing.drafts);
+        if (keys.length > 15) keys.slice(0, keys.length - 15).forEach(k => delete st.game.writing.drafts[k]);
+      }
+      localStorage.setItem(LS_KEY, JSON.stringify(st));
+      if (saveFailed) { saveFailed = false; hideSaveWarning(); }
+    } catch (e2) {
+      saveFailed = true;
+      showSaveWarning();
+    }
+  }
+}
+
+/* Visible, non-dismissable warning: silent data loss is the worst outcome. */
+function showSaveWarning() {
+  if (document.getElementById("save-warning")) return;
+  const d = document.createElement("div");
+  d.id = "save-warning";
+  d.className = "save-warning";
+  d.innerHTML = `<b>⚠️ Progress cannot be saved</b>
+    <span>This browser's storage is full or blocked. Export a backup now, then free up space.</span>
+    <button id="save-warning-export">⬇ Export backup</button>`;
+  document.body.appendChild(d);
+  const b = document.getElementById("save-warning-export");
+  if (b) b.onclick = () => { try { exportState(App.state); } catch (e) { alert("Export failed: " + e.message); } };
+}
+function hideSaveWarning() {
+  const d = document.getElementById("save-warning");
+  if (d) d.remove();
+}
+
+/* Forward-compatible migrations: old backups keep working. */
+function migrateState(st) {
+  st.version = st.version || 1;
+  st.qstats = st.qstats || {};
+  st.pool = st.pool || {};
+  st.srs = st.srs || {};
+  st.days = st.days || {};
+  st.newCards = st.newCards || {};
+  st.sessions = Array.isArray(st.sessions) ? st.sessions : [];
+  if (st.settings && st.settings.adaptive === undefined) st.settings.adaptive = true;
+  if (st.version < 2) st.version = 2;
+  return st;
 }
 
 function exportState(st) {
-  const blob = new Blob([JSON.stringify(st, null, 2)], { type: "application/json" });
+  const name = `launchpad-backup-${todayKey()}.json`;
+  const json = JSON.stringify(st, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+
+  // On a phone the share sheet lets you drop the file straight into Drive,
+  // Files or a chat. Fall back to a plain download everywhere else.
+  if (navigator.canShare && typeof File !== "undefined") {
+    try {
+      const file = new File([blob], name, { type: "application/json" });
+      if (navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: "Morning Launchpad backup" })
+          .catch(() => downloadBlob(blob, name));
+        return;
+      }
+    } catch (e) { /* fall through to download */ }
+  }
+  downloadBlob(blob, name);
+}
+
+function downloadBlob(blob, name) {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `launchpad-backup-${todayKey()}.json`;
+  a.download = name;
   a.click();
-  URL.revokeObjectURL(a.href);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 function importStateFile(file, cb) {

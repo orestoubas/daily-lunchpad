@@ -157,6 +157,100 @@ function bankMastery(state, allIds) {
   return { retired, total: allIds.length };
 }
 
+
+/* ---------- Adaptive difficulty ----------
+   Bias selection toward the topics/kinds you are weakest at, without ever
+   starving the strong ones (every topic keeps a floor share). */
+
+function topicAccuracy(state, bankName) {
+  const acc = {};
+  const src = { eu: typeof EU_QUESTIONS !== "undefined" ? EU_QUESTIONS : [],
+                digital: typeof DIGITAL_QUESTIONS !== "undefined" ? DIGITAL_QUESTIONS : [],
+                sjt: typeof SJT_QUESTIONS !== "undefined" ? SJT_QUESTIONS : [] }[bankName] || [];
+  const keyOf = q => q.topic || q.area || q.competency || "general";
+  for (const q of src) {
+    const st = state.qstats[q.id];
+    if (!st || (st.right + st.wrong) === 0) continue;
+    const k = keyOf(q);
+    acc[k] = acc[k] || { c: 0, t: 0 };
+    acc[k].c += st.right; acc[k].t += st.right + st.wrong;
+  }
+  return acc;
+}
+
+/* Returns a weight per id: weak topics ~2x, unseen 1.3x, strong ~0.6x. */
+function adaptiveWeights(state, bankName, items) {
+  if (!state.settings.adaptive) return null;
+  const acc = topicAccuracy(state, bankName);
+  const keyOf = q => q.topic || q.area || q.competency || "general";
+  const w = {};
+  for (const q of items) {
+    const k = keyOf(q);
+    const a = acc[k];
+    let weight = 1.3;                                  // unseen topic: mild boost
+    if (a && a.t >= 5) {
+      const pct = a.c / a.t;
+      weight = pct >= 0.9 ? 0.6 : pct >= 0.75 ? 0.9 : pct >= 0.6 ? 1.5 : 2.0;
+    }
+    const qs = state.qstats[q.id];
+    if (qs && qs.wrong > qs.right) weight *= 1.4;      // personally troublesome item
+    w[q.id] = weight;
+  }
+  return w;
+}
+
+/* Weighted sample without replacement. */
+function weightedPick(ids, weights, n, rng) {
+  const pool = ids.slice();
+  const out = [];
+  while (out.length < n && pool.length) {
+    let total = 0;
+    for (const id of pool) total += (weights[id] || 1);
+    let r = rng() * total;
+    let idx = 0;
+    for (; idx < pool.length; idx++) {
+      r -= (weights[pool[idx]] || 1);
+      if (r <= 0) break;
+    }
+    if (idx >= pool.length) idx = pool.length - 1;
+    out.push(pool.splice(idx, 1)[0]);
+  }
+  return out;
+}
+
+/* Draw with adaptive weighting when enabled, otherwise the plain cycle. */
+function drawAdaptive(state, bankName, allItems, n, rng) {
+  const ids = allItems.map(q => q.id);
+  const weights = adaptiveWeights(state, bankName, allItems);
+  if (!weights) return drawFromBank(state, bankName, ids, n, rng);
+
+  // Keep the cycle guarantee: draw a larger unbiased candidate set from the
+  // pool, then let the weights choose within it. Nothing is ever starved.
+  const candidates = drawFromBank(state, bankName, ids, Math.min(ids.length, n * 3), rng);
+  const chosen = weightedPick(candidates, weights, n, rng);
+  // return unused candidates to the front of the queue so they are not skipped
+  const p = state.pool[bankName];
+  if (p) {
+    const unused = candidates.filter(id => !chosen.includes(id));
+    p.remaining = unused.concat(p.remaining);
+  }
+  return chosen;
+}
+
+/* Session length auto-tunes to your measured pace so 10 minutes stays 10 minutes. */
+function targetQuestionCount(state, module, fallback) {
+  if (!state.settings.adaptive) return fallback;
+  const recent = state.sessions.filter(s => s.module === module).slice(-5);
+  if (recent.length < 3) return fallback;
+  const secs = recent.reduce((a, s) => a + (s.seconds || 0), 0);
+  const qs = recent.reduce((a, s) => a + (s.total || 0), 0);
+  if (!qs || !secs) return fallback;
+  const perQ = secs / qs;
+  const budget = (state.settings.minutesPerBlock || 10) * 60 * 0.92;  // leave a margin
+  const n = Math.round(budget / perQ);
+  return Math.max(Math.ceil(fallback * 0.6), Math.min(Math.ceil(fallback * 1.8), n));
+}
+
 /* ---------- Question item builders ---------- */
 
 function buildVocabItem(card, state, rng) {
@@ -343,8 +437,8 @@ function buildFrenchSession(state) {
 
 function buildEuSession(state) {
   const rng = dailyRng("eu", state.seq);
-  const ids = EU_QUESTIONS.map(q => q.id);
-  const picks = drawFromBank(state, "eu", ids, 14, rng);
+  const n = targetQuestionCount(state, "eu", 14);
+  const picks = drawAdaptive(state, "eu", EU_QUESTIONS, n, rng);
   const map = Object.fromEntries(EU_QUESTIONS.map(q => [q.id, q]));
   return { module: "eu", items: picks.map(id => buildEuItem(map[id], rng)) };
 }
@@ -368,14 +462,12 @@ function buildEpsoSession(state) {
   const rng = dailyRng("epso", state.seq);
   const items = [];
   if (typeof DIGITAL_QUESTIONS !== "undefined" && DIGITAL_QUESTIONS.length) {
-    const ids = DIGITAL_QUESTIONS.map(q => q.id);
-    const picks = drawFromBank(state, "digital", ids, 6, rng);
+    const picks = drawAdaptive(state, "digital", DIGITAL_QUESTIONS, 6, rng);
     const map = Object.fromEntries(DIGITAL_QUESTIONS.map(q => [q.id, q]));
     items.push(...picks.map(id => buildDigitalItem(map[id], rng)));
   }
   if (typeof SJT_QUESTIONS !== "undefined" && SJT_QUESTIONS.length) {
-    const ids = SJT_QUESTIONS.map(q => q.id);
-    const picks = drawFromBank(state, "sjt", ids, 4, rng);
+    const picks = drawAdaptive(state, "sjt", SJT_QUESTIONS, 4, rng);
     const map = Object.fromEntries(SJT_QUESTIONS.map(q => [q.id, q]));
     items.push(...picks.map(id => buildSjtItem(map[id], rng)));
   }

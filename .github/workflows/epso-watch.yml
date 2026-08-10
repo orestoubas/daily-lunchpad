@@ -1,0 +1,82 @@
+name: Watch EPSO pages
+
+# The AD5 test dates are not published yet, so the app ships approximate ones.
+# This job fingerprints the official pages weekly and opens an issue the moment
+# they change, so the countdowns can be corrected without anyone checking daily.
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"     # Mondays 07:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch and fingerprint watched pages
+        id: fp
+        run: |
+          mkdir -p .watch
+          changed=""
+          while IFS='|' read -r name url; do
+            [ -z "$name" ] && continue
+            body="$(curl -sL --max-time 45 -A 'Mozilla/5.0 (launchpad-watch)' "$url" || true)"
+            if [ -z "$body" ]; then
+              echo "::warning::could not fetch $name ($url)"
+              continue
+            fi
+            # strip tags, collapse whitespace, keep only lines mentioning dates/tests
+            text="$(printf '%s' "$body" \
+              | sed -e 's/<[^>]*>/ /g' \
+              | tr -s '[:space:]' ' ' \
+              | grep -oiE '[^.]*(test|date|deadline|202[6-9]|autumn|spring|phase)[^.]*' \
+              | head -c 20000 || true)"
+            hash="$(printf '%s' "$text" | sha256sum | cut -d' ' -f1)"
+            file=".watch/${name}.sha"
+            prev="$(cat "$file" 2>/dev/null || echo '')"
+            printf '%s' "$hash" > "$file"
+            if [ -n "$prev" ] && [ "$prev" != "$hash" ]; then
+              changed="${changed}- **${name}**: ${url}"$'\n'
+            fi
+          done < .github/watch-urls.txt
+          {
+            echo "changed<<EOF"
+            echo "$changed"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Commit fingerprints
+        run: |
+          git config user.name "epso-watch"
+          git config user.email "actions@github.com"
+          git add .watch
+          git diff --staged --quiet || git commit -m "chore: update EPSO page fingerprints [skip ci]"
+          git push || true
+
+      - name: Open an issue when a page changed
+        if: steps.fp.outputs.changed != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const changed = `${{ steps.fp.outputs.changed }}`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "EPSO pages changed — check the countdown dates",
+              body: [
+                "One or more watched EPSO pages changed since the last check:",
+                "",
+                changed,
+                "",
+                "If the AD5 or CAST test dates have been published, update `EXAM_PRESETS` in `js/game.js`",
+                "and remove the `approx: true` flag on any date that is now confirmed.",
+                "",
+                "_Opened automatically by the weekly watch job._"
+              ].join("\n")
+            });

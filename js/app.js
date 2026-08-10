@@ -1028,6 +1028,10 @@ function renderSettings() {
         <input type="number" id="set-new" min="0" max="30" value="${st.settings.newPerDay}" style="width:70px">
       </div>
       <div class="set-row">
+        <div><b>Adaptive difficulty</b><div class="s-desc">Weak topics appear more often, mastered ones fade, and session length auto-tunes to your measured pace so 10 minutes stays 10 minutes.</div></div>
+        <input type="checkbox" id="set-adaptive" ${st.settings.adaptive ? "checked" : ""}>
+      </div>
+      <div class="set-row">
         <div><b>Retire after N correct in a row</b><div class="s-desc">A question stops appearing once you've beaten it this many times consecutively.</div></div>
         <input type="number" id="set-retire" min="2" max="10" value="${st.settings.retireStreak || 3}" style="width:70px">
       </div>
@@ -1055,8 +1059,12 @@ function renderSettings() {
     <h2>Data</h2>
     <div class="card">
       <div class="set-row">
-        <div><b>Export backup</b><div class="s-desc">Download all progress as JSON — use it to move between browsers.</div></div>
-        <button id="btn-export">⬇ Export</button>
+        <div><b>Export backup</b><div class="s-desc">On a phone this opens the share sheet, so you can save straight to Google Drive or Files. On a desktop it downloads a JSON file.</div></div>
+        <button id="btn-export">⬇ Export / Save to Drive</button>
+      </div>
+      <div class="set-row">
+        <div><b>Where to keep backups</b><div class="s-desc">A Drive folder is already set up for this, with restore instructions inside.</div></div>
+        <a href="https://drive.google.com/drive/folders/1R4HLTIBcFeN4bbr55JTkOsDBXmNJtDcM" target="_blank" rel="noopener">Open Drive folder</a>
       </div>
       <div class="set-row">
         <div><b>Import backup</b><div class="s-desc">Restore from a JSON backup. Replaces current data.</div></div>
@@ -1067,6 +1075,22 @@ function renderSettings() {
         <button id="btn-reset" style="color:var(--status-critical)">Reset</button>
       </div>
     </div>
+    <h2>About</h2>
+    <div class="card">
+      <div class="set-row">
+        <div><b>Version</b><div class="s-desc">Deployed automatically from GitHub on every change.</div></div>
+        <span class="muted">${APP_VERSION}</span>
+      </div>
+      <div class="set-row">
+        <div><b>Offline</b><div class="s-desc">Installed as an app, the whole trainer works with no connection.</div></div>
+        <span class="muted" id="sw-state">checking…</span>
+      </div>
+      <div class="set-row">
+        <div><b>Source</b><div class="s-desc">Everything is open and editable.</div></div>
+        <a href="https://github.com/orestoubas/daily-lunchpad" target="_blank" rel="noopener">github.com/orestoubas/daily-lunchpad</a>
+      </div>
+    </div>
+
     <p class="small muted" style="margin-top:14px">Banks: ${FRENCH_VOCAB.length} words · ${FRENCH_GRAMMAR.length} grammar · ${FRENCH_CONJ.length} conjugation · ${EU_QUESTIONS.length} EU (each with a mini-lesson) · ${VERBAL_QUESTIONS.length} verbal · ${NUMERICAL_QUESTIONS.length} numerical · ${typeof DIGITAL_QUESTIONS !== "undefined" ? DIGITAL_QUESTIONS.length : 0} digital skills · ${typeof SJT_QUESTIONS !== "undefined" ? SJT_QUESTIONS.length : 0} situational judgement · unlimited generated abstract.</p>
   `;
 
@@ -1076,6 +1100,7 @@ function renderSettings() {
   document.getElementById("set-min").onchange = e => { st.settings.minutesPerBlock = Math.max(3, Math.min(30, +e.target.value || 10)); save(); };
   document.getElementById("set-new").onchange = e => { st.settings.newPerDay = Math.max(0, Math.min(30, +e.target.value || 10)); save(); };
   document.getElementById("set-retire").onchange = e => { st.settings.retireStreak = Math.max(2, Math.min(10, +e.target.value || 3)); save(); };
+  document.getElementById("set-adaptive").onchange = e => { st.settings.adaptive = e.target.checked; save(); };
 
   document.querySelectorAll("[data-exam-name]").forEach(inp =>
     inp.onchange = e => { g.exams[+e.target.dataset.examName].name = e.target.value; save(); });
@@ -1088,7 +1113,14 @@ function renderSettings() {
     save(); renderSettings();
   };
 
-  document.getElementById("btn-export").onclick = () => exportState(App.state);
+  document.getElementById("btn-export").onclick = () => { exportState(App.state); markBackedUp(App.state); };
+  const swEl = document.getElementById("sw-state");
+  if (swEl) {
+    if (!("serviceWorker" in navigator)) swEl.textContent = "not supported here";
+    else navigator.serviceWorker.getRegistration()
+      .then(r => swEl.textContent = r ? "✓ available offline" : "not installed (open over https)")
+      .catch(() => swEl.textContent = "unknown");
+  }
   document.getElementById("btn-import").onchange = e => {
     const f = e.target.files[0];
     if (!f) return;
@@ -1154,6 +1186,25 @@ function toggleCalculator() {
   });
 }
 function removeCalculator() { const c = document.getElementById("calc"); if (c) c.remove(); }
+
+/* ---------- crash guard ----------
+   If anything throws, the user still gets a way to rescue their progress. */
+window.addEventListener("error", e => {
+  console.error("uncaught", e.error || e.message);
+  if (document.getElementById("crash-box")) return;
+  const d = document.createElement("div");
+  d.id = "crash-box";
+  d.className = "save-warning";
+  d.innerHTML = `<b>⚠️ Something went wrong</b>
+    <span>Your progress is safe on this device. Export a backup, then reload the page.</span>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button id="crash-export">⬇ Export backup</button>
+      <button id="crash-reload">↻ Reload</button>
+    </div>`;
+  document.body.appendChild(d);
+  document.getElementById("crash-export").onclick = () => exportState(App.state);
+  document.getElementById("crash-reload").onclick = () => location.reload();
+});
 
 /* ---------- keyboard shortcuts ---------- */
 document.addEventListener("keydown", e => {

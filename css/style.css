@@ -328,3 +328,14 @@ table.logtable td .mdot { display: inline-block; width: 8px; height: 8px; border
   .kbdhint { display: none; }
   .next-row { justify-content: flex-end; }
 }
+
+/* ---- Critical save warning ---- */
+.save-warning {
+  position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 200; display: flex; flex-direction: column; gap: 6px;
+  background: #fdeeee; border: 2px solid var(--status-critical); border-radius: var(--r-lg);
+  padding: 14px 16px; box-shadow: 0 8px 26px rgba(120,40,40,.22);
+  max-width: 560px; margin: 0 auto;
+}
+.save-warning span { font-size: .85rem; color: var(--text-secondary); }
+.save-warning button { align-self: flex-start; }
