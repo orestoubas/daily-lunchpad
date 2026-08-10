@@ -1,14 +1,17 @@
 # 🚀 Morning Launchpad
 
+**Live: https://orestoubas.github.io/daily-lunchpad/**
+
 A zero-dependency start page that turns the first 30 minutes of your workday into a
-habit: **10 min French → 10 min EU knowledge → 10 min verbal/numerical reasoning**,
-with statistics, streaks and progress toward three goals:
+habit: **10 min French → 10 min EU knowledge → 10 min reasoning**, gamified with XP,
+skill trees, badges and streaks, and aimed at three goals:
 
 | Goal | How it's measured |
 |---|---|
 | French **B2** | Spaced-repetition mastery of a CEFR-graded A2→B2 course (vocabulary + grammar) |
 | EU knowledge **90%** | Rolling average of your last 10 EPSO-style MCQ sessions |
-| Verbal & numerical **90%** | Rolling average of your last 10 reasoning sessions (tracked separately) |
+| Verbal, numerical & abstract **90%** | Rolling average of your last 10 reasoning sessions, tracked separately |
+| Digital skills & SJT | Optional fourth block covering the rest of the AD5 battery |
 
 Question formats mirror the **EPSO AD5** computer-based tests: EU knowledge MCQs
 (institutions, treaties, law, policies, budget, external relations), verbal
@@ -17,6 +20,22 @@ reasoning (data tables, ~2 min/question pace, on-screen calculator included).
 
 Everything runs offline in the browser — no server, no account, no tracking.
 Progress is stored in `localStorage`.
+
+## What's in it
+
+- **Daily routine** — three 10-minute blocks, chained, with a daily XP goal
+- **Gamification** — XP with combo multipliers, three independent skill trees,
+  26 badges, weekly quests, a weekly challenge drawn from your weak spots, and
+  streak freezes that forgive a missed day
+- **Adaptive difficulty** — weak topics appear more often, mastered questions
+  retire, and session length auto-tunes to your measured pace
+- **Mock exams** — four EPSO-length simulations under exam conditions, scored
+  against pass marks and kept out of your daily averages
+- **Writing practice** — 40 EUFTE-style tasks with autosaved drafts and a
+  copy-for-feedback button
+- **Library** — searchable browse of every EU mini-lesson and vocabulary card
+- **Countdowns** to the EPSO AD5 and CAST milestones
+- **Offline** — installable as an app; everything works with no connection
 
 ## Set it as your start page
 
@@ -91,6 +110,27 @@ Each file is a plain JS array — append new objects with a unique `id` and relo
 The engine picks them up automatically (banks can grow without breaking saved
 progress). The fastest way to grow a bank: ask Claude to *"add 50 more EU
 questions to data/eu.js in the same format, topic X"*.
+
+## Testing and automation
+
+```bash
+node test/validate-banks.cjs   # structure of all 11 banks (1,450 items)
+node test/smoke.mjs            # end-to-end run in a real browser
+node build.mjs                 # single-file bundle
+```
+
+CI runs all three on every push. A weekly workflow fingerprints the official
+EPSO pages and opens an issue when they change, and a weekly Claude routine
+tops up the banks, sweeps stale facts and re-deploys. See `CONTRIBUTING.md`.
+
+## Accuracy
+
+All 300 EU questions and their mini-lessons were independently re-verified by
+three agents against current sources. No keyed answer was wrong, but 30 factual
+defects were found and fixed — mostly time-sensitive facts (office-holders,
+membership counts, postponed legislation). Anything that changes often will go
+stale again, which is what the weekly sweep is for. Two countdown dates remain
+**approximate** because EPSO has not published exact days.
 
 ## A honest note on the B2 goal
 
