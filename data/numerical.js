@@ -1610,7 +1610,7 @@ const NUMERICAL_QUESTIONS = [
       "115.0%"
     ],
     "a": 1,
-    "expl": "Increase = 368 − 320 = 48. 48 / 320 = 0.15 = 15.0%. Dividing by the new value (48 / 368 = 13.0%) uses the wrong base; 115.0% is 368/320 without subtracting the original 100%."
+    "expl": "Increase = 368 − 320 = 48. 48 / 320 = 0.15 = 15.0%. Dividing by the new value (48 / 368 = 13.0%) uses the wrong base; 115.0% is 368/320 without subtracting the original 100%, and 48.0% simply reports the absolute rise of 48 as if it were a percentage."
   },
   {
     "id": "nr102",
@@ -1659,13 +1659,13 @@ const NUMERICAL_QUESTIONS = [
     "table": null,
     "q": "A machine priced at €250 is increased by 12%, and the new price is later reduced by 12%. What is the final price?",
     "options": [
-      "€220.00",
-      "€246.40",
+      "€280.00",
       "€250.00",
-      "€280.00"
+      "€246.40",
+      "€220.00"
     ],
-    "a": 1,
-    "expl": "250 × 1.12 = €280.00; 280 × 0.88 = €246.40. A rise and a fall of the same percentage never cancel out (€250.00) because the 12% cut is taken from the larger amount 280, not from 250."
+    "a": 2,
+    "expl": "250 × 1.12 = €280.00; 280 × 0.88 = €246.40. A rise and a fall of the same percentage never cancel out (€250.00) because the 12% cut is taken from the larger amount 280, not from 250. €280.00 stops after the increase and €220.00 applies only the 12% cut."
   },
   {
     "id": "nr105",
@@ -1871,13 +1871,13 @@ const NUMERICAL_QUESTIONS = [
     "table": null,
     "q": "A cyclist covers 84 km at an average speed of 24 km/h. If she starts at 07:50, at what time does she finish?",
     "options": [
-      "10:50",
-      "11:20",
+      "12:20",
       "11:40",
-      "12:20"
+      "11:20",
+      "10:50"
     ],
-    "a": 1,
-    "expl": "Time = 84 / 24 = 3.5 hours = 3 h 30 min. 07:50 + 3 h 30 min = 11:20. Reading \"3.5 hours\" as 3 h 50 min gives 11:40 — the standard decimal-to-minutes error."
+    "a": 2,
+    "expl": "Time = 84 / 24 = 3.5 hours = 3 h 30 min. 07:50 + 3 h 30 min = 11:20. Reading \"3.5 hours\" as 3 h 50 min gives 11:40 — the standard decimal-to-minutes error; 10:50 rounds the journey down to 3 h and 12:20 rounds it up to 4 h 30."
   },
   {
     "id": "nr112",
@@ -1952,11 +1952,11 @@ const NUMERICAL_QUESTIONS = [
     "options": [
       "€12,720.00",
       "€14,880.00",
-      "€15,000.00",
-      "€15,149.72"
+      "€15,149.72",
+      "€16,058.71"
     ],
-    "a": 3,
-    "expl": "12,000 × 1.06⁴ = 12,000 × 1.26247696 = €15,149.72. Simple interest of 4 × 6% = 24% gives 12,000 × 1.24 = €14,880.00 — the tempting wrong answer, because it earns no interest on the interest."
+    "a": 2,
+    "expl": "12,000 × 1.06⁴ = 12,000 × 1.26247696 = €15,149.72. Simple interest of 4 × 6% = 24% gives 12,000 × 1.24 = €14,880.00 — the tempting wrong answer, because it earns no interest on the interest. €12,720.00 is one year only and €16,058.71 is 1.06⁵, i.e. one compounding period too many."
   },
   {
     "id": "nr115",
@@ -1964,12 +1964,12 @@ const NUMERICAL_QUESTIONS = [
     "q": "A selection panel has 12 members: 7 women and 5 men. Two different members are drawn at random to chair two sessions. What is the probability that both are women?",
     "options": [
       "58.3%",
-      "50.0%",
       "34.0%",
-      "31.8%"
+      "31.8%",
+      "29.2%"
     ],
-    "a": 3,
-    "expl": "(7/12) × (6/11) = 42/132 = 0.3182 = 31.8%. Using 7/12 twice (0.5833² = 34.0%) is the tempting error: it forgets that the first draw removes one woman from a pool that also shrinks to 11."
+    "a": 2,
+    "expl": "(7/12) × (6/11) = 42/132 = 0.3182 = 31.8%. Using 7/12 twice (0.5833² = 34.0%) is the tempting error: it forgets that the first draw removes one woman from a pool that also shrinks to 11. 58.3% is the probability for one draw only, and 29.2% (42/144) reduces the numerator but not the denominator."
   },
   {
     "id": "nr116",
@@ -2082,7 +2082,7 @@ const NUMERICAL_QUESTIONS = [
       "€56,153.21"
     ],
     "a": 2,
-    "expl": "48,000 × 1.04³ = 48,000 × 1.124864 = €53,993.47. Adding 3 × 4% = 12% in one step gives 48,000 × 1.12 = €53,760.00 and misses the compounding; €56,153.21 is 1.04⁴ (one year too many)."
+    "expl": "48,000 × 1.04³ = 48,000 × 1.124864 = €53,993.47. Adding 3 × 4% = 12% in one step gives 48,000 × 1.12 = €53,760.00 and misses the compounding; €49,920.00 is one year only and €56,153.21 is 1.04⁴, one year too many."
   },
   {
     "id": "nr120",
@@ -2132,7 +2132,7 @@ const NUMERICAL_QUESTIONS = [
       "100"
     ],
     "a": 3,
-    "expl": "2 + 5 = 7 parts; 140 / 7 = 20 staff per part. AD = 5 × 20 = 100 (AST = 40). Reading the ratio the wrong way round gives 40; 56 comes from taking 2/5 of 140 instead of 5/7."
+    "expl": "2 + 5 = 7 parts; 140 / 7 = 20 staff per part. AD = 5 × 20 = 100 (AST = 40). Reading the ratio the wrong way round gives 40 (that is the AST figure); 56 comes from taking 2/5 of 140 instead of 5/7, and 70 assumes an even split."
   },
   {
     "id": "nr122",
@@ -2169,7 +2169,7 @@ const NUMERICAL_QUESTIONS = [
       "70.0%"
     ],
     "a": 2,
-    "expl": "Passes: 200 × 0.45 = 90; 300 × 0.60 = 180; 500 × 0.70 = 350. Total 620 out of 1,000 = 62.0%. The unweighted mean of 45, 60 and 70 (175/3 = 58.3%) is the tempting wrong answer — it ignores that centre Z is half of all candidates."
+    "expl": "Passes: 200 × 0.45 = 90; 300 × 0.60 = 180; 500 × 0.70 = 350. Total 620 out of 1,000 = 62.0%. The unweighted mean of 45, 60 and 70 (175/3 = 58.3%) is the tempting wrong answer — it ignores that centre Z is half of all candidates; 60.0% and 70.0% just pick a rate straight out of the table."
   },
   {
     "id": "nr123",
@@ -2196,7 +2196,7 @@ const NUMERICAL_QUESTIONS = [
       "1,667 kg"
     ],
     "a": 2,
-    "expl": "5.4 million tonnes = 5,400 million kg. 5,400 / 9.0 = 600 kg per inhabitant. 0.6 kg is the figure in tonnes (5.4/9.0) left unconverted; 1,667 kg comes from dividing population by waste (9.0/5.4) — the ratio upside down."
+    "expl": "5.4 million tonnes = 5,400 million kg. 5,400 / 9.0 = 600 kg per inhabitant. 0.6 kg is the figure in tonnes (5.4/9.0) left unconverted and 60 kg converts it by 100 instead of 1,000; 1,667 kg comes from dividing population by waste (9.0/5.4) — the ratio upside down."
   },
   {
     "id": "nr124",
@@ -2284,13 +2284,13 @@ const NUMERICAL_QUESTIONS = [
     },
     "q": "What is the total cost of the fuel?",
     "options": [
-      "€250",
       "€400",
+      "€1,600",
       "€4,000",
       "€40,000"
     ],
     "a": 2,
-    "expl": "1 m³ = 1,000 litres, so 2.5 m³ = 2,500 litres. 2,500 × 1.60 = €4,000. Using 250 litres (a factor-of-ten slip in the conversion) gives €400."
+    "expl": "1 m³ = 1,000 litres, so 2.5 m³ = 2,500 litres. 2,500 × 1.60 = €4,000. Using 250 litres (1 m³ = 100 litres) gives €400 and using 25,000 litres gives €40,000 — factor-of-ten slips; €1,600 prices 1,000 litres and forgets the factor 2.5."
   },
   {
     "id": "nr127",
@@ -2332,11 +2332,11 @@ const NUMERICAL_QUESTIONS = [
     "options": [
       "about 212,500",
       "about 214,700",
-      "about 217,500",
-      "about 235,000"
+      "about 228,200",
+      "about 242,500"
     ],
     "a": 1,
-    "expl": "250,000 × 0.97⁵ = 250,000 × 0.85873 ≈ 214,684, i.e. about 214,700. Subtracting a flat 5 × 3% = 15% gives 212,500 — the tempting answer, but it overstates the fall because each year's 3% is taken from a smaller population."
+    "expl": "250,000 × 0.97⁵ = 250,000 × 0.85873 ≈ 214,684, i.e. about 214,700. Subtracting a flat 5 × 3% = 15% gives 212,500 — the tempting answer, but it overstates the fall because each year's 3% is taken from a smaller population. 228,200 stops after three years (0.97³) and 242,500 applies the 3% only once."
   },
   {
     "id": "nr129",
@@ -2369,7 +2369,7 @@ const NUMERICAL_QUESTIONS = [
       "90%"
     ],
     "a": 2,
-    "expl": "German or French = 24 + 30 − 9 = 45. 45/60 = 0.75 = 75%. Adding 24 + 30 without removing the 9 counted twice gives 54/60 = 90% — the classic double-counting error; 25% is the share who speak neither."
+    "expl": "German or French = 24 + 30 − 9 = 45. 45/60 = 0.75 = 75%. Adding 24 + 30 without removing the 9 counted twice gives 54/60 = 90% — the classic double-counting error; 25% is the share who speak neither and 40% the share who speak German."
   },
   {
     "id": "nr130",
@@ -2429,7 +2429,7 @@ const NUMERICAL_QUESTIONS = [
       "150"
     ],
     "a": 0,
-    "expl": "EU institutions: 250 × 0.60 = 150. Of those: 150 × 0.40 = 60. Applying the 40% to all 250 participants (100) uses the wrong base; 90 is 60% of 150, i.e. the two percentages applied in the wrong order."
+    "expl": "EU institutions: 250 × 0.60 = 150. Of those: 150 × 0.40 = 60. Applying the 40% to all 250 participants (100) uses the wrong base; 90 is 60% of 150, i.e. the two percentages applied in the wrong order, and 150 stops after the first step."
   },
   {
     "id": "nr132",
@@ -2437,12 +2437,12 @@ const NUMERICAL_QUESTIONS = [
     "q": "The number of applications rose by 25% this year, reaching 45,000. How many applications were there last year?",
     "options": [
       "33,750",
-      "35,000",
       "36,000",
-      "56,250"
+      "56,250",
+      "180,000"
     ],
-    "a": 2,
-    "expl": "45,000 is 125% of last year's figure: 45,000 / 1.25 = 36,000 (check: 36,000 × 1.25 = 45,000). Taking 25% off this year's figure (45,000 × 0.75 = 33,750) is the reverse-percentage trap."
+    "a": 1,
+    "expl": "45,000 is 125% of last year's figure: 45,000 / 1.25 = 36,000 (check: 36,000 × 1.25 = 45,000). Taking 25% off this year's figure (45,000 × 0.75 = 33,750) is the reverse-percentage trap; 56,250 adds 25% instead of removing it and 180,000 divides by 0.25 instead of by 1.25."
   },
   {
     "id": "nr133",
@@ -2491,13 +2491,13 @@ const NUMERICAL_QUESTIONS = [
     "table": null,
     "q": "A supplier grants a 20% trade discount on a €1,500 order and a further 5% for payment within 10 days. What does the buyer pay?",
     "options": [
-      "€1,125",
-      "€1,140",
+      "€1,425",
       "€1,200",
-      "€1,425"
+      "€1,140",
+      "€1,125"
     ],
-    "a": 1,
-    "expl": "1,500 × 0.80 = 1,200; 1,200 × 0.95 = €1,140. Adding the discounts to 25% and applying them in one step (1,500 × 0.75 = €1,125) is the tempting error — the 5% applies to the already reduced €1,200, not to €1,500."
+    "a": 2,
+    "expl": "1,500 × 0.80 = 1,200; 1,200 × 0.95 = €1,140. Adding the discounts to 25% and applying them in one step (1,500 × 0.75 = €1,125) is the tempting error — the 5% applies to the already reduced €1,200, not to €1,500. €1,200 and €1,425 apply only one of the two discounts."
   },
   {
     "id": "nr135",
@@ -2535,10 +2535,10 @@ const NUMERICAL_QUESTIONS = [
       "18.9%",
       "21.5%",
       "29.9%",
-      "35.0%"
+      "45.0%"
     ],
     "a": 2,
-    "expl": "136 + 79 = 215 seats. 215 / 720 = 0.2986 = 29.9%. 21.5% simply reads the seat total 215 as a percentage; 18.9% is Group II alone (136/720)."
+    "expl": "136 + 79 = 215 seats. 215 / 720 = 0.2986 = 29.9%. 21.5% simply reads the seat total 215 as a percentage; 18.9% is Group II alone (136/720) and 45.0% divides by the 478 named-group seats (720 − 242), i.e. the wrong total."
   },
   {
     "id": "nr136",
@@ -2616,7 +2616,7 @@ const NUMERICAL_QUESTIONS = [
       "44,000 per km²"
     ],
     "a": 2,
-    "expl": "Current density = 1,280,000 / 320 = 4,000 per km². After growth: 1,408,000 / 320 = 4,400 per km² (equivalently 4,000 × 1.10). Answering 4,000 ignores the growth; 4,040 adds 10% of 400 instead of 10% of 4,000."
+    "expl": "Current density = 1,280,000 / 320 = 4,000 per km². After growth: 1,408,000 / 320 = 4,400 per km² (equivalently 4,000 × 1.10). Answering 4,000 ignores the growth; 4,040 adds 10% of 400 instead of 10% of 4,000, and 44,000 is a factor-of-ten slip."
   },
   {
     "id": "nr139",
@@ -2643,13 +2643,13 @@ const NUMERICAL_QUESTIONS = [
     },
     "q": "If the series is rebased so that 2022 = 100, what is the 2025 index?",
     "options": [
+      "20",
+      "83",
       "120",
-      "125",
-      "130",
       "150"
     ],
-    "a": 0,
-    "expl": "150 / 125 × 100 = 120, i.e. sales grew 20% between 2022 and 2025. Keeping 150 ignores the rebasing; 125 is the old 2022 figure, and reading the 25-point gap as 25% (index 125) is the points-versus-percent trap."
+    "a": 2,
+    "expl": "150 / 125 × 100 = 120, i.e. sales grew 20% between 2022 and 2025. Keeping 150 ignores the rebasing; 20 gives the growth rate instead of the index, and 83 inverts the ratio (125/150 × 100)."
   },
   {
     "id": "nr140",
@@ -2675,7 +2675,7 @@ const NUMERICAL_QUESTIONS = [
       "1,609.0 km"
     ],
     "a": 2,
-    "expl": "250 × 1.609 = 402.25 ≈ 402.3 km. Dividing instead of multiplying (250 / 1.609 = 155.4) converts kilometres into miles — the conversion applied in the wrong direction."
+    "expl": "250 × 1.609 = 402.25 ≈ 402.3 km. Dividing instead of multiplying (250 / 1.609 = 155.4) converts kilometres into miles — the conversion applied in the wrong direction; 250.0 km leaves the figure unconverted and 1,609.0 km quotes the conversion factor itself."
   },
   {
     "id": "nr142",
@@ -2712,7 +2712,7 @@ const NUMERICAL_QUESTIONS = [
       "€72,000"
     ],
     "a": 0,
-    "expl": "Contribution = 4,000 × (18 − 11) = €28,000. Profit = 28,000 − 21,000 = €7,000. Subtracting only the fixed costs from revenue (72,000 − 21,000 = €51,000) forgets the variable costs; €28,000 stops before the fixed costs."
+    "expl": "Contribution = 4,000 × (18 − 11) = €28,000. Profit = 28,000 − 21,000 = €7,000. Subtracting only the fixed costs from revenue (72,000 − 21,000 = €51,000) forgets the variable costs; €28,000 stops before the fixed costs and €72,000 is revenue, not profit."
   },
   {
     "id": "nr143",
@@ -2738,7 +2738,7 @@ const NUMERICAL_QUESTIONS = [
       "9%"
     ],
     "a": 3,
-    "expl": "0.30 × 0.30 = 0.09 = 9%. Adding the probabilities (60%) is the classic error — probabilities of independent events are multiplied, not added; 51% is the chance of rain on at least one day (1 − 0.7 × 0.7)."
+    "expl": "0.30 × 0.30 = 0.09 = 9%. Adding the probabilities (60%) is the classic error — probabilities of independent events are multiplied, not added; 51% is the chance of rain on at least one day (1 − 0.7 × 0.7) and 30% is the chance for a single day."
   },
   {
     "id": "nr145",
@@ -2796,7 +2796,7 @@ const NUMERICAL_QUESTIONS = [
       "€230"
     ],
     "a": 3,
-    "expl": "Net price = 1,380 / 1.20 = €1,150, so VAT = 1,380 − 1,150 = €230. Taking 20% of the gross amount (1,380 × 0.20 = €276) uses the wrong base — the VAT is 20% of the net price, not of the total."
+    "expl": "Net price = 1,380 / 1.20 = €1,150, so VAT = 1,380 − 1,150 = €230. Taking 20% of the gross amount (1,380 × 0.20 = €276) uses the wrong base — the VAT is 20% of the net price, not of the total; €1,104 (1,380 × 0.80) and €1,150 are net-price figures, not the VAT."
   },
   {
     "id": "nr147",
@@ -2868,13 +2868,13 @@ const NUMERICAL_QUESTIONS = [
     "table": null,
     "q": "Nominal salaries rose by 6% while consumer prices rose by 2.5%. By what percentage did real (price-adjusted) salaries rise, to one decimal place?",
     "options": [
-      "2.4%",
+      "2.5%",
       "3.4%",
       "3.5%",
       "8.5%"
     ],
     "a": 1,
-    "expl": "Real change = 1.06 / 1.025 − 1 = 1.0341 − 1 = 0.0341 = 3.4%. Simply subtracting the two rates (6 − 2.5 = 3.5%) is the tempting shortcut: it is close, but it is not exact because the price rise applies to the higher salary."
+    "expl": "Real change = 1.06 / 1.025 − 1 = 1.0341 − 1 = 0.0341 = 3.4%. Simply subtracting the two rates (6 − 2.5 = 3.5%) is the tempting shortcut: it is close, but not exact, because the price rise applies to the higher salary. Adding the rates gives 8.5% and 2.5% just repeats the inflation figure."
   },
   {
     "id": "nr150",
@@ -2907,7 +2907,7 @@ const NUMERICAL_QUESTIONS = [
       "23:05"
     ],
     "a": 2,
-    "expl": "14:20 + 4 h 45 = 19:05 Lisbon time; the destination is 2 hours ahead, so local arrival is 21:05. Forgetting the time difference gives 19:05; subtracting it instead of adding gives 17:05."
+    "expl": "14:20 + 4 h 45 = 19:05 Lisbon time; the destination is 2 hours ahead, so local arrival is 21:05. Forgetting the time difference gives 19:05; subtracting it instead of adding gives 17:05, and counting the 2-hour difference twice gives 23:05."
   },
   {
     "id": "nr151",
@@ -2917,23 +2917,23 @@ const NUMERICAL_QUESTIONS = [
       "5",
       "10",
       "12",
-      "15"
+      "35"
     ],
     "a": 1,
-    "expl": "7 + 5 = 12 parts; 60 / 12 = 5 people per part. Men = 35, women = 25, so 10 women must join. The gap is 2 parts, i.e. 2 × 5 = 10 people — answering 2 or 5 confuses parts with people."
+    "expl": "7 + 5 = 12 parts; 60 / 12 = 5 people per part. Men = 35, women = 25, so 10 women must join. The gap is 2 parts, i.e. 2 × 5 = 10 people; answering 5 confuses parts with people, 12 quotes the number of parts and 35 is the number of men rather than the number to be added."
   },
   {
     "id": "nr152",
     "table": null,
     "q": "The average of 12 test scores is 68. Two scores, 40 and 44, are then removed. What is the average of the remaining 10 scores?",
     "options": [
+      "61.0",
       "68.0",
-      "70.0",
       "73.2",
       "81.6"
     ],
     "a": 2,
-    "expl": "Total = 12 × 68 = 816. Removing 40 + 44 = 84 leaves 732 over 10 scores: 732 / 10 = 73.2. Dividing the original total by 10 (816/10 = 81.6) forgets to take the two scores out of the total as well as out of the count."
+    "expl": "Total = 12 × 68 = 816. Removing 40 + 44 = 84 leaves 732 over 10 scores: 732 / 10 = 73.2. Dividing the original total by 10 (816/10 = 81.6) forgets to take the two scores out of the total as well as out of the count; dividing the reduced total by 12 (732/12 = 61.0) makes the mirror-image mistake."
   },
   {
     "id": "nr153",
@@ -2956,13 +2956,13 @@ const NUMERICAL_QUESTIONS = [
     },
     "q": "What is the profit as a percentage of the SELLING price?",
     "options": [
-      "25.0%",
       "33.3%",
       "50.0%",
-      "66.7%"
+      "66.7%",
+      "150.0%"
     ],
-    "a": 1,
-    "expl": "Profit = 72 − 48 = €24. As a share of the selling price: 24 / 72 = 0.333 = 33.3%. The mark-up on cost (24/48 = 50.0%) is the tempting wrong answer, because it uses the cost price as base instead of the selling price."
+    "a": 0,
+    "expl": "Profit = 72 − 48 = €24. As a share of the selling price: 24 / 72 = 0.333 = 33.3%. The mark-up on cost (24/48 = 50.0%) is the tempting wrong answer, because it uses the cost price as base instead of the selling price; 66.7% is the cost as a share of the price (48/72) and 150.0% the price as a share of the cost."
   },
   {
     "id": "nr154",
@@ -3007,7 +3007,7 @@ const NUMERICAL_QUESTIONS = [
       "75.0%"
     ],
     "a": 2,
-    "expl": "Total passes = 45 + 75 = 120. P(Group B | passed) = 75 / 120 = 0.625 = 62.5%. Dividing by all 200 candidates (75/200 = 37.5%) answers a different question — the pool is only those who passed; 75.0% is Group B's own pass rate."
+    "expl": "Total passes = 45 + 75 = 120. P(Group B | passed) = 75 / 120 = 0.625 = 62.5%. Dividing by all 200 candidates (75/200 = 37.5%) answers a different question — the pool is only those who passed; 75.0% is Group B's own pass rate and 50.0% assumes the two groups contribute equally to the passes."
   },
   {
     "id": "nr156",
@@ -3095,7 +3095,7 @@ const NUMERICAL_QUESTIONS = [
       "18 hours 45 minutes"
     ],
     "a": 0,
-    "expl": "Combined rate = 1,200 + 800 = 2,000 pages per hour. 15,000 / 2,000 = 7.5 h = 7 hours 30 minutes. Using the average rate of 1,000 pages/h gives 15 hours — rates that work in parallel are added, not averaged; 12 h 30 is the fast printer alone."
+    "expl": "Combined rate = 1,200 + 800 = 2,000 pages per hour. 15,000 / 2,000 = 7.5 h = 7 hours 30 minutes. Using the average rate of 1,000 pages/h gives 15 hours — rates that work in parallel are added, not averaged; 12 h 30 is the fast printer alone and 18 h 45 the slow one alone."
   },
   {
     "id": "nr159",
@@ -3124,7 +3124,7 @@ const NUMERICAL_QUESTIONS = [
       "1.29 USD"
     ],
     "a": 3,
-    "expl": "1 GBP = 1 / 0.85 = 1.1765 EUR; 1.1765 × 1.10 = 1.294 ≈ 1.29 USD. Dividing the rates the other way round (0.85 / 1.10 = 0.77) or multiplying them (0.85 × 1.10 = 0.94) are the two standard cross-rate slips."
+    "expl": "1 GBP = 1 / 0.85 = 1.1765 EUR; 1.1765 × 1.10 = 1.294 ≈ 1.29 USD. Dividing the rates the other way round (0.85 / 1.10 = 0.77) or multiplying them (0.85 × 1.10 = 0.94) are the two standard cross-rate slips; 1.10 USD ignores the pound leg altogether."
   },
   {
     "id": "nr160",
@@ -3154,9 +3154,9 @@ const NUMERICAL_QUESTIONS = [
       "€11.50 million",
       "€12.42 million",
       "€12.50 million",
-      "€12.58 million"
+      "€13.50 million"
     ],
     "a": 1,
-    "expl": "2025: 12.50 × 0.92 = 11.50. 2026: 11.50 × 1.08 = €12.42 million. A cut and a rise of the same percentage do not cancel out, so €12.50 million is wrong — the 8% increase applies to the smaller 2025 figure; €11.50 million stops after the cut."
+    "expl": "2025: 12.50 × 0.92 = 11.50. 2026: 11.50 × 1.08 = €12.42 million. A cut and a rise of the same percentage do not cancel out, so €12.50 million is wrong — the 8% increase applies to the smaller 2025 figure; €11.50 million stops after the cut and €13.50 million applies the increase to 12.50, ignoring the cut."
   }
 ];
