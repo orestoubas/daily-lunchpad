@@ -16,7 +16,9 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div id="app" class="viz-root"></div>
+<a class="skip-link" href="#app">Skip to content</a>
+<main id="app" class="viz-root"></main>
+<div id="sr-live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
 <div id="tooltip" class="chart-tooltip" hidden></div>
 
 <!-- Question banks (plain scripts so the page works over file:// with no server) -->
@@ -32,6 +34,7 @@
 <script src="data/dictation.js"></script>
 <script src="data/reading.js"></script>
 <script src="data/writing.js"></script>
+<script src="data/writing-models.js"></script>
 
 <!-- App -->
 <script src="js/util.js"></script>

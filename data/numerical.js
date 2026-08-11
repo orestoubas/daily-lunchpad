@@ -1004,7 +1004,7 @@ const NUMERICAL_QUESTIONS = [
       "caption": "Salary deductions",
       "headers": [
         "Item",
-        "Rate"
+        "Value"
       ],
       "rows": [
         [
@@ -2416,7 +2416,7 @@ const NUMERICAL_QUESTIONS = [
       "Delta"
     ],
     "a": 1,
-    "expl": "Totals: Alpha 45+52+60 = 157; Beta 60+55+48 = 163; Gamma 50+50+58 = 158; Delta 40+62+55 = 157. Beta is highest even though its budget fell every year. Picking Delta (largest single-year figure, 62) or Alpha (fastest growth) means reading one cell instead of adding the row."
+    "expl": "Totals: Alpha 45+52+60 = 157; Beta 60+55+48 = 163; Gamma 50+50+58 = 158; Delta 40+62+55 = 157. Beta is highest even though its budget fell every year. Picking Delta (largest single-year figure, 62) or Alpha (the only unit that grew in both years) means reading one cell instead of adding the row."
   },
   {
     "id": "nr131",
@@ -2429,7 +2429,7 @@ const NUMERICAL_QUESTIONS = [
       "150"
     ],
     "a": 0,
-    "expl": "EU institutions: 250 × 0.60 = 150. Of those: 150 × 0.40 = 60. Applying the 40% to all 250 participants (100) uses the wrong base; 90 is 60% of 150, i.e. the two percentages applied in the wrong order, and 150 stops after the first step."
+    "expl": "EU institutions: 250 × 0.60 = 150. Of those: 150 × 0.40 = 60. Applying the 40% to all 250 participants (100) uses the wrong base; 90 is 60% of 150 — applying the 60% share a second time instead of the 40% sub-share, and 150 stops after the first step."
   },
   {
     "id": "nr132",

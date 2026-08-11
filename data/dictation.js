@@ -270,7 +270,7 @@ const DICTATION_QUESTIONS = [
   },
   {
     "id": "dc020",
-    "level": "A2",
+    "level": "B1",
     "fr": "Il faut que tu sois à la gare à midi.",
     "en": "You need to be at the station at noon.",
     "options": [

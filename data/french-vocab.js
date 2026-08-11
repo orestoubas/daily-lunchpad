@@ -838,9 +838,9 @@ const FRENCH_VOCAB = [
   {
     "id": "v120",
     "level": "B2",
-    "fr": "l'état de droit",
+    "fr": "l'État de droit",
     "en": "the rule of law",
-    "ex": "Le respect de l'état de droit conditionne certains fonds européens."
+    "ex": "Le respect de l'État de droit conditionne certains fonds européens."
   },
   {
     "id": "v121",
@@ -2035,7 +2035,7 @@ const FRENCH_VOCAB = [
   {
     "id": "v291",
     "level": "B2",
-    "fr": "l'essouflement (m)",
+    "fr": "l'essoufflement (m)",
     "en": "the loss of momentum",
     "ex": "On note un essoufflement de la demande intérieure."
   },
@@ -2674,7 +2674,7 @@ const FRENCH_VOCAB = [
     "level": "B2",
     "fr": "d'autant plus que",
     "en": "all the more so as",
-    "ex": "La réforme urge, d'autant plus que la population vieillit."
+    "ex": "La réforme est urgente, d'autant plus que la population vieillit."
   },
   {
     "id": "v383",

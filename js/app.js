@@ -13,6 +13,21 @@ const $app = document.getElementById("app");
 
 function go(view) { App.view = view; render(); }
 
+/* Announce a message to screen readers without changing the visible UI. */
+function announce(msg) {
+  const el = document.getElementById("sr-live");
+  if (!el) return;
+  el.textContent = "";           // force re-announcement of identical text
+  setTimeout(() => { el.textContent = msg; }, 30);
+}
+
+/* innerHTML re-renders destroy focus. Move it to the new view's heading so a
+   keyboard or screen-reader user is never stranded at the top of the document. */
+function refocusView() {
+  const h = $app.querySelector("h1");
+  if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+}
+
 function render() {
   stopTick();
   if (App.view === "home") renderHome();
@@ -26,6 +41,7 @@ function render() {
   else if (App.view === "writing") renderWriting();
   else if (App.view === "settings") renderSettings();
   window.scrollTo(0, 0);
+  refocusView();
 }
 
 function greeting() {
@@ -79,9 +95,9 @@ function renderHome() {
       <div class="nav">
         <button class="ghost" data-nav="mocks">🏁 Mocks</button>
         <button class="ghost" data-nav="library">📖 Library</button>
-        <button class="ghost" data-nav="badges">🏅</button>
-        <button class="ghost" data-nav="stats">📊</button>
-        <button class="ghost" data-nav="settings">⚙️</button>
+        <button class="ghost" data-nav="badges" aria-label="Badges" title="Badges">🏅</button>
+        <button class="ghost" data-nav="stats" aria-label="Statistics" title="Statistics">📊</button>
+        <button class="ghost" data-nav="settings" aria-label="Settings" title="Settings">⚙️</button>
       </div>
     </div>
 
@@ -195,6 +211,10 @@ function renderHome() {
   if (sb) sb.onclick = () => { snoozeBackup(App.state); renderHome(); };
 }
 
+function modelAvailable(id) {
+  return typeof WRITING_MODELS !== "undefined" && WRITING_MODELS[id] && WRITING_MODELS[id].model;
+}
+
 function writingAvailable() {
   return typeof WRITING_PROMPTS !== "undefined" && WRITING_PROMPTS.length > 0;
 }
@@ -297,7 +317,8 @@ function renderSession() {
   }[it.kind];
 
   let body = "";
-  if (it.kind === "verbal" || it.kind === "reading") body += `<div class="passage">${esc(it.passage)}</div>`;
+  if (it.kind === "verbal") body += `<div class="passage">${esc(it.passage)}</div>`;
+  if (it.kind === "reading") body += `<div class="passage" lang="fr">${esc(it.passage)}</div>`;
   if (it.kind === "dictation") body += `<p class="question"><button class="listen-big" id="dict-play">🔊 Écouter</button>
     <button class="ghost small" id="dict-slow">🐢 slower</button></p>`;
   if (it.kind === "numerical") body += renderDataTable(it.table);
@@ -309,8 +330,10 @@ function renderSession() {
   } else {
     body += `<p class="question">${esc(it.prompt)}</p>`;
   }
-  body += `<div class="options ${it.svgOptions ? "svg-grid" : ""}" id="options">${it.options.map((o, i) =>
-    `<button data-opt="${i}"><span class="opt-ic">${"ABCD"[i]}</span>${it.svgOptions ? o : esc(o)}</button>`).join("")}</div>`;
+  const frenchKinds = ["vocab", "grammar", "conj", "dictation", "reading"];
+  const optLang = frenchKinds.includes(it.kind) ? ' lang="fr"' : "";
+  body += `<div class="options ${it.svgOptions ? "svg-grid" : ""}" id="options" role="group" aria-label="Answer options">${it.options.map((o, i) =>
+    `<button data-opt="${i}"${optLang}><span class="opt-ic" aria-hidden="true">${"ABCD"[i]}</span>${it.svgOptions ? o : esc(o)}</button>`).join("")}</div>`;
   body += `<div id="feedback"></div>`;
 
   const dots = s.results.map((r, i) =>
@@ -320,13 +343,13 @@ function renderSession() {
     <div class="session-head">
       <div>
         <b style="color:${kindColor}">${modName}</b>
-        <div class="progdots" style="margin-top:6px">${dots}</div>
+        <div class="progdots" style="margin-top:6px" role="img" aria-label="Question ${s.idx + 1} of ${s.items.length}">${dots}</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         ${s.combo >= 3 ? `<span class="combo ${s.combo >= 6 ? "hot" : ""}">⚡ ${s.combo} combo</span>` : ""}
-        ${it.kind === "numerical" ? `<button class="ghost" id="calc-toggle">🧮</button>` : ""}
-        <span class="timer" id="timer">${fmtClock(s.secondsLeft)}</span>
-        <button class="ghost" id="quit">✕</button>
+        ${it.kind === "numerical" ? `<button class="ghost" id="calc-toggle" aria-label="Open calculator" title="Calculator">🧮</button>` : ""}
+        <span class="timer" id="timer" role="timer" aria-label="Time remaining">${fmtClock(s.secondsLeft)}</span>
+        <button class="ghost" id="quit" aria-label="Quit this session" title="Quit">✕</button>
       </div>
     </div>
     <div class="card">
@@ -346,6 +369,7 @@ function renderSession() {
   if (ct) ct.onclick = toggleCalculator;
   document.querySelectorAll("#options button").forEach(btn =>
     btn.onclick = () => answer(parseInt(btn.dataset.opt, 10)));
+  announce(`Question ${s.idx + 1} of ${s.items.length}. ${kindLabel}. ${it.prompt}`);
   document.getElementById("next").onclick = nextQuestion;
 
   if (it.kind === "dictation") {
@@ -359,7 +383,7 @@ function renderSession() {
     document.getElementById("listen-play").onclick = play;
     document.getElementById("listen-reveal").onclick = () => {
       document.getElementById("listen-prompt").innerHTML =
-        `${esc(it.fr)} <button class="tts-btn" id="listen-play2">🔊</button>`;
+        `${esc(it.fr)} <button class="tts-btn" id="listen-play2" aria-label="Play again">🔊</button>`;
       const p2 = document.getElementById("listen-play2");
       if (p2) p2.onclick = play;
     };
@@ -414,9 +438,9 @@ function answer(choice) {
 
   if (it.kind === "vocab") {
     fb += `<div class="expl"><b>${esc(it.fr)}</b> — ${esc(it.en)}
-      <button class="tts-btn" id="tts">🔊</button><br><i>${esc(it.ex)}</i></div>`;
+      <button class="tts-btn" id="tts" aria-label="Listen in French">🔊</button><br><i>${esc(it.ex)}</i></div>`;
   } else if (it.kind === "dictation") {
-    fb += `<div class="expl"><b>${esc(it.fr)}</b><button class="tts-btn" id="tts">🔊</button><br>${esc(it.en)}<br><i>${esc(it.expl)}</i></div>`;
+    fb += `<div class="expl"><b>${esc(it.fr)}</b><button class="tts-btn" id="tts" aria-label="Listen in French">🔊</button><br>${esc(it.en)}<br><i>${esc(it.expl)}</i></div>`;
   } else if (it.expl) {
     fb += `<div class="expl">${esc(it.expl)}</div>`;
     if (it.learn) fb += `<div class="learn">📚 ${esc(it.learn)}</div>`;
@@ -433,6 +457,9 @@ function answer(choice) {
   const next = document.getElementById("next");
   next.disabled = false;
   next.focus();
+  announce(correct
+    ? `Correct. Plus ${gained} XP.`
+    : `Incorrect. The answer is: ${it.options[it.answer]}. ${it.expl || ""}`);
 }
 
 function nextQuestion() {
@@ -828,6 +855,7 @@ function renderWriting() {
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button id="copy-draft">📋 Copy for feedback</button>
           <button id="show-points">💡 Show key points</button>
+          ${modelAvailable(p.id) ? `<button id="show-model">📄 Model answer</button>` : ""}
         </div>
       </div>
       <div id="points-box"></div>
@@ -876,6 +904,18 @@ function renderWriting() {
       () => { const b = document.getElementById("copy-draft"); b.textContent = "✓ Copied"; setTimeout(() => b.textContent = "📋 Copy for feedback", 1600); },
       () => alert("Copy failed — select the text manually.")
     );
+  };
+  const sm = document.getElementById("show-model");
+  if (sm) sm.onclick = () => {
+    const n = (ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0);
+    if (n < 60 && !confirm("You have written " + n + " words. Reading the model answer first makes the exercise much less useful.\n\nShow it anyway?")) return;
+    const m = WRITING_MODELS[p.id];
+    document.getElementById("points-box").innerHTML = `
+      <div class="learn" style="margin-top:12px">
+        <b>Model answer</b> <span class="muted">(${m.words} words — yours: ${n})</span>
+        <div class="modeltext">${esc(m.model)}</div>
+        <b>Why this works</b><div>${esc(m.why)}</div>
+      </div>`;
   };
   document.getElementById("show-points").onclick = () => {
     document.getElementById("points-box").innerHTML = `

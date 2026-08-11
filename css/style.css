@@ -9,7 +9,7 @@
   --surface-2:      #f4efe4;
   --text-primary:   #221f1a;
   --text-secondary: #5c564b;
-  --text-muted:     #8d8677;
+  --text-muted:     #6f6a5d;
   --grid:           #e6dfd0;
   --baseline:       #cdc4b0;
   --ring:           rgba(34,31,26,0.10);
@@ -17,7 +17,7 @@
   --good-text:      #1f7a2e;
   --status-good:    #2fa14a;
   --status-warn:    #e0a02a;
-  --status-critical:#d64545;
+  --status-critical:#c62f2f;
 
   /* Module identity */
   --c-french:    #2a78d6;
@@ -26,6 +26,15 @@
   --c-numerical: #eda100;
   --c-abstract:  #b466d6;
   --c-xp:        #f0a92b;
+
+  /* Darker variants for when a module colour is used as TEXT rather than as a
+     chart fill — the fills are tuned for the palette, these for WCAG AA. */
+  --c-french-text:    #2265b8;
+  --c-eu-text:        #b8461a;
+  --c-verbal-text:    #0f7a54;
+  --c-numerical-text: #7f5a00;
+  --c-abstract-text:  #8a3fae;
+  --c-xp-text:        #8a5a00;
 
   --seq-100:#f0e6d2; --seq-250:#dcc79a; --seq-400:#c9a961; --seq-550:#a8863f; --seq-700:#6f5722;
 
@@ -113,7 +122,7 @@ button:disabled { opacity: .45; cursor: default; box-shadow: none; transform: no
 /* ---- Daily goal bar ---- */
 .goalbar { background: var(--surface-1); border: 2px solid var(--grid); border-radius: var(--r-lg); padding: 14px 16px; margin-bottom: 16px; }
 .goalbar .gb-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; font-weight: 700; font-size: .9rem; }
-.goalbar .gb-top .gb-xp { color: var(--c-xp); }
+.goalbar .gb-top .gb-xp { color: var(--c-xp-text); }
 .track { height: 14px; background: var(--surface-2); border-radius: var(--r-pill); overflow: hidden; position: relative; }
 .track .fill {
   height: 100%; border-radius: var(--r-pill); background: linear-gradient(90deg,#f7c35c,var(--c-xp));
@@ -148,7 +157,7 @@ button:disabled { opacity: .45; cursor: default; box-shadow: none; transform: no
 /* ---- Countdown chips ---- */
 .exams { display: grid; gap: 8px; }
 .exam { display: flex; align-items: center; gap: 12px; background: var(--surface-1); border: 2px solid var(--grid); border-radius: var(--r-md); padding: 10px 14px; }
-.exam .e-days { font-size: 1.3rem; font-weight: 800; color: var(--c-eu); min-width: 62px; text-align: center; font-variant-numeric: tabular-nums; line-height: 1; }
+.exam .e-days { font-size: 1.3rem; font-weight: 800; color: var(--c-eu-text); min-width: 62px; text-align: center; font-variant-numeric: tabular-nums; line-height: 1; }
 .exam .e-days span { display: block; font-size: .62rem; color: var(--text-muted); font-weight: 600; letter-spacing: .06em; }
 .exam .e-name { font-weight: 700; font-size: .9rem; }
 .exam .e-note { font-size: .76rem; color: var(--text-muted); }
@@ -199,7 +208,7 @@ button:disabled { opacity: .45; cursor: default; box-shadow: none; transform: no
 .verdict { display: flex; align-items: center; gap: 8px; font-weight: 800; margin-top: 14px; font-size: .95rem; }
 .verdict.ok { color: var(--good-text); }
 .verdict.no { color: var(--status-critical); }
-.verdict .xpgain { margin-left: auto; color: var(--c-xp); font-size: .85rem; }
+.verdict .xpgain { margin-left: auto; color: var(--c-xp-text); font-size: .85rem; }
 .expl { margin-top: 8px; padding: 12px 14px; background: var(--surface-2); border-radius: var(--r-md); color: var(--text-secondary); font-size: .89rem; line-height: 1.55; }
 .expl b { color: var(--text-primary); }
 .learn { margin-top: 8px; padding: 13px 15px; border-radius: var(--r-md); background: #fff4ec; border: 2px solid #f6d9c4; color: #5a4436; font-size: .89rem; line-height: 1.6; }
@@ -237,7 +246,7 @@ table.qdata th { background: var(--surface-2); font-weight: 700; }
 .xplist { display: grid; gap: 6px; margin: 16px auto 0; max-width: 340px; }
 .xprow { display: flex; justify-content: space-between; font-size: .88rem; font-weight: 600; color: var(--text-secondary); }
 .xprow.total { border-top: 2px solid var(--grid); padding-top: 8px; margin-top: 4px; font-weight: 800; color: var(--text-primary); font-size: 1rem; }
-.xprow .v { color: var(--c-xp); font-variant-numeric: tabular-nums; }
+.xprow .v { color: var(--c-xp-text); font-variant-numeric: tabular-nums; }
 .rewards { display: grid; gap: 10px; margin-top: 16px; }
 .reward {
   display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--r-md);
@@ -339,3 +348,26 @@ table.logtable td .mdot { display: inline-block; width: 8px; height: 8px; border
 }
 .save-warning span { font-size: .85rem; color: var(--text-secondary); }
 .save-warning button { align-self: flex-start; }
+
+/* ---- Writing model answers ---- */
+.modeltext {
+  white-space: pre-wrap; margin: 8px 0 12px; padding: 12px 14px;
+  background: var(--surface-1); border: 1px solid var(--grid); border-radius: var(--r-md);
+  font-size: .88rem; line-height: 1.65; color: var(--text-primary);
+  max-height: 460px; overflow-y: auto;
+}
+
+
+/* ---- Accessibility helpers ---- */
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; left: 8px; top: -60px; z-index: 300;
+  background: var(--surface-1); border: 2px solid var(--c-french);
+  border-radius: var(--r-md); padding: 10px 16px; font-weight: 700;
+  transition: top .15s ease;
+}
+.skip-link:focus { top: 8px; }

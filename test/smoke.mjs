@@ -150,7 +150,25 @@ const roundTrip = await page.evaluate(() => {
 });
 ok(roundTrip, "state does not survive a JSON round-trip");
 
-/* ---------- 7. mobile layout ---------- */
+/* ---------- 7. accessibility basics ---------- */
+await page.goto(APP);
+await page.waitForTimeout(250);
+ok(!!(await page.$("#sr-live[aria-live]")), "screen-reader live region missing");
+ok(!!(await page.$("a.skip-link")), "skip link missing");
+ok(!!(await page.$("main#app")), "main landmark missing");
+const unlabelled = await page.evaluate(() => [...document.querySelectorAll("button")]
+  .filter(b => b.offsetParent && !b.textContent.trim() && !b.getAttribute("aria-label")).length);
+ok(unlabelled === 0, `${unlabelled} buttons have no accessible name`);
+await page.click('[data-start="eu"]');
+await page.waitForTimeout(250);
+await page.keyboard.press("1");
+await page.waitForTimeout(400);
+const live = await page.$eval("#sr-live", e => e.textContent);
+ok(live.trim().length > 0, "answering did not announce anything to screen readers");
+const focusId = await page.evaluate(() => document.activeElement && document.activeElement.id);
+ok(focusId === "next", `focus should move to Next after answering, was "${focusId}"`);
+
+/* ---------- 8. mobile layout ---------- */
 const mob = await newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
 await mob.goto(APP);
 await mob.waitForTimeout(400);
