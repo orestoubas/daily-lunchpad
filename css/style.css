@@ -99,9 +99,9 @@ button:disabled { opacity: .45; cursor: default; box-shadow: none; transform: no
   padding: 18px 20px;
 }
 
-/* ---- Top bar ---- */
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
-.topbar .nav { display: flex; gap: 4px; }
+/* ---- In-page header row (app-internal; .topbar is the shared nav) ---- */
+.pagehead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.pagehead .nav { display: flex; gap: 4px; }
 
 /* ---- Hero stats row (streak / XP ring / badges) ---- */
 .herorow { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
@@ -371,3 +371,29 @@ table.logtable td .mdot { display: inline-block; width: 8px; height: 8px; border
   transition: top .15s ease;
 }
 .skip-link:focus { top: 8px; }
+
+/* ---------------------------------------------------------------------------
+   Shared top nav — spec v1 (identical across Today / 12-Month / Practice / SGE Q4).
+   Do not restyle: the whole point is that all four pages match at the top.
+   Only .topbar-inner max-width/padding are host-specific (matched to #app).
+   Light only — no dark-mode block anywhere in this file. */
+.topbar{background:#F4F4F1;border-bottom:1px solid #E1E1DC;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;}
+.topbar-inner{max-width:940px;margin:0 auto;padding:0 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:20px;min-height:44px;flex-wrap:wrap;}
+.topbar .mark{font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:#65656F;white-space:nowrap;}
+.topbar ul{display:flex;gap:22px;list-style:none;margin:0;padding:0;flex-wrap:wrap;}
+.topbar a,.topbar .on{font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  text-decoration:none;white-space:nowrap;display:inline-block;
+  padding:13px 0;border-bottom:2px solid transparent;}
+.topbar a{color:#65656F;}
+.topbar a:hover,.topbar a:focus-visible{color:#16161D;}
+.topbar a:focus-visible{outline:2px solid #9A7B12;outline-offset:2px;}
+.topbar .on{color:#9A7B12;border-bottom-color:#9A7B12;}
+@media (max-width:640px){
+  .topbar-inner{padding:0 18px;gap:4px 18px;}
+  .topbar ul{gap:16px;}
+  .topbar a,.topbar .on{padding:9px 0;}
+}

@@ -90,7 +90,7 @@ function renderHome() {
   });
 
   $app.innerHTML = `
-    <div class="topbar">
+    <div class="pagehead">
       <div><h1>${greeting()}, Orestis 👋</h1><p class="sub">${dateStr}</p></div>
       <div class="nav">
         <button class="ghost" data-nav="mocks">🏁 Mocks</button>
@@ -582,7 +582,7 @@ function renderSummary() {
   const emoji = x.pct >= 90 ? "🎉" : x.pct >= 70 ? "💪" : "📚";
 
   $app.innerHTML = `
-    <div class="topbar"><h1>${title}</h1></div>
+    <div class="pagehead"><h1>${title}</h1></div>
     <div class="card">
       <div class="summary-hero">
         <div style="font-size:2.2rem">${emoji}</div>
@@ -646,7 +646,7 @@ function renderBadges() {
   ];
 
   $app.innerHTML = `
-    <div class="topbar">
+    <div class="pagehead">
       <h1>🏅 Badges <span class="muted" style="font-size:1rem">${bc.earned}/${bc.total}</span></h1>
       <div class="nav"><button class="ghost" data-nav="home">← Dashboard</button></div>
     </div>
@@ -674,7 +674,7 @@ function renderMocks() {
   const st = App.state;
   const hist = mockHistory(st);
   $app.innerHTML = `
-    <div class="topbar">
+    <div class="pagehead">
       <h1>🏁 Mock exams</h1>
       <div class="nav"><button class="ghost" data-nav="home">← Dashboard</button></div>
     </div>
@@ -721,7 +721,7 @@ function renderMockResult() {
   const r = App.lastMock;
   const sc = r.score;
   $app.innerHTML = `
-    <div class="topbar"><h1>${r.exam.icon} ${esc(r.exam.name)} — result</h1></div>
+    <div class="pagehead"><h1>${r.exam.icon} ${esc(r.exam.name)} — result</h1></div>
     <div class="card">
       <div class="summary-hero">
         <div style="font-size:2.2rem">${sc.passedAll ? "🏆" : "📋"}</div>
@@ -793,7 +793,7 @@ function renderLibrary() {
   }
 
   $app.innerHTML = `
-    <div class="topbar">
+    <div class="pagehead">
       <h1>📖 Library</h1>
       <div class="nav"><button class="ghost" data-nav="home">← Dashboard</button></div>
     </div>
@@ -837,7 +837,7 @@ function renderWriting() {
   const saved = (g.writing.drafts && g.writing.drafts[draftKey]) || "";
 
   $app.innerHTML = `
-    <div class="topbar">
+    <div class="pagehead">
       <h1>✍️ Writing practice</h1>
       <div class="nav"><button class="ghost" data-nav="home">← Dashboard</button></div>
     </div>
@@ -947,7 +947,7 @@ function renderStats() {
   const bests = g.bests || {};
 
   $app.innerHTML = `
-    <div class="topbar">
+    <div class="pagehead">
       <h1>📊 Statistics</h1>
       <div class="nav"><button class="ghost" data-nav="home">← Dashboard</button></div>
     </div>
@@ -1050,7 +1050,7 @@ function renderSettings() {
   const inputStyle = "";
 
   $app.innerHTML = `
-    <div class="topbar">
+    <div class="pagehead">
       <h1>⚙️ Settings</h1>
       <div class="nav"><button class="ghost" data-nav="home">← Dashboard</button></div>
     </div>

@@ -22,7 +22,15 @@ const errors = [];
 async function newPage(opts) {
   const p = await browser.newPage(opts);
   p.on("pageerror", e => errors.push("PAGEERROR: " + e.message));
-  p.on("console", m => { if (m.type() === "error") errors.push("CONSOLE: " + m.text()); });
+  p.on("console", m => {
+    if (m.type() !== "error") return;
+    // Google Fonts is the nav's only external asset and is optional (the CSS
+    // has a mono fallback stack); sandboxed CI has no outbound net, so a
+    // failed font fetch is not an app error.
+    const url = (m.location() && m.location().url) || "";
+    if (/fonts\.(googleapis|gstatic)\.com/.test(url)) return;
+    errors.push("CONSOLE: " + m.text());
+  });
   return p;
 }
 
@@ -178,6 +186,68 @@ const tapTargets = await mob.evaluate(() =>
   [...document.querySelectorAll("button")].filter(b => b.offsetParent && b.getBoundingClientRect().height < 40).length);
 ok(tapTargets === 0, `${tapTargets} buttons below the 40px touch target on mobile`);
 
+/* ---------- 9. shared top nav (spec v1) ---------- */
+const NAV = [
+  ["Today", "https://claude.ai/code/artifact/46907712-3ad5-4d90-8017-47f5bab4e509"],
+  ["12-Month", "https://claude.ai/code/artifact/4429ddc0-b38a-4091-97ab-b4d4d69704c1"],
+  ["Practice", "https://orestoubas.github.io/daily-lunchpad/"],
+  ["SGE Q4", "https://claude.ai/code/artifact/66b2e783-b6f6-42f8-a20e-105f6a20a47f"]
+];
+const nav = await newPage({ viewport: { width: 1200, height: 900 } });
+await nav.goto(APP);
+await nav.waitForTimeout(300);
+const navShape = await nav.evaluate(() => {
+  const bar = document.querySelector("nav.topbar");
+  if (!bar) return null;
+  const app = document.getElementById("app");
+  return {
+    beforeContent: !!(bar.compareDocumentPosition(app) & Node.DOCUMENT_POSITION_FOLLOWING),
+    outsideWrapper: !app.contains(bar),
+    items: [...bar.querySelectorAll("li > *")].map(el => ({
+      tag: el.tagName, text: el.textContent.trim(), href: el.getAttribute("href") || "",
+      current: el.getAttribute("aria-current") || ""
+    })),
+    fonts: !!document.querySelector('link[href*="IBM+Plex+Mono"]'),
+    bodyBg: getComputedStyle(document.body).backgroundColor
+  };
+});
+ok(!!navShape, "shared top nav missing");
+if (navShape) {
+  ok(navShape.beforeContent && navShape.outsideWrapper, "top nav must sit above and outside #app");
+  ok(navShape.fonts, "IBM Plex Mono not linked from Google Fonts");
+  ok(navShape.bodyBg !== "rgba(0, 0, 0, 0)", "body has no explicit background");
+  ok(navShape.items.length === 4, `nav should have 4 items, got ${navShape.items.length}`);
+  navShape.items.forEach((it, i) => {
+    const [label, href] = NAV[i] || ["?", "?"];
+    ok(it.text === label, `nav item ${i} should read "${label}", got "${it.text}"`);
+    if (label === "Practice") {
+      ok(it.tag === "SPAN" && it.current === "page", "current page must be a span with aria-current=page");
+    } else {
+      ok(it.tag === "A" && it.href === href, `nav "${label}" should link to ${href}, got "${it.href}"`);
+    }
+  });
+}
+const darkCss = await nav.evaluate(() => {
+  let hits = 0;
+  for (const sheet of document.styleSheets) {
+    let rules; try { rules = sheet.cssRules; } catch { continue; }
+    for (const r of rules) {
+      if (r.conditionText && /prefers-color-scheme\s*:\s*dark/.test(r.conditionText)) hits++;
+      if (r.selectorText && /data-theme\s*=\s*"?dark/.test(r.selectorText)) hits++;
+    }
+  }
+  return hits;
+});
+ok(darkCss === 0, `${darkCss} dark-mode rules found — this page set is light only`);
+const navNarrow = await newPage({ viewport: { width: 360, height: 780 } });
+await navNarrow.goto(APP);
+await navNarrow.waitForTimeout(300);
+const navOverflow = await navNarrow.evaluate(() => {
+  const bar = document.querySelector("nav.topbar");
+  return bar ? bar.scrollWidth - bar.clientWidth : 0;
+});
+ok(navOverflow === 0, `top nav scrolls sideways at 360px (${navOverflow}px)`);
+
 await browser.close();
 
 /* ---------- report ---------- */
@@ -187,4 +257,4 @@ if (failures.length) {
   failures.forEach(f => console.error(" ✗ " + f));
   process.exit(1);
 }
-console.log("smoke test passed — routine, epso block, mock, library, writing, backup, mobile");
+console.log("smoke test passed — routine, epso block, mock, library, writing, backup, mobile, top nav");
