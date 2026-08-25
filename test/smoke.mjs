@@ -188,10 +188,14 @@ ok(tapTargets === 0, `${tapTargets} buttons below the 40px touch target on mobil
 
 /* ---------- 9. shared top nav (spec v1) ---------- */
 const NAV = [
-  ["Today", "https://claude.ai/code/artifact/46907712-3ad5-4d90-8017-47f5bab4e509"],
-  ["12-Month", "https://claude.ai/code/artifact/4429ddc0-b38a-4091-97ab-b4d4d69704c1"],
-  ["Practice", "https://orestoubas.github.io/daily-lunchpad/"],
-  ["SGE Q4", "https://claude.ai/code/artifact/66b2e783-b6f6-42f8-a20e-105f6a20a47f"]
+  ["Today", "https://claude.ai/code/artifact/46907712-3ad5-4d90-8017-47f5bab4e509",
+            "https://claude.ai/cowork/cse_01QdM8idBWKbDwTYu9CmfjsF"],
+  ["12-Month", "https://claude.ai/code/artifact/4429ddc0-b38a-4091-97ab-b4d4d69704c1",
+               "https://claude.ai/cowork/cse_01N6ocPFsForeUxNooisPSDA"],
+  ["Practice", "https://orestoubas.github.io/daily-lunchpad/",
+               "https://claude.ai/code/session_01UKzdN5dVrcuWxj5ZpkMXwo"],
+  ["SGE Q4", "https://claude.ai/code/artifact/66b2e783-b6f6-42f8-a20e-105f6a20a47f",
+             "https://claude.ai/cowork/cse_01QdM8idBWKbDwTYu9CmfjsF"]
 ];
 const nav = await newPage({ viewport: { width: 1200, height: 900 } });
 await nav.goto(APP);
@@ -203,10 +207,18 @@ const navShape = await nav.evaluate(() => {
   return {
     beforeContent: !!(bar.compareDocumentPosition(app) & Node.DOCUMENT_POSITION_FOLLOWING),
     outsideWrapper: !app.contains(bar),
-    items: [...bar.querySelectorAll("li > *")].map(el => ({
-      tag: el.tagName, text: el.textContent.trim(), href: el.getAttribute("href") || "",
-      current: el.getAttribute("aria-current") || ""
-    })),
+    items: [...bar.querySelectorAll("li")].map(li => {
+      const label = li.querySelector("a:not(.cog), span.on");
+      const cog = li.querySelector("a.cog");
+      return {
+        tag: label.tagName, text: label.textContent.trim(),
+        href: label.getAttribute("href") || "",
+        current: label.getAttribute("aria-current") || "",
+        cogHref: cog ? cog.getAttribute("href") : null,
+        cogName: cog ? (cog.getAttribute("aria-label") || "").trim() : "",
+        cogIcon: cog ? getComputedStyle(cog, "::before").maskImage : "none"
+      };
+    }),
     fonts: !!document.querySelector('link[href*="IBM+Plex+Mono"]'),
     bodyBg: getComputedStyle(document.body).backgroundColor
   };
@@ -218,7 +230,10 @@ if (navShape) {
   ok(navShape.bodyBg !== "rgba(0, 0, 0, 0)", "body has no explicit background");
   ok(navShape.items.length === 4, `nav should have 4 items, got ${navShape.items.length}`);
   navShape.items.forEach((it, i) => {
-    const [label, href] = NAV[i] || ["?", "?"];
+    const [label, href, cog] = NAV[i] || ["?", "?", "?"];
+    ok(it.cogHref === cog, `gear next to "${label}" should link to ${cog}, got "${it.cogHref}"`);
+    ok(it.cogName.length > 0, `gear next to "${label}" has no accessible name`);
+    ok(it.cogIcon && it.cogIcon !== "none", `gear next to "${label}" renders no icon`);
     ok(it.text === label, `nav item ${i} should read "${label}", got "${it.text}"`);
     if (label === "Practice") {
       ok(it.tag === "SPAN" && it.current === "page", "current page must be a span with aria-current=page");
