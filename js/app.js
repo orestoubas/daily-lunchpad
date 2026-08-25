@@ -62,6 +62,87 @@ function ringSvg(pct, color) {
   </svg>`;
 }
 
+
+/* The French block gets a full-width card: it is the one module with a named
+   external target (B2), so the home page shows how far along that road it is
+   rather than only how much XP it has earned. */
+function frenchCard(st, g, done) {
+  const fp = frenchProgress(st);
+  const lv = levelFromXp(g.xp.french || 0);
+  const level = workingLevel(st);
+  const today = todayKey();
+  const due = FRENCH_VOCAB.filter(c => {
+    const e = st.srs[c.id];
+    return e && e.due <= today && e.box < 5;
+  }).length;
+  const unseen = FRENCH_VOCAB.filter(c => !st.srs[c.id]).length;
+  const newLeft = Math.max(0, (st.settings.newPerDay || 10) - (st.newCards[today] || 0));
+  const acc = rollingAvg(st, "french", 5);
+  const mastered = LEVELS.reduce((n, l) => n + fp.mastery[l].mastered, 0);
+  const seen = LEVELS.reduce((n, l) => n + fp.mastery[l].seen, 0);
+
+  const kinds = [
+    ["Vocabulary", "spaced repetition, " + FRENCH_VOCAB.length + " cards"],
+    ["Grammar", FRENCH_GRAMMAR.length + " drills"],
+    ["Conjugation", FRENCH_CONJ.length + " drills"]
+  ];
+  if (typeof DICTATION_QUESTIONS !== "undefined" && DICTATION_QUESTIONS.length && "speechSynthesis" in window)
+    kinds.push(["Listening", DICTATION_QUESTIONS.length + " dictations"]);
+  if (typeof READING_QUESTIONS !== "undefined" && READING_QUESTIONS.length)
+    kinds.push(["Reading", READING_QUESTIONS.length + " passages"]);
+
+  return `
+    <div class="card mission french-wide ${done.french ? "done" : ""}" style="--mc:var(--c-french)">
+      <div class="m-head">
+        <span class="m-title">🇫🇷 French</span>
+        <span class="m-lvl" style="color:var(--c-french-text)">LV ${lv.level}</span>
+      </div>
+      <div class="fw-grid">
+        <div class="fw-main">
+          <div class="m-desc">
+            Ten minutes a day towards <b>B2</b>. Every block mixes spaced-repetition vocabulary
+            with grammar and conjugation drills, and finishes with listening and reading —
+            all pitched at your working level, <b>${level}</b>.
+          </div>
+          <div class="fw-kinds">
+            ${kinds.map(([k, n]) => `<span class="fw-chip"><b>${k}</b>${esc(n)}</span>`).join("")}
+          </div>
+          <div class="m-track"><div class="f" style="width:${lv.pct}%"></div></div>
+          <div class="m-foot">
+            <span>${lv.into} / ${lv.need} XP</span>
+            <span>${done.french ? "✓ done today" : ""}</span>
+          </div>
+          <button data-start="french">${done.french ? "Practise again" : "Start"}</button>
+        </div>
+        <div class="fw-side">
+          <div class="fw-side-head">
+            <span>Road to B2</span><b>${fp.pct}%</b>
+          </div>
+          <div class="fw-b2"><div class="f" style="width:${fp.pct}%"></div></div>
+          <div class="fw-band">${esc(fp.band)}</div>
+          <div class="fw-levels">
+            ${LEVELS.map(l => {
+              const m = fp.mastery[l];
+              const pctv = m.total ? Math.round(100 * m.mastered / m.total) : 0;
+              return `<div class="fw-lv">
+                <span class="fw-lv-name">${l}</span>
+                <span class="fw-lv-track"><span class="f" style="width:${pctv}%"></span></span>
+                <span class="fw-lv-num">${m.mastered}/${m.total}</span>
+              </div>`;
+            }).join("")}
+          </div>
+          <div class="fw-facts">
+            <div><b>${due}</b><span>cards due</span></div>
+            <div><b>${newLeft}</b><span>new today</span></div>
+            <div><b>${mastered}</b><span>mastered</span></div>
+            <div><b>${acc === null ? "—" : acc + "%"}</b><span>last 5 blocks</span></div>
+          </div>
+          <div class="fw-note">${seen} of ${FRENCH_VOCAB.length} cards started · ${unseen} still untouched. Mastered = Leitner box ${MASTERED_BOX}+.</div>
+        </div>
+      </div>
+    </div>`;
+}
+
 function renderHome() {
   const st = App.state;
   const g = ensureGame(st);
@@ -76,9 +157,8 @@ function renderHome() {
   const dateStr = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
   const pending = ["french", "eu", "reasoning"].filter(m => !done[m]);
 
+  // French leads on its own full-width card; the EPSO test blocks share the row below.
   const missions = [
-    { key: "french", color: "var(--c-french)", icon: "🇫🇷", title: "French",
-      desc: `Vocabulary, grammar, conjugation & listening. Working level <b>${workingLevel(st)}</b>.` },
     { key: "eu", color: "var(--c-eu)", icon: "🇪🇺", title: "EU Knowledge",
       desc: "Institutions, treaties, law, policies, budget — with a mini-lesson on every question." },
     { key: "reasoning", color: "var(--c-verbal)", icon: "🧠", title: "Reasoning",
@@ -132,6 +212,8 @@ function renderHome() {
            <div class="muted small" style="margin-top:4px">Practise more any time — extra XP still counts.</div>
          </div>`
       : `<button class="primary big" id="start-routine" style="margin-bottom:16px">▶ Start today's routine · ${pending.length} × 10 min</button>`}
+
+    ${frenchCard(st, g, done)}
 
     <div class="missions">
       ${missions.map(m => {

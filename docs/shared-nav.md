@@ -1,10 +1,12 @@
-# Shared top nav — spec v2
+# Shared top nav — spec v2.1
 
 Paste this whole file into any Claude conversation that owns one of Orestis's
 boards. It is the single source of truth for the nav bar. Do not redesign it —
 the point is that all four pages look identical at the top.
 
-Owner: Orestis Vasileiadis. Last updated 25 August 2026 (v2 — added gears).
+Owner: Orestis Vasileiadis. Last updated 25 August 2026
+(v2 — added gears; v2.1 — the gear icon now draws a gear, and its padding
+drops with the labels under 640px).
 
 ---
 
@@ -63,7 +65,8 @@ hairline  #E1E1DC   bottom border
 brass     #9A7B12   current page text + 2px underline
 type      IBM Plex Mono, 11px, uppercase, letter-spacing .14em
 height    44px min, 13px vertical padding on items (9px under 640px)
-gear      13x13 SVG, stroke currentColor 1.5, resting #8E8E86, hover brass
+gear      13x13 SVG, stroke currentColor 1.5 with round caps and joins,
+          resting #8E8E86, hover brass. Eight teeth — not spokes.
 gap       7px between a label and its gear; 22px between items
 ```
 
@@ -105,6 +108,7 @@ Change only `max-width` and `padding` in `.topbar-inner` to match the host page.
   .topbar-inner{padding:0 18px;gap:4px 18px;}
   .topbar ul{gap:16px;}
   .topbar a,.topbar .on{padding:9px 0;}
+  .topbar .gear{padding:9px 0;}
 }
 ```
 
@@ -120,10 +124,10 @@ the file), before the page's own wrapper.
   <div class="topbar-inner">
     <span class="mark">Upd 25 Aug</span>
     <ul>
-      <li><a href="https://claude.ai/code/artifact/46907712-3ad5-4d90-8017-47f5bab4e509">Today</a><a class="gear" href="https://claude.ai/cowork/cse_01QdM8idBWKbDwTYu9CmfjsF" title="Open the Claude conversation for Today" aria-label="Open the Claude conversation for Today"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3.1"/><path d="M13.0 8h1.4M1.6 8h1.4M8 13.0v1.4M8 1.6v1.4M11.54 4.46l.99-.99M3.47 12.53l.99-.99M11.54 11.54l.99.99M3.47 3.47l.99.99"/></svg></a></li>
-      <li><span class="on" aria-current="page">12-Month</span><a class="gear" href="https://claude.ai/cowork/cse_01N6ocPFsForeUxNooisPSDA" title="Open the Claude conversation for 12-Month" aria-label="Open the Claude conversation for 12-Month"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3.1"/><path d="M13.0 8h1.4M1.6 8h1.4M8 13.0v1.4M8 1.6v1.4M11.54 4.46l.99-.99M3.47 12.53l.99-.99M11.54 11.54l.99.99M3.47 3.47l.99.99"/></svg></a></li>
-      <li><a href="https://orestoubas.github.io/daily-lunchpad/">Practice</a><a class="gear" href="https://claude.ai/code/session_01UKzdN5dVrcuWxj5ZpkMXwo" title="Open the Claude conversation for Practice" aria-label="Open the Claude conversation for Practice"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3.1"/><path d="M13.0 8h1.4M1.6 8h1.4M8 13.0v1.4M8 1.6v1.4M11.54 4.46l.99-.99M3.47 12.53l.99-.99M11.54 11.54l.99.99M3.47 3.47l.99.99"/></svg></a></li>
-      <li><a href="https://claude.ai/code/artifact/66b2e783-b6f6-42f8-a20e-105f6a20a47f">SGE Q4</a><a class="gear" href="https://claude.ai/cowork/cse_01QdM8idBWKbDwTYu9CmfjsF" title="Open the Claude conversation for SGE Q4" aria-label="Open the Claude conversation for SGE Q4"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3.1"/><path d="M13.0 8h1.4M1.6 8h1.4M8 13.0v1.4M8 1.6v1.4M11.54 4.46l.99-.99M3.47 12.53l.99-.99M11.54 11.54l.99.99M3.47 3.47l.99.99"/></svg></a></li>
+      <li><a href="https://claude.ai/code/artifact/46907712-3ad5-4d90-8017-47f5bab4e509">Today</a><a class="gear" href="https://claude.ai/cowork/cse_01QdM8idBWKbDwTYu9CmfjsF" title="Open the Claude conversation for Today" aria-label="Open the Claude conversation for Today"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2.5"/><path d="M6.58 3.63L6.78 1.62L9.22 1.62L9.42 3.63L10.09 3.90L11.65 2.62L13.38 4.35L12.10 5.91L12.37 6.58L14.38 6.78L14.38 9.22L12.37 9.42L12.10 10.09L13.38 11.65L11.65 13.38L10.09 12.10L9.42 12.37L9.22 14.38L6.78 14.38L6.58 12.37L5.91 12.10L4.35 13.38L2.62 11.65L3.90 10.09L3.63 9.42L1.62 9.22L1.62 6.78L3.63 6.58L3.90 5.91L2.62 4.35L4.35 2.62L5.91 3.90Z"/></svg></a></li>
+      <li><span class="on" aria-current="page">12-Month</span><a class="gear" href="https://claude.ai/cowork/cse_01N6ocPFsForeUxNooisPSDA" title="Open the Claude conversation for 12-Month" aria-label="Open the Claude conversation for 12-Month"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2.5"/><path d="M6.58 3.63L6.78 1.62L9.22 1.62L9.42 3.63L10.09 3.90L11.65 2.62L13.38 4.35L12.10 5.91L12.37 6.58L14.38 6.78L14.38 9.22L12.37 9.42L12.10 10.09L13.38 11.65L11.65 13.38L10.09 12.10L9.42 12.37L9.22 14.38L6.78 14.38L6.58 12.37L5.91 12.10L4.35 13.38L2.62 11.65L3.90 10.09L3.63 9.42L1.62 9.22L1.62 6.78L3.63 6.58L3.90 5.91L2.62 4.35L4.35 2.62L5.91 3.90Z"/></svg></a></li>
+      <li><a href="https://orestoubas.github.io/daily-lunchpad/">Practice</a><a class="gear" href="https://claude.ai/code/session_01UKzdN5dVrcuWxj5ZpkMXwo" title="Open the Claude conversation for Practice" aria-label="Open the Claude conversation for Practice"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2.5"/><path d="M6.58 3.63L6.78 1.62L9.22 1.62L9.42 3.63L10.09 3.90L11.65 2.62L13.38 4.35L12.10 5.91L12.37 6.58L14.38 6.78L14.38 9.22L12.37 9.42L12.10 10.09L13.38 11.65L11.65 13.38L10.09 12.10L9.42 12.37L9.22 14.38L6.78 14.38L6.58 12.37L5.91 12.10L4.35 13.38L2.62 11.65L3.90 10.09L3.63 9.42L1.62 9.22L1.62 6.78L3.63 6.58L3.90 5.91L2.62 4.35L4.35 2.62L5.91 3.90Z"/></svg></a></li>
+      <li><a href="https://claude.ai/code/artifact/66b2e783-b6f6-42f8-a20e-105f6a20a47f">SGE Q4</a><a class="gear" href="https://claude.ai/cowork/cse_01QdM8idBWKbDwTYu9CmfjsF" title="Open the Claude conversation for SGE Q4" aria-label="Open the Claude conversation for SGE Q4"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2.5"/><path d="M6.58 3.63L6.78 1.62L9.22 1.62L9.42 3.63L10.09 3.90L11.65 2.62L13.38 4.35L12.10 5.91L12.37 6.58L14.38 6.78L14.38 9.22L12.37 9.42L12.10 10.09L13.38 11.65L11.65 13.38L10.09 12.10L9.42 12.37L9.22 14.38L6.78 14.38L6.58 12.37L5.91 12.10L4.35 13.38L2.62 11.65L3.90 10.09L3.63 9.42L1.62 9.22L1.62 6.78L3.63 6.58L3.90 5.91L2.62 4.35L4.35 2.62L5.91 3.90Z"/></svg></a></li>
     </ul>
   </div>
 </nav>
@@ -204,23 +208,14 @@ automatically, so a future change cannot silently break the bar.
 `.topbar`, which collides with the shared nav. It is now `.pagehead`. Keep
 `.topbar` reserved for the shared nav on every page in this set.
 
-**Two open points for the spec owner**, both shipped as written rather than
-silently changed:
+**Closed in v2.1** (both were flagged against v2 and are now folded into the
+spec above, so all four pages should be re-pasted from this file):
 
-1. *The section-5 SVG draws a sun, not a gear.* It is a circle with eight
-   straight radial spokes — no teeth — so at 13px it reads as a sun or a
-   brightness control. A drop-in replacement that reads as a gear at the same
-   size, weight and colour (keep everything else identical, add
-   `stroke-linejoin="round"`):
-
-   ```html
-   <circle cx="8" cy="8" r="2.5"/><path d="M6.58 3.63L6.78 1.62L9.22 1.62L9.42 3.63L10.09 3.90L11.65 2.62L13.38 4.35L12.10 5.91L12.37 6.58L14.38 6.78L14.38 9.22L12.37 9.42L12.10 10.09L13.38 11.65L11.65 13.38L10.09 12.10L9.42 12.37L9.22 14.38L6.78 14.38L6.58 12.37L5.91 12.10L4.35 13.38L2.62 11.65L3.90 10.09L3.63 9.42L1.62 9.22L1.62 6.78L3.63 6.58L3.90 5.91L2.62 4.35L4.35 2.62L5.91 3.90Z"/>
-   ```
-
-   Changing it means updating all four pages together, which is why it is
-   flagged here rather than applied unilaterally.
-
-2. *Gear padding is not reduced under 640px.* The mobile block lowers
-   `.topbar a,.topbar .on` to `9px` but leaves `.topbar .gear` at `13px`,
-   so each row is 8px taller than the labels need. Adding
-   `.topbar .gear{padding:9px 0;}` to that block fixes it.
+1. *The v2 SVG drew a sun, not a gear* — a circle with eight straight radial
+   spokes and no teeth, which at 13px read as a brightness control. Section 5
+   now carries a toothed gear outline at the same size, weight and colour, with
+   `stroke-linejoin="round"` added so the tooth corners stay soft.
+2. *Gear padding did not drop under 640px* — the mobile block lowered
+   `.topbar a,.topbar .on` to `9px` but left the gear at `13px`, making each
+   row 8px taller than the labels needed. Section 4's mobile block now includes
+   `.topbar .gear{padding:9px 0;}`.
