@@ -209,14 +209,14 @@ const navShape = await nav.evaluate(() => {
     outsideWrapper: !app.contains(bar),
     items: [...bar.querySelectorAll("li")].map(li => {
       const label = li.querySelector("a:not(.cog), span.on");
-      const cog = li.querySelector("a.cog");
+      const cog = li.querySelector("a.gear");
       return {
         tag: label.tagName, text: label.textContent.trim(),
         href: label.getAttribute("href") || "",
         current: label.getAttribute("aria-current") || "",
         cogHref: cog ? cog.getAttribute("href") : null,
         cogName: cog ? (cog.getAttribute("aria-label") || "").trim() : "",
-        cogIcon: cog ? getComputedStyle(cog, "::before").maskImage : "none"
+        cogIcon: cog ? !!cog.querySelector("svg") : false
       };
     }),
     fonts: !!document.querySelector('link[href*="IBM+Plex+Mono"]'),
@@ -233,7 +233,7 @@ if (navShape) {
     const [label, href, cog] = NAV[i] || ["?", "?", "?"];
     ok(it.cogHref === cog, `gear next to "${label}" should link to ${cog}, got "${it.cogHref}"`);
     ok(it.cogName.length > 0, `gear next to "${label}" has no accessible name`);
-    ok(it.cogIcon && it.cogIcon !== "none", `gear next to "${label}" renders no icon`);
+    ok(it.cogIcon, `gear next to "${label}" has no svg icon`);
     ok(it.text === label, `nav item ${i} should read "${label}", got "${it.text}"`);
     if (label === "Practice") {
       ok(it.tag === "SPAN" && it.current === "page", "current page must be a span with aria-current=page");
