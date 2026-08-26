@@ -179,6 +179,13 @@ button:disabled { opacity: .45; cursor: default; box-shadow: none; transform: no
   .fw-facts { grid-template-columns: repeat(2, 1fr); gap: 10px 6px; }
 }
 
+/* ---- Storage facts (Settings) ---- */
+.storage-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--grid); }
+.storage-facts div { display: flex; flex-direction: column; gap: 1px; }
+.storage-facts b { font-size: 1.05rem; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.storage-facts span { font-size: .68rem; color: var(--text-muted); line-height: 1.25; }
+code { background: var(--surface-2); border-radius: 5px; padding: 1px 5px; font-size: .85em; }
+
 /* ---- Quests ---- */
 .quest { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--grid); }
 .quest:last-child { border-bottom: none; }

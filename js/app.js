@@ -213,6 +213,15 @@ function renderHome() {
          </div>`
       : `<button class="primary big" id="start-routine" style="margin-bottom:16px">▶ Start today's routine · ${pending.length} × 10 min</button>`}
 
+    ${st.sessions.length === 0 ? `
+    <div class="card" style="margin-bottom:14px;border-color:#f0cf8e;background:linear-gradient(180deg,#fff8e8,var(--surface-1))">
+      <b>Starting from zero here</b>
+      <div class="muted small" style="margin-top:4px">Progress is saved in each browser separately —
+      this one has no history yet. If you have practised on another device, in another browser, or on
+      an older copy of the trainer, export a backup there and import it here.</div>
+      <div style="margin-top:10px"><button class="ghost" data-nav="settings">⚙️ Import a backup</button></div>
+    </div>` : ""}
+
     ${frenchCard(st, g, done)}
 
     <div class="missions">
@@ -1126,6 +1135,40 @@ function renderStats() {
 
 /* ============================ SETTINGS ============================ */
 
+
+/* Answers "where is my progress written, and is any of it here?" in one glance,
+   so an empty dashboard can be told apart from a lost one. */
+function fillStorageFacts(st) {
+  const box = document.getElementById("st-facts");
+  const originEl = document.getElementById("st-origin");
+  if (!box) return;
+  if (originEl) originEl.textContent = location.origin === "null" ? "this file" : location.origin;
+
+  const g = ensureGame(st);
+  const days = Object.keys(g.dailyXp || {}).sort();
+  const active = days.filter(d => g.dailyXp[d] > 0);
+  let bytes = 0;
+  try { bytes = (localStorage.getItem(LS_KEY) || "").length; } catch (e) { bytes = 0; }
+
+  const facts = [
+    ["Sessions recorded", st.sessions.length],
+    ["Days practised", active.length],
+    ["First active day", active.length ? active[0] : "—"],
+    ["Last active day", active.length ? active[active.length - 1] : "—"],
+    ["Total XP", g.totalXp || 0],
+    ["Stored size", bytes ? (bytes / 1024).toFixed(0) + " KB" : "empty"]
+  ];
+  box.innerHTML = facts.map(([k, v]) =>
+    `<div><b>${esc(String(v))}</b><span>${k}</span></div>`).join("") +
+    `<div><b id="st-persist">…</b><span>eviction-proof</span></div>`;
+
+  const pe = document.getElementById("st-persist");
+  if (!navigator.storage || !navigator.storage.persisted) { pe.textContent = "n/a"; return; }
+  navigator.storage.persisted()
+    .then(ok => { pe.textContent = ok ? "yes" : "no"; if (!ok) pe.style.color = "var(--status-critical)"; })
+    .catch(() => { pe.textContent = "n/a"; });
+}
+
 function renderSettings() {
   const st = App.state;
   const g = ensureGame(st);
@@ -1179,6 +1222,20 @@ function renderSettings() {
     </div>
 
     <h2>Data</h2>
+    <div class="card" id="storage-card">
+      <div class="set-row">
+        <div><b>Where your progress lives</b>
+          <div class="s-desc">Nothing is stored on a server — not even by me. Everything is in this
+          browser, on this device, under the key <code>${LS_KEY}</code> for
+          <code id="st-origin">…</code>. A different browser, a different device, a private
+          window, or the old claude.ai copy each has its own separate store.</div></div>
+      </div>
+      <div class="storage-facts" id="st-facts"></div>
+      <p class="small muted" style="margin-top:10px">If this says 0 sessions but you know you
+      practised, the data is in whichever browser you practised in. Open the trainer there,
+      export a backup, and import it here.</p>
+    </div>
+
     <div class="card">
       <div class="set-row">
         <div><b>Export backup</b><div class="s-desc">On a phone this opens the share sheet, so you can save straight to Google Drive or Files. On a desktop it downloads a JSON file.</div></div>
@@ -1217,6 +1274,7 @@ function renderSettings() {
   `;
 
   document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
+  fillStorageFacts(st);
   const save = () => saveState(App.state);
   document.getElementById("set-goal").onchange = e => { g.dailyGoal = Math.max(50, Math.min(1000, +e.target.value || 150)); save(); };
   document.getElementById("set-min").onchange = e => { st.settings.minutesPerBlock = Math.max(3, Math.min(30, +e.target.value || 10)); save(); };
@@ -1366,6 +1424,16 @@ document.addEventListener("keydown", e => {
 });
 
 /* boot */
+/* Progress lives only in this browser's localStorage. Browsers are free to
+   evict that when space runs low — Safari also clears it for sites left
+   untouched for a week. Asking for persistent storage exempts us from both.
+   It is a request, not a guarantee; Settings reports what the browser said. */
+if (navigator.storage && navigator.storage.persist) {
+  navigator.storage.persisted()
+    .then(already => already || navigator.storage.persist())
+    .catch(() => {});
+}
+
 ensureGame(App.state);
 applyStreakFreeze(App.state);
 ensureQuests(App.state);
