@@ -1,0 +1,130 @@
+/* ---- Word index (js/wordindex.js) — warm paper, light only ----------------
+   Uses only the custom properties declared in css/style.css. No dark-mode or
+   [data-theme] block: this app is light-only by design. */
+
+.wi-panel { padding: 16px 18px; }
+
+.wi-controls {
+  display: grid;
+  grid-template-columns: minmax(200px, 2fr) repeat(3, minmax(140px, 1fr)) auto;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+.wi-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.wi-field label {
+  font-size: .72rem; font-weight: 800; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.wi-field input[type=search], .wi-field select {
+  font: inherit; font-weight: 600;
+  min-height: 44px; width: 100%; max-width: 100%;
+  padding: 9px 12px;
+  border: 2px solid var(--grid); border-radius: var(--r-md);
+  background: var(--surface-1); color: var(--text-primary);
+  -webkit-appearance: none; appearance: none;
+}
+.wi-field select {
+  /* room for the native arrow once appearance is stripped */
+  padding-right: 30px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+                    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: right 15px center, right 10px center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.wi-field input[type=search]:focus-visible, .wi-field select:focus-visible {
+  outline: 3px solid var(--c-french); outline-offset: 1px; border-color: var(--c-french);
+}
+.wi-reset { justify-content: flex-end; }
+.wi-reset button { min-height: 44px; white-space: nowrap; }
+
+.wi-count {
+  margin: 0 0 10px; font-size: .88rem; color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.wi-count b { color: var(--text-primary); }
+
+/* The table is wider than a phone: it scrolls inside this box, never the page. */
+.wi-tablewrap {
+  max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  border: 2px solid var(--grid); border-radius: var(--r-md);
+  background: var(--surface-1);
+}
+.wi-tablewrap:focus-visible { outline: 3px solid var(--c-french); outline-offset: 2px; }
+
+table.wi-table {
+  width: 100%; min-width: 560px;
+  border-collapse: collapse; font-size: .88rem;
+}
+table.wi-table thead th {
+  position: sticky; top: 0; z-index: 1;
+  text-align: left; font-size: .72rem; font-weight: 800;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted);
+  background: var(--surface-2);
+  border-bottom: 2px solid var(--grid);
+  padding: 9px 12px; white-space: nowrap;
+}
+table.wi-table td {
+  border-bottom: 1px solid var(--grid);
+  padding: 8px 12px; vertical-align: top;
+}
+table.wi-table tbody tr:last-child td { border-bottom: none; }
+table.wi-table tbody tr:hover { background: var(--surface-2); }
+.wi-table .wi-fr { font-weight: 700; }
+.wi-table .wi-word { margin-right: 6px; }
+.wi-table .wi-en { color: var(--text-secondary); }
+.wi-table .wi-lv, .wi-table .wi-pos {
+  color: var(--text-muted); font-size: .8rem; font-weight: 700; white-space: nowrap;
+}
+.wi-table .wi-stcell { white-space: nowrap; }
+.wi-table .wi-empty { text-align: center; padding: 22px 12px; font-weight: 600; }
+.wi-src {
+  display: inline-block; font-size: .64rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .05em;
+  color: var(--text-muted); background: var(--surface-2);
+  border-radius: var(--r-pill); padding: 1px 7px; margin-right: 6px;
+  vertical-align: 2px;
+}
+.wi-say {
+  border: none; background: none; box-shadow: none;
+  padding: 2px 6px; font-size: .95rem; line-height: 1; cursor: pointer;
+}
+.wi-say:hover { background: var(--surface-2); border-radius: var(--r-sm); }
+.wi-say:active { transform: none; }
+
+/* Ordinal ramp: same light→dark steps as the Leitner box chart. */
+.wi-pill {
+  display: inline-block; font-size: .7rem; font-weight: 800;
+  letter-spacing: .03em; padding: 3px 9px; border-radius: var(--r-pill);
+  background: var(--surface-2); color: var(--text-muted);
+}
+.wi-learning { background: var(--seq-100); color: var(--text-secondary); }
+.wi-familiar { background: var(--seq-250); color: var(--text-primary); }
+.wi-known    { background: var(--seq-400); color: var(--text-primary); }
+.wi-mastered { background: var(--seq-550); color: var(--text-primary); }
+
+.wi-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap; margin-top: 12px;
+}
+.wi-foot button { min-height: 44px; }
+.wi-legend { margin-top: 10px; line-height: 1.55; }
+.wi-legend b { color: var(--text-secondary); }
+
+@media (max-width: 700px) {
+  .wi-panel { padding: 14px; }
+  .wi-controls { grid-template-columns: 1fr; gap: 8px; }
+  .wi-reset { justify-content: stretch; }
+  .wi-reset button { width: 100%; }
+  .wi-field input[type=search], .wi-field select, .wi-foot button, .wi-reset button { min-height: 46px; }
+  .wi-say { min-height: 40px; min-width: 40px; }
+  table.wi-table { font-size: .84rem; }
+  table.wi-table td, table.wi-table thead th { padding: 8px 10px; }
+  .wi-foot { flex-direction: column; align-items: stretch; }
+  .wi-foot button { width: 100%; }
+}
+
+/* The three right-hand columns sit off-screen on a phone; say so once. */
+.wi-swipe { display: none; margin: -4px 0 8px; }
+@media (max-width: 700px) { .wi-swipe { display: block; } }

@@ -38,6 +38,7 @@ function render() {
   else if (App.view === "mocks") renderMocks();
   else if (App.view === "mockresult") renderMockResult();
   else if (App.view === "library") renderLibrary();
+  else if (App.view === "wordindex") renderWordIndex();
   else if (App.view === "writing") renderWriting();
   else if (App.view === "settings") renderSettings();
   window.scrollTo(0, 0);
@@ -137,6 +138,7 @@ function frenchCard(st, g, done) {
             <div><b>${mastered}</b><span>mastered</span></div>
             <div><b>${acc === null ? "—" : acc + "%"}</b><span>last 5 blocks</span></div>
           </div>
+          <div style="margin-top:2px"><button class="ghost" data-nav="wordindex" style="width:100%">🗂️ Word index — every word and its status</button></div>
           <div class="fw-note">${seen} of ${FRENCH_VOCAB.length} cards started · ${unseen} still untouched. Mastered = Leitner box ${MASTERED_BOX}+.</div>
         </div>
       </div>
@@ -887,7 +889,10 @@ function renderLibrary() {
   $app.innerHTML = `
     <div class="pagehead">
       <h1>📖 Library</h1>
-      <div class="nav"><button class="ghost" data-nav="home">← Dashboard</button></div>
+      <div class="nav">
+        <button class="ghost" data-nav="wordindex">🗂️ Word index</button>
+        <button class="ghost" data-nav="home">← Dashboard</button>
+      </div>
     </div>
     <p class="sub">Browse and revise without a quiz — search everything you are learning.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">

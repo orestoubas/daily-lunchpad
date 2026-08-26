@@ -1,12 +1,13 @@
 /* Service worker — cache-first for the app shell so the trainer works offline
    (train on the metro, in a lift, on a plane). Bump CACHE on every deploy. */
-const CACHE = "launchpad-v9";
+const CACHE = "launchpad-v10";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./css/style.css",
+  "./css/wordindex.css",
   "./js/util.js",
   "./js/abstract.js",
   "./js/engine.js",
@@ -15,6 +16,7 @@ const ASSETS = [
   "./js/sync.js",
   "./js/charts.js",
   "./js/app.js",
+  "./js/wordindex.js",
   "./data/french-vocab.js",
   "./data/french-grammar.js",
   "./data/french-conj.js",
