@@ -399,15 +399,18 @@ function renderSession() {
   const kindColor = { vocab: "var(--c-french)", grammar: "var(--c-french)", conj: "var(--c-french)",
     eu: "var(--c-eu)", verbal: "var(--c-verbal)", numerical: "var(--c-numerical)", abstract: "var(--c-abstract)",
     digital: "var(--c-abstract)", sjt: "var(--c-abstract)",
-    dictation: "var(--c-french)", reading: "var(--c-french)" }[it.kind];
+    dictation: "var(--c-french)", reading: "var(--c-french)",
+    prep: "var(--c-french)", verbprep: "var(--c-french)" }[it.kind];
   const kindLabel = {
     vocab: it.listen ? `Listening ${it.level} · FR audio` : `Vocabulary ${it.level} · ${it.direction}${it.isNew ? " · NEW WORD" : ""}`,
     grammar: `Grammar ${it.level}`, conj: `Conjugation ${it.level}`,
     eu: `EU · ${it.topic}`, verbal: "Verbal reasoning",
     numerical: "Numerical reasoning", abstract: "Abstract reasoning",
     digital: `Digital skills · ${it.area}`, sjt: `Situational judgement · ${it.competency}`,
-    dictation: `Dictée ${it.level} · listening`, reading: `Compréhension écrite ${it.level}`
-  }[it.kind];
+    dictation: `Dictée ${it.level} · listening`, reading: `Compréhension écrite ${it.level}`,
+    prep: `Prépositions ${it.level}${it.group ? " · " + it.group : ""}`,
+    verbprep: `Verbe + préposition ${it.level}${it.verb ? " · " + it.verb : ""}`
+  }[it.kind] || `French ${it.level || ""}`.trim();
 
   let body = "";
   if (it.kind === "verbal") body += `<div class="passage">${esc(it.passage)}</div>`;
@@ -496,7 +499,8 @@ function answer(choice) {
 
   if (it.kind === "vocab") applySrsResult(App.state, it.id, correct);
   const bankOf = { grammar: "grammar", conj: "conj", eu: "eu", verbal: "verbal", numerical: "numerical",
-    digital: "digital", sjt: "sjt", dictation: "dictation", reading: "reading" };
+    digital: "digital", sjt: "sjt", dictation: "dictation", reading: "reading",
+    prep: "prep", verbprep: "verbprep" };
   if (bankOf[it.kind]) {
     recordQuestionResult(App.state, it.id, correct);
     if (!correct) markWrong(App.state, bankOf[it.kind], it.id);
@@ -1109,7 +1113,9 @@ function renderStats() {
         { label: "Verbal", color: "var(--c-verbal)", m: bankMastery(st, VERBAL_QUESTIONS.map(q => q.id)) },
         { label: "Numerical", color: "var(--c-numerical)", m: bankMastery(st, NUMERICAL_QUESTIONS.map(q => q.id)) },
         { label: "Grammar", color: "var(--c-french)", m: bankMastery(st, FRENCH_GRAMMAR.map(q => q.id)) },
-        { label: "Conjugation", color: "var(--c-french)", m: bankMastery(st, FRENCH_CONJ.map(q => q.id)) }
+        { label: "Conjugation", color: "var(--c-french)", m: bankMastery(st, FRENCH_CONJ.map(q => q.id)) },
+        { label: "Prepositions", color: "var(--c-french)", m: bankMastery(st, (typeof PREPOSITIONS !== "undefined" ? PREPOSITIONS : []).map(q => q.id)) },
+        { label: "Verb + preposition", color: "var(--c-french)", m: bankMastery(st, (typeof VERB_PREP !== "undefined" ? VERB_PREP : []).map(q => q.id)) }
       ].concat(epsoBankAvailable() ? [
         { label: "Digital skills", color: "var(--c-abstract)", m: bankMastery(st, DIGITAL_QUESTIONS.map(q => q.id)) },
         { label: "Situational judgement", color: "var(--c-abstract)", m: bankMastery(st, SJT_QUESTIONS.map(q => q.id)) }

@@ -14,6 +14,8 @@ const dc = load("dictation.js", "DICTATION_QUESTIONS");
 const rd = load("reading.js", "READING_QUESTIONS");
 const wr = load("writing.js", "WRITING_PROMPTS");
 const learn = load("eu-learn.js", "EU_LEARN");
+const vp = load("verb-prep.js", "VERB_PREP");
+const pp = load("prepositions.js", "PREPOSITIONS");
 
 let errs = [];
 const ids = new Set();
@@ -23,6 +25,7 @@ const chk = (arr, name) => arr.forEach(x => {
 });
 chk(v, "vocab"); chk(g, "gram"); chk(e, "eu"); chk(r, "verb"); chk(n, "num"); chk(c, "conj");
 chk(dg, "digital"); chk(sj, "sjt"); chk(dc, "dictation"); chk(rd, "reading"); chk(wr, "writing");
+chk(vp, "verbprep"); chk(pp, "prep");
 
 const mcq = (arr, name) => arr.forEach(x => {
   if (!Array.isArray(x.options) || x.options.length !== 4) errs.push(`${name} ${x.id} options!=4`);
@@ -57,11 +60,32 @@ v.forEach(x => {
 });
 const perLv = {}; v.forEach(x => perLv[x.level] = (perLv[x.level] || 0) + 1);
 const perTopic = {}; e.forEach(x => perTopic[x.topic] = (perTopic[x.topic] || 0) + 1);
-const total = v.length+g.length+c.length+e.length+r.length+n.length+dg.length+sj.length+dc.length+rd.length+wr.length;
+// The two preposition banks: same MCQ shape, plus a gap in every stem and an
+// options set that must not mix parts of speech.
+[[vp, "verbprep", "verb"], [pp, "prep", "group"]].forEach(([bank, name, extra]) => {
+  bank.forEach(x => {
+    if (!x.q || !x.q.includes("___")) errs.push(`${name} ${x.id} has no ___ gap`);
+    if (!x[extra]) errs.push(`${name} ${x.id} missing ${extra}`);
+    if (!x.expl || x.expl.length < 40) errs.push(`${name} ${x.id} explanation too thin`);
+    if (!["A1","A2","B1","B2","C1","C2"].includes(x.level)) errs.push(`${name} ${x.id} bad level`);
+  });
+  const stems = {};
+  bank.forEach(x => {
+    if (stems[x.q]) errs.push(`${name} dup stem ${x.id} / ${stems[x.q]}`);
+    stems[x.q] = x.id;
+  });
+});
+pp.forEach(x => {
+  const ok = ["place","time","movement","cause","manner","country","transport","verb-bound"];
+  if (!ok.includes(x.group)) errs.push(`prep ${x.id} bad group ${x.group}`);
+});
+
+const total = v.length+g.length+c.length+e.length+r.length+n.length+dg.length+sj.length+dc.length+rd.length+wr.length+vp.length+pp.length;
 console.log("vocab", v.length, JSON.stringify(perLv), "| grammar", g.length, "| conj", c.length,
   "\n eu", e.length, JSON.stringify(perTopic),
   "\n verbal", r.length, "| numerical", n.length, "| digital", dg.length, "| sjt", sj.length,
   "| dictation", dc.length, "| reading", rd.length, "| writing", wr.length,
+  "\n verb+prep", vp.length, "| prepositions", pp.length,
   "\n TOTAL", total, "items");
 console.log(errs.length ? "ERRORS:\n" + errs.join("\n") : "all banks valid");
 process.exit(errs.length ? 1 : 0);

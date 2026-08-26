@@ -275,10 +275,14 @@ function buildVocabItem(card, state, rng) {
 }
 
 function buildGrammarItem(q) {
-  return {
+  const item = {
     kind: "grammar", id: q.id, level: q.level,
     prompt: q.q, options: q.options, answer: q.a, expl: q.expl
   };
+  // carried through so the badge can say which preposition group, or which verb
+  if (q.group) item.group = q.group;
+  if (q.verb) item.verb = q.verb;
+  return item;
 }
 
 function buildEuItem(q, rng) {
@@ -391,17 +395,33 @@ function buildFrenchSession(state) {
   const lv = workingLevel(state);
   const gLevels = LEVELS.slice(0, LEVELS.indexOf(lv) + 1);
   const gIds = FRENCH_GRAMMAR.filter(q => gLevels.includes(q.level)).map(q => q.id);
-  const gPicks = drawFromBank(state, "grammar", gIds, 4, rng);
+  const gPicks = drawFromBank(state, "grammar", gIds, 3, rng);
   const gMap = Object.fromEntries(FRENCH_GRAMMAR.map(q => [q.id, q]));
 
   const cIds = FRENCH_CONJ.filter(q => gLevels.includes(q.level)).map(q => q.id);
-  const cPicks = drawFromBank(state, "conj", cIds, 3, rng);
+  const cPicks = drawFromBank(state, "conj", cIds, 2, rng);
   const cMap = Object.fromEntries(FRENCH_CONJ.map(q => [q.id, q]));
+
+  // Prepositions and the prepositions verbs demand — the two gaps the daily
+  // block used to skip entirely.
+  const pIds = typeof PREPOSITIONS !== "undefined"
+    ? PREPOSITIONS.filter(q => gLevels.includes(q.level)).map(q => q.id) : [];
+  const pPicks = pIds.length ? drawFromBank(state, "prep", pIds, 2, rng) : [];
+  const pMap = typeof PREPOSITIONS !== "undefined"
+    ? Object.fromEntries(PREPOSITIONS.map(q => [q.id, q])) : {};
+
+  const vIds = typeof VERB_PREP !== "undefined"
+    ? VERB_PREP.filter(q => gLevels.includes(q.level)).map(q => q.id) : [];
+  const vPicks = vIds.length ? drawFromBank(state, "verbprep", vIds, 2, rng) : [];
+  const vMap = typeof VERB_PREP !== "undefined"
+    ? Object.fromEntries(VERB_PREP.map(q => [q.id, q])) : {};
 
   // interleave: a grammar or conjugation drill after every third vocab card
   const drills = [];
   gPicks.forEach(id => drills.push(Object.assign(buildGrammarItem(gMap[id]), { kind: "grammar" })));
   cPicks.forEach(id => drills.push(Object.assign(buildGrammarItem(cMap[id]), { kind: "conj" })));
+  pPicks.forEach(id => drills.push(Object.assign(buildGrammarItem(pMap[id]), { kind: "prep" })));
+  vPicks.forEach(id => drills.push(Object.assign(buildGrammarItem(vMap[id]), { kind: "verbprep" })));
   const drillQueue = seededShuffle(drills, rng);
 
   const items = [];
