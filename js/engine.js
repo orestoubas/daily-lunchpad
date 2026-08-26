@@ -481,7 +481,9 @@ function recordSession(state, session, results, seconds, completed) {
   const answered = results.filter(r => r.answered);
   if (answered.length === 0) return;
 
+  state.sessionCounter = (state.sessionCounter || 0) + 1;
   const rec = {
+    id: `${state.deviceId || "d"}:${state.sessionCounter}`,
     date: today, module: session.module,
     correct: answered.filter(r => r.correct).length,
     total: answered.length,

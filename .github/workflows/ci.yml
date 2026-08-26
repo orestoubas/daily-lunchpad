@@ -18,6 +18,9 @@ jobs:
       - name: Validate question banks
         run: node test/validate-banks.cjs
 
+      - name: Sync merge unit tests
+        run: node test/sync-merge.cjs
+
       - name: Install Playwright
         run: |
           npm install playwright-core@^1.49.0 --no-audit --no-fund

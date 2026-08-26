@@ -77,6 +77,13 @@ function esc(s) {
 
 /* ---------- persistent state ---------- */
 
+/* Identifies this browser so sessions recorded on two devices can be told
+   apart when their histories are merged. Not sent anywhere except into your
+   own sync file. */
+function newDeviceId() {
+  return "d" + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+}
+
 function defaultState() {
   return {
     version: 1,
@@ -87,6 +94,9 @@ function defaultState() {
     sessions: [],     // {date, module, correct, total, pct, seconds, sub:{...}, topics:{}}
     days: {},         // dateKey -> {french:bool, eu:bool, reasoning:bool}
     newCards: {},     // dateKey -> count of new vocab introduced that day
+    deviceId: newDeviceId(),
+    sessionCounter: 0,
+    updatedAt: null,
     settings: { newPerDay: 10, minutesPerBlock: 10, weekendCounts: false, retireStreak: 3, adaptive: true }
   };
 }
@@ -158,6 +168,12 @@ function migrateState(st) {
   st.newCards = st.newCards || {};
   st.sessions = Array.isArray(st.sessions) ? st.sessions : [];
   if (st.settings && st.settings.adaptive === undefined) st.settings.adaptive = true;
+  if (!st.deviceId) st.deviceId = newDeviceId();
+  if (typeof st.sessionCounter !== "number") st.sessionCounter = st.sessions.length;
+  // sessions recorded before ids existed get a stable one derived from content
+  st.sessions.forEach((s, i) => {
+    if (!s.id) s.id = `legacy:${s.date}:${s.module}:${i}`;
+  });
   if (st.version < 2) st.version = 2;
   return st;
 }

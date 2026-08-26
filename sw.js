@@ -1,6 +1,6 @@
 /* Service worker — cache-first for the app shell so the trainer works offline
    (train on the metro, in a lift, on a plane). Bump CACHE on every deploy. */
-const CACHE = "launchpad-v8";
+const CACHE = "launchpad-v9";
 
 const ASSETS = [
   "./",
@@ -12,6 +12,7 @@ const ASSETS = [
   "./js/engine.js",
   "./js/game.js",
   "./js/mock.js",
+  "./js/sync.js",
   "./js/charts.js",
   "./js/app.js",
   "./data/french-vocab.js",

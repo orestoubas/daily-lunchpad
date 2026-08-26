@@ -626,6 +626,7 @@ function finishSession(completed) {
   });
 
   saveState(st);
+  syncSoon();
   App.lastSummary = {
     module: s.module, challenge: s.challenge, xp, seconds, completed,
     levelUp: lvl.leveledUp ? { tree: treeKey, to: lvl.to } : null,
@@ -1169,6 +1170,94 @@ function fillStorageFacts(st) {
     .catch(() => { pe.textContent = "n/a"; });
 }
 
+
+/* Sync settings. The token is deliberately kept out of the state blob and out
+   of exports; it lives in its own localStorage key on this device only. */
+function syncPanel(st) {
+  const c = syncCfg(st);
+  const tok = syncToken();
+  const on = syncReady(st);
+  const status = c.lastError ? `<span style="color:var(--status-critical)">${esc(c.lastError)}</span>`
+    : c.lastSync ? `Last synced ${esc(new Date(c.lastSync).toLocaleString("en-GB"))}`
+    : on ? "Configured — not synced yet" : "Off";
+  return `
+    <div class="card">
+      <div class="set-row">
+        <div><b>Keep progress in a GitHub repo</b>
+          <div class="s-desc">Every finished block is pushed to one JSON file in a repo you own,
+          and pulled back when you open the trainer elsewhere. Histories are merged, so practising
+          on the laptop and the phone on the same day keeps both.</div></div>
+        <input type="checkbox" id="sync-on" ${c.enabled ? "checked" : ""}>
+      </div>
+      <div class="set-row">
+        <div style="flex:1"><b>Repository</b>
+          <div class="s-desc">owner/name — make it <b>private</b>, your study history is in it.</div></div>
+        <input type="text" id="sync-repo" placeholder="orestoubas/launchpad-data"
+               value="${esc(c.repo || "")}" style="width:230px">
+      </div>
+      <div class="set-row">
+        <div style="flex:1"><b>File path</b><div class="s-desc">Created on the first sync.</div></div>
+        <input type="text" id="sync-path" value="${esc(c.path)}" style="width:200px">
+      </div>
+      <div class="set-row">
+        <div style="flex:1"><b>Access token</b>
+          <div class="s-desc">A fine-grained personal access token, this repository only,
+          <b>Contents: read and write</b>. Stored in this browser, never in your exported backups.
+          Anyone who can use this device can read it — give it an expiry and nothing else.</div></div>
+        <input type="password" id="sync-token" placeholder="${tok ? "•••••• saved" : "github_pat_…"}"
+               autocomplete="off" style="width:200px">
+      </div>
+      <div class="set-row">
+        <div><b>Status</b><div class="s-desc" id="sync-status">${status}</div></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button id="sync-restore" ${on ? "" : "disabled"}>⬇ Restore from repo</button>
+          <button id="sync-run" ${on ? "" : "disabled"}>⇅ Sync now</button>
+        </div>
+      </div>
+      <p class="small muted" style="margin-top:10px">
+        New repo? <a href="https://github.com/new" target="_blank" rel="noopener">Create a private one</a>,
+        then <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">make a fine-grained token</a>
+        limited to it with Contents read and write.
+      </p>
+    </div>`;
+}
+
+function bindSyncPanel(st) {
+  const c = syncCfg(st);
+  const save = () => saveState(st);
+  const setStatus = (msg, bad) => {
+    const el = document.getElementById("sync-status");
+    if (el) { el.textContent = msg; el.style.color = bad ? "var(--status-critical)" : ""; }
+  };
+  const on = document.getElementById("sync-on");
+  if (!on) return;
+  on.onchange = e => { c.enabled = e.target.checked; save(); render(); };
+  document.getElementById("sync-repo").onchange = e => { c.repo = e.target.value.trim().replace(/^https?:\/\/github\.com\//, "").replace(/\.git$/, ""); save(); render(); };
+  document.getElementById("sync-path").onchange = e => { c.path = e.target.value.trim() || "launchpad-state.json"; save(); };
+  document.getElementById("sync-token").onchange = e => {
+    if (e.target.value.trim()) { setSyncToken(e.target.value.trim()); e.target.value = ""; render(); }
+  };
+  document.getElementById("sync-run").onclick = async () => {
+    setStatus("Syncing…");
+    const r = await syncNow(st);
+    if (r.ok && r.state) { App.state = r.state; saveState(App.state); }
+    setStatus(r.msg, !r.ok);
+    if (r.ok) render();
+  };
+  document.getElementById("sync-restore").onclick = async () => {
+    if (!confirm("Pull the repo's progress and merge it into this browser?")) return;
+    setStatus("Restoring…");
+    const r = await syncRestore(st);
+    if (r.ok && r.state) {
+      App.state = r.state;
+      ensureGame(App.state); ensureQuests(App.state);
+      saveState(App.state);
+      setStatus(r.msg);
+      go("home");
+    } else setStatus(r.msg, true);
+  };
+}
+
 function renderSettings() {
   const st = App.state;
   const g = ensureGame(st);
@@ -1236,6 +1325,9 @@ function renderSettings() {
       export a backup, and import it here.</p>
     </div>
 
+    <h2>Sync with GitHub</h2>
+    ${syncPanel(st)}
+
     <div class="card">
       <div class="set-row">
         <div><b>Export backup</b><div class="s-desc">On a phone this opens the share sheet, so you can save straight to Google Drive or Files. On a desktop it downloads a JSON file.</div></div>
@@ -1275,6 +1367,7 @@ function renderSettings() {
 
   document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
   fillStorageFacts(st);
+  bindSyncPanel(st);
   const save = () => saveState(App.state);
   document.getElementById("set-goal").onchange = e => { g.dailyGoal = Math.max(50, Math.min(1000, +e.target.value || 150)); save(); };
   document.getElementById("set-min").onchange = e => { st.settings.minutesPerBlock = Math.max(3, Math.min(30, +e.target.value || 10)); save(); };
@@ -1423,6 +1516,21 @@ document.addEventListener("keydown", e => {
   }
 });
 
+/* Sync is best-effort and never blocks the UI: a failed push leaves the local
+   state untouched and the next one retries. Debounced so finishing three
+   blocks in a row is one write, not three. */
+let syncTimer = null;
+function syncSoon(delay) {
+  if (!syncReady(App.state)) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    const r = await syncNow(App.state);
+    if (r.ok && r.state) { App.state = r.state; saveState(App.state); }
+    else saveState(App.state);          // persist lastError for the Settings panel
+    if (App.view === "settings") render();
+  }, delay === undefined ? 2500 : delay);
+}
+
 /* boot */
 /* Progress lives only in this browser's localStorage. Browsers are free to
    evict that when space runs low — Safari also clears it for sites left
@@ -1439,3 +1547,17 @@ applyStreakFreeze(App.state);
 ensureQuests(App.state);
 saveState(App.state);
 render();
+
+/* Pull whatever the repo already holds before this browser writes anything,
+   so opening the trainer on a new device restores instead of overwriting. */
+if (syncReady(App.state)) {
+  syncNow(App.state).then(r => {
+    if (r.ok && r.state) {
+      App.state = r.state;
+      ensureGame(App.state);
+      ensureQuests(App.state);
+      saveState(App.state);
+      render();
+    }
+  });
+}

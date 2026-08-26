@@ -124,7 +124,9 @@ function mockLabel(kind) {
 function recordMock(state, examId, score, seconds) {
   const g = ensureGame(state);
   g.mocks = g.mocks || [];
+  state.sessionCounter = (state.sessionCounter || 0) + 1;
   g.mocks.push({
+    id: `${state.deviceId || "d"}:m${state.sessionCounter}`,
     date: todayKey(), examId, pct: score.pct,
     correct: score.correct, total: score.total,
     parts: score.parts.map(p => ({ kind: p.kind, pct: p.pct, passed: p.passed })),

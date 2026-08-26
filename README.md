@@ -111,6 +111,36 @@ The engine picks them up automatically (banks can grow without breaking saved
 progress). The fastest way to grow a bank: ask Claude to *"add 50 more EU
 questions to data/eu.js in the same format, topic X"*.
 
+## Keeping progress across devices
+
+By default all progress lives in one browser's `localStorage`, under the key
+`launchpad.v1`, scoped to one origin on one device. Nothing is on a server.
+That means a cleared browser, a second device, or a private window each start
+from zero — Settings → Data now shows exactly what this browser holds.
+
+Optional GitHub sync fixes that. It keeps the whole state as one JSON file in a
+repo you own, pushing after every finished block and pulling when you open the
+trainer somewhere else.
+
+Setup, once:
+
+1. Create a **private** repo — the file contains your study history.
+2. Make a [fine-grained personal access token](https://github.com/settings/personal-access-tokens/new)
+   limited to that repo, with **Contents: read and write** and an expiry. No other permission.
+3. Settings → Sync with GitHub: tick it on, paste `owner/name` and the token, press **Sync now**.
+   On a second device, press **Restore from repo** first so it adopts the history
+   instead of pushing an empty state over it.
+
+The token is held in its own `localStorage` key (`launchpad.sync.token`), never
+inside the state blob, so exported backups can never leak it. It is still a
+token in a browser: anyone who can use the device can read it, which is why it
+should be scoped to one repo and given an expiry.
+
+Two devices are merged, not overwritten — sessions union by id, day flags OR
+together, Leitner cards keep the further-along box, and counters take the
+maximum rather than the sum, so syncing repeatedly can never inflate a number.
+`test/sync-merge.cjs` asserts those properties and runs in CI.
+
 ## Testing and automation
 
 ```bash
