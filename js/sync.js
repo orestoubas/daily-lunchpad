@@ -15,11 +15,25 @@
 const SYNC_TOKEN_KEY = "launchpad.sync.token";
 const SYNC_API = "https://api.github.com";
 
+/* The trainer's own repo is public, and that asymmetry is the whole design:
+   READING the progress file needs no credential, so any device shows your
+   history the moment it opens the site, with nothing to set up. Only WRITING
+   needs a token, and a token can never live in the page itself — the site is
+   public, so anyone could read it. One device holds the token and pushes;
+   every other device reads. */
+const SYNC_DEFAULTS = {
+  enabled: true,
+  repo: "orestoubas/daily-lunchpad",
+  path: "progress/launchpad-state.json",
+  branch: "main"
+};
+
 function syncCfg(state) {
   const s = state.settings;
-  if (!s.sync) s.sync = { enabled: false, repo: "", path: "launchpad-state.json", branch: "main" };
-  if (!s.sync.path) s.sync.path = "launchpad-state.json";
-  if (!s.sync.branch) s.sync.branch = "main";
+  if (!s.sync) s.sync = Object.assign({}, SYNC_DEFAULTS);
+  for (const k of Object.keys(SYNC_DEFAULTS)) {
+    if (s.sync[k] === undefined || s.sync[k] === "") s.sync[k] = SYNC_DEFAULTS[k];
+  }
   return s.sync;
 }
 
@@ -30,10 +44,16 @@ function setSyncToken(t) {
   try { t ? localStorage.setItem(SYNC_TOKEN_KEY, t) : localStorage.removeItem(SYNC_TOKEN_KEY); }
   catch (e) { /* private mode — sync simply stays off */ }
 }
-function syncReady(state) {
+/* Configured well enough to fetch. No token required. */
+function syncCanRead(state) {
   const c = syncCfg(state);
-  return !!(c.enabled && c.repo && /^[^/]+\/[^/]+$/.test(c.repo) && syncToken());
+  return !!(c.enabled && c.repo && /^[^/]+\/[^/]+$/.test(c.repo));
 }
+/* Only a device holding a token can push. */
+function syncCanWrite(state) {
+  return syncCanRead(state) && !!syncToken();
+}
+function syncReady(state) { return syncCanRead(state); }
 
 /* ---------- base64 that survives accents and emoji ---------- */
 function b64encode(str) {
@@ -70,7 +90,34 @@ function contentsUrl(cfg) {
 /* Returns {state, sha} — or {state:null, sha:null} when the file is not there
    yet, which is the normal first-run case. Throws with a readable message on
    anything the user can act on (bad token, wrong repo, no write access). */
+/* Unauthenticated read of a public repo, through the REST API rather than
+   raw.githubusercontent.com — raw sends no Access-Control-Allow-Origin, so a
+   browser request to it from the Pages origin is blocked outright. The API is
+   CORS-enabled and allows 60 unauthenticated requests an hour per IP, which is
+   far more than a pull-on-open needs.
+
+   If this is ever refused the local state is left exactly as it was: the merge
+   only runs on a successful read, so a failed pull can never cost you history. */
+async function syncPullPublic(cfg) {
+  const url = `${contentsUrl(cfg)}?ref=${encodeURIComponent(cfg.branch)}`;
+  let res;
+  try {
+    res = await fetch(url, { headers: { "Accept": "application/vnd.github+json" }, cache: "no-store" });
+  } catch (e) {
+    throw new Error("Could not reach GitHub — offline, or the browser blocked the request.");
+  }
+  if (res.status === 404) return { state: null, sha: null };
+  if (res.status === 403) throw new Error("GitHub rate-limited this device (60 reads an hour without a token). Try again shortly.");
+  if (!res.ok) throw new Error(`GitHub returned ${res.status} reading the file.`);
+  const j = await res.json();
+  let parsed = null;
+  try { parsed = JSON.parse(b64decode(j.content || "")); }
+  catch (e) { throw new Error("The file in the repo is not valid JSON."); }
+  return { state: parsed, sha: j.sha };
+}
+
 async function syncPull(cfg) {
+  if (!syncToken()) return syncPullPublic(cfg);
   const res = await ghFetch(`${contentsUrl(cfg)}?ref=${encodeURIComponent(cfg.branch)}`);
   if (res.status === 404) return { state: null, sha: null };
   if (res.status === 401) throw new Error("GitHub rejected the token (401). Check it has not expired.");
@@ -217,15 +264,23 @@ function mergeStates(local, remote) {
 let syncInFlight = null;
 
 async function syncNow(state) {
-  if (!syncReady(state)) return { ok: false, msg: "Sync is not configured." };
+  if (!syncCanRead(state)) return { ok: false, msg: "Sync is not configured." };
   if (syncInFlight) return syncInFlight;
 
   const cfg = syncCfg(state);
+  const canWrite = syncCanWrite(state);
   syncInFlight = (async () => {
     try {
       const { state: remote, sha } = await syncPull(cfg);
       const merged = mergeStates(state, remote);
       merged.updatedAt = new Date().toISOString();
+      if (!canWrite) {
+        // Read-only device: adopt whatever the repo holds, keep practising
+        // locally, and let the device with the token publish the result.
+        cfg.lastSync = merged.updatedAt;
+        cfg.lastError = "";
+        return { ok: true, readOnly: true, msg: remote ? "Pulled from GitHub" : "Nothing saved online yet", state: merged };
+      }
       const newSha = await syncPush(cfg, merged, sha);
       cfg.lastSync = merged.updatedAt;
       cfg.lastError = "";
@@ -244,7 +299,7 @@ async function syncNow(state) {
 /* Pull only — used when adopting an existing repo on a fresh browser, where
    pushing first would write an empty state over real history. */
 async function syncRestore(state) {
-  if (!syncReady(state)) return { ok: false, msg: "Sync is not configured." };
+  if (!syncCanRead(state)) return { ok: false, msg: "Sync is not configured." };
   const cfg = syncCfg(state);
   try {
     const { state: remote } = await syncPull(cfg);

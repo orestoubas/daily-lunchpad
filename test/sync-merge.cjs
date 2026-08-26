@@ -120,9 +120,26 @@ const twice = stateWith("dOLD3", [
 eq(mergeStates(migrateState(twice), null).sessions.length, 2,
    "two real sessions on one day must both survive");
 
+
+/* 9. Read without a token. The trainer's repo is public, so a device that has
+   never been set up must still be able to pull — and must never be able to
+   push, because a token cannot live in a public page. */
+const shipped = migrateState(defaultState());
+eq(sandbox.syncCanRead(shipped), true, "a fresh install should be able to read the public repo");
+eq(sandbox.syncCanWrite(shipped), false, "a device with no token must not be able to push");
+ok(sandbox.syncCfg(shipped).repo.includes("/"), "a repo should be configured out of the box");
+ok(!/token/i.test(JSON.stringify(shipped)),
+   "no token field should ever exist in the state blob, so exports cannot leak one");
+
+/* A failed read must be a no-op, never a wipe: mergeStates is only ever reached
+   with a successful pull, and with no remote it returns local untouched. */
+const before = JSON.stringify(laptop.sessions);
+eq(JSON.stringify(mergeStates(laptop, null).sessions), before,
+   "a failed or empty pull must leave local history exactly as it was");
+
 if (failures.length) {
   console.error("SYNC MERGE TESTS FAILED (" + failures.length + "):");
   failures.forEach(f => console.error(" ✗ " + f));
   process.exit(1);
 }
-console.log("sync merge tests passed — no loss, no inflation, order-independent");
+console.log("sync merge tests passed — no loss, no inflation, order-independent, read-without-token");

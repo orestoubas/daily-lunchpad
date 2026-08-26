@@ -24,11 +24,14 @@ async function newPage(opts) {
   p.on("pageerror", e => errors.push("PAGEERROR: " + e.message));
   p.on("console", m => {
     if (m.type() !== "error") return;
-    // Google Fonts is the nav's only external asset and is optional (the CSS
-    // has a mono fallback stack); sandboxed CI has no outbound net, so a
-    // failed font fetch is not an app error.
+    // Two external calls are optional by design and absent in sandboxed CI:
+    // Google Fonts (the CSS has a mono fallback) and the progress pull from
+    // GitHub (a failed pull leaves local state untouched). Neither failing is
+    // an app error, so neither should fail the suite.
     const url = (m.location() && m.location().url) || "";
     if (/fonts\.(googleapis|gstatic)\.com/.test(url)) return;
+    if (/api\.github\.com/.test(url)) return;
+    if (/ERR_CERT|ERR_CONNECTION|ERR_NAME_NOT_RESOLVED|ERR_INTERNET_DISCONNECTED/.test(m.text())) return;
     errors.push("CONSOLE: " + m.text());
   });
   return p;
@@ -355,6 +358,34 @@ if (hasTopics) {
   ok(done.phrases > 0, "the topic's phrases should enter the review schedule");
 }
 
+/* ---------- 11. a blocked or failed progress pull must cost nothing ---------- */
+const off = await newPage({ viewport: { width: 1200, height: 900 } });
+await off.goto(APP);
+await off.waitForTimeout(300);
+const syncShape = await off.evaluate(() => ({
+  canRead: syncCanRead(App.state),
+  canWrite: syncCanWrite(App.state),
+  repo: syncCfg(App.state).repo,
+  hasToken: /token/i.test(JSON.stringify(App.state))
+}));
+ok(syncShape.canRead, "a fresh install should be able to read progress with no setup");
+ok(!syncShape.canWrite, "a device with no token must never be able to publish");
+ok(syncShape.repo.includes("/"), "a repo should be configured out of the box");
+ok(!syncShape.hasToken, "no token should ever live in the state blob");
+
+// the app must still be fully usable with the pull failing (which it is here,
+// because this sandbox has no outbound network)
+await off.evaluate(() => localStorage.clear());
+await off.reload();
+await off.waitForTimeout(500);
+ok(!!(await off.$("#start-routine")), "the dashboard must render even when the progress pull fails");
+const survived = await off.evaluate(async () => {
+  const before = JSON.stringify(App.state.sessions);
+  const r = await syncNow(App.state);
+  return { failed: !r.ok, same: JSON.stringify(App.state.sessions) === before };
+});
+ok(survived.same, "a failed pull must leave local history untouched");
+
 await browser.close();
 
 /* ---------- report ---------- */
@@ -364,4 +395,4 @@ if (failures.length) {
   failures.forEach(f => console.error(" ✗ " + f));
   process.exit(1);
 }
-console.log("smoke test passed — routine, epso block, mock, library, writing, backup, mobile, top nav, conversations");
+console.log("smoke test passed — routine, epso block, mock, library, writing, backup, mobile, top nav, conversations, sync");

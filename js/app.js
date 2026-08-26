@@ -1215,17 +1215,22 @@ function fillStorageFacts(st) {
 function syncPanel(st) {
   const c = syncCfg(st);
   const tok = syncToken();
-  const on = syncReady(st);
+  const canRead = syncCanRead(st);
+  const canWrite = syncCanWrite(st);
+  const role = canWrite ? "reads and saves" : canRead ? "reads only" : "off";
   const status = c.lastError ? `<span style="color:var(--status-critical)">${esc(c.lastError)}</span>`
-    : c.lastSync ? `Last synced ${esc(new Date(c.lastSync).toLocaleString("en-GB"))}`
-    : on ? "Configured — not synced yet" : "Off";
+    : c.lastSync ? `${canWrite ? "Last synced" : "Last pulled"} ${esc(new Date(c.lastSync).toLocaleString("en-GB"))}`
+    : canRead ? "Will pull on the next load" : "Off";
   return `
     <div class="card">
       <div class="set-row">
         <div><b>Keep progress in a GitHub repo</b>
-          <div class="s-desc">Every finished block is pushed to one JSON file in a repo you own,
-          and pulled back when you open the trainer elsewhere. Histories are merged, so practising
-          on the laptop and the phone on the same day keeps both.</div></div>
+          <div class="s-desc">This device currently <b>${role}</b>.
+          The repo is public, so <b>reading needs nothing at all</b> — every device pulls your
+          history automatically when it opens the site. <b>Saving</b> needs a token, because a
+          token in a public page could be used by anyone. Set one up on the device you practise
+          on most; the rest stay read-only and still see everything. Histories merge, so the same
+          day on two devices keeps both.</div></div>
         <input type="checkbox" id="sync-on" ${c.enabled ? "checked" : ""}>
       </div>
       <div class="set-row">
@@ -1239,18 +1244,20 @@ function syncPanel(st) {
         <input type="text" id="sync-path" value="${esc(c.path)}" style="width:200px">
       </div>
       <div class="set-row">
-        <div style="flex:1"><b>Access token</b>
-          <div class="s-desc">A fine-grained personal access token, this repository only,
-          <b>Contents: read and write</b>. Stored in this browser, never in your exported backups.
-          Anyone who can use this device can read it — give it an expiry and nothing else.</div></div>
+        <div style="flex:1"><b>Access token <span class="muted">— only needed to save</span></b>
+          <div class="s-desc">Leave this empty and the device still pulls your progress; it just
+          cannot publish its own. To let it save: a fine-grained personal access token, this
+          repository only, <b>Contents: read and write</b>, with an expiry. Kept in this browser
+          and never written into the synced file or your exported backups, so it cannot leak
+          through them.</div></div>
         <input type="password" id="sync-token" placeholder="${tok ? "•••••• saved" : "github_pat_…"}"
                autocomplete="off" style="width:200px">
       </div>
       <div class="set-row">
         <div><b>Status</b><div class="s-desc" id="sync-status">${status}</div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button id="sync-restore" ${on ? "" : "disabled"}>⬇ Restore from repo</button>
-          <button id="sync-run" ${on ? "" : "disabled"}>⇅ Sync now</button>
+          <button id="sync-restore" ${canRead ? "" : "disabled"}>⬇ Pull from repo</button>
+          <button id="sync-run" ${canRead ? "" : "disabled"}>${canWrite ? "⇅ Sync now" : "⇅ Pull now"}</button>
         </div>
       </div>
       <p class="small muted" style="margin-top:10px">
@@ -1560,7 +1567,9 @@ document.addEventListener("keydown", e => {
    blocks in a row is one write, not three. */
 let syncTimer = null;
 function syncSoon(delay) {
-  if (!syncReady(App.state)) return;
+  // Only a device holding a token can publish; a read-only device pulled what
+  // it needed at boot and has nothing to push.
+  if (!syncCanWrite(App.state)) return;
   clearTimeout(syncTimer);
   syncTimer = setTimeout(async () => {
     const r = await syncNow(App.state);
@@ -1587,9 +1596,9 @@ ensureQuests(App.state);
 saveState(App.state);
 render();
 
-/* Pull whatever the repo already holds before this browser writes anything,
-   so opening the trainer on a new device restores instead of overwriting. */
-if (syncReady(App.state)) {
+/* Pull on every open. Reading the public repo needs no credential, so a device
+   that has never been set up still shows your history the moment it loads. */
+if (syncCanRead(App.state)) {
   syncNow(App.state).then(r => {
     if (r.ok && r.state) {
       App.state = r.state;
