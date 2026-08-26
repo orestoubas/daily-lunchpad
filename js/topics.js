@@ -14,10 +14,12 @@
 
 "use strict";
 
-const TOPIC_STAGES = ["vocab", "dialogue", "exercises", "roleplay"];
-const TOPIC_STAGE_XP = { vocab: 120, dialogue: 80, exercises: 150, roleplay: 150 };
+const TOPIC_STAGES = ["vocab", "dialogue", "exercises", "write", "roleplay"];
+/* Five stages, still 500 XP for a whole topic. */
+const TOPIC_STAGE_XP = { vocab: 100, dialogue: 70, exercises: 120, write: 110, roleplay: 100 };
 const TOPIC_STAGE_LABEL = {
-  vocab: "Vocabulary", dialogue: "Dialogue", exercises: "Exercises", roleplay: "Role-play"
+  vocab: "Vocabulary", dialogue: "Dialogue", exercises: "Exercises",
+  write: "Write it", roleplay: "Role-play"
 };
 
 function topicsAvailable() {
@@ -41,6 +43,11 @@ function topicsAtLevel(level) {
 function ensureTopicState(state) {
   const g = ensureGame(state);
   if (!g.topics) g.topics = {};
+  // "Write it" was added after the first topics shipped. A topic finished under
+  // the old four-stage shape stays finished rather than silently re-opening.
+  for (const t of Object.values(g.topics)) {
+    if (t && t.stages && t.done && !t.stages.write) t.stages.write = true;
+  }
   return g.topics;
 }
 
@@ -332,12 +339,17 @@ function topicStageDesc(t, s) {
   if (s === "vocab") return `${(t.vocab || []).length} words of this scene, tested four ways.`;
   if (s === "dialogue") return `Read the ${(t.dialogue || []).length}-turn conversation. Hover or tap any word for its meaning.`;
   if (s === "exercises") return `${(t.exercises || []).length} exercises on what you have just met.`;
+  if (s === "write") return `Spell ${writeSet(t).length} of this topic's words from their meaning — no options to pick from.`;
   return "You are one of the speakers. Type your lines — any correct phrasing counts.";
 }
 
 function startTopicStage(key, stage) {
   App.topicKey = key;
   if (stage === "dialogue") return go("dialogue");
+  if (stage === "write") {
+    App.wr = { i: 0, wrong: 0, tries: 0, shown: false };
+    return go("write");
+  }
   if (stage === "roleplay") {
     App.rp = { i: 0, tries: 0, wrong: 0, done: false, last: null };
     return go("roleplay");
@@ -587,4 +599,149 @@ function topicsHomeCard(st) {
       </div>
       <button data-nav="topics">${all.xp ? "Continue" : "Open Conversations"}</button>
     </div>`;
+}
+
+/* ---------- "Write it" — production, not recognition ----------
+   Multiple choice proves you can rule three things out; spelling the word from
+   its meaning proves you could actually say it. Nouns are asked with their
+   article, because in French the gender is part of the word — but leaving the
+   article off is treated as a near miss and corrected, not marked wrong twice. */
+
+function writeSet(t) {
+  // words worth producing: skip multi-clause expressions, keep it to 14
+  return (t.vocab || [])
+    .filter(v => v.fr && v.fr.split(" ").length <= 4)
+    .slice(0, 14);
+}
+
+function stripArticle(s) {
+  return normFr(s).replace(/^(le|la|les|l'|un|une|des)\s*/, "").trim();
+}
+
+function gradeWritten(input, target) {
+  const a = normFr(input), b = normFr(target);
+  if (!a) return { verdict: "empty" };
+  if (a === b) return { verdict: "correct" };
+  if (stripArticle(a) === stripArticle(b) && stripArticle(b)) {
+    return { verdict: "article", need: target };
+  }
+  // one wrong letter is a typo worth flagging rather than failing outright
+  if (Math.abs(a.length - b.length) <= 1 && levenshtein(a, b) <= 1) {
+    return { verdict: "typo", need: target };
+  }
+  return { verdict: "wrong", need: target };
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+
+function renderWriteView() {
+  const key = App.topicKey;
+  const t = TOPICS[key];
+  if (!t) return go("topics");
+  const wr = App.wr || (App.wr = { i: 0, wrong: 0, tries: 0, shown: false });
+  const set = writeSet(t);
+  const card = set[wr.i];
+
+  if (!card) {
+    const pct = set.length ? Math.round(100 * (1 - wr.wrong / set.length)) : 100;
+    $app.innerHTML = `
+      ${topicHead("✍️ " + esc(t.title), "topic")}
+      <div class="card" style="text-align:center">
+        <div style="font-size:2.4rem">✍️</div>
+        <h2 style="margin:6px 0">Written from memory</h2>
+        <p class="muted">${pct}% spelled right first time.</p>
+        <button class="primary" id="wr-finish">Collect ${TOPIC_STAGE_XP.write} XP</button>
+      </div>`;
+    document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
+    document.getElementById("wr-finish").onclick = () => {
+      completeTopicStage(key, "write", pct);
+      if (pct >= 80) confetti();
+      go("topic");
+    };
+    return;
+  }
+
+  $app.innerHTML = `
+    ${topicHead("✍️ " + esc(t.title), "topic")}
+    <p class="sub">${esc(t.place || "")} · write the French. Accents are optional; the word is not.</p>
+    <div class="card wr-card">
+      <div class="wr-count">${wr.i + 1} of ${set.length}</div>
+      <div class="wr-en">${esc(card.en)}</div>
+      ${card.pos ? `<div class="wr-pos">${esc(card.pos)}${card.gender ? " · " + esc(card.gender) : ""}</div>` : ""}
+      <label class="visually-hidden" for="wr-input">Type the French word</label>
+      <input type="text" id="wr-input" lang="fr" autocomplete="off" autocapitalize="off"
+             spellcheck="false" placeholder="en français…">
+      <div class="rp-row">
+        <button class="primary" id="wr-check">Check</button>
+        <button class="ghost" id="wr-skip">Show me</button>
+      </div>
+      <div id="wr-verdict"></div>
+    </div>`;
+
+  document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
+  const input = document.getElementById("wr-input");
+  input.focus();
+
+  const advance = () => { wr.i++; wr.tries = 0; wr.shown = false; render(); };
+  const v = () => document.getElementById("wr-verdict");
+
+  const check = () => {
+    const g = gradeWritten(input.value, card.fr);
+    if (g.verdict === "empty") return;
+    if (g.verdict === "correct") {
+      v().innerHTML = `<div class="rp-ok">✓ ${esc(card.fr)}${card.expl ? `<div class="rp-alts">${esc(card.expl)}</div>` : ""}</div>`;
+      input.disabled = true;
+      const b = document.getElementById("wr-check");
+      b.textContent = "Next →"; b.onclick = advance;
+      announce("Correct.");
+      return;
+    }
+    wr.tries++;
+    if (wr.tries === 1) wr.wrong++;
+    if (g.verdict === "article") {
+      v().innerHTML = `<div class="rp-no"><b>Almost — the article is part of the word.</b>
+        <div class="rp-line"><span class="rp-lbl">Write</span><span lang="fr">${esc(card.fr)}</span></div>
+        <div class="rp-hint">In French the gender travels with the noun; learning it without the article means learning half of it.</div></div>`;
+    } else if (g.verdict === "typo") {
+      v().innerHTML = `<div class="rp-no"><b>One letter out.</b>
+        <div class="rp-line"><span class="rp-lbl">You wrote</span><span lang="fr">${esc(input.value)}</span></div>
+        <div class="rp-hint">Try again — you have it.</div></div>`;
+      input.select();
+      return;
+    } else {
+      const a = autopsy(input.value, card.fr);
+      v().innerHTML = `<div class="rp-no">
+        <div class="rp-line"><span class="rp-lbl">You wrote</span>
+          <span lang="fr">${a.yourMarks.map(m => `<span class="${m.ok ? "w-ok" : "w-bad"}">${esc(m.w)}</span>`).join(" ")}</span></div>
+        ${wr.tries >= 2 ? `<div class="rp-line"><span class="rp-lbl">The word is</span><span lang="fr">${esc(card.fr)}</span></div>` : `<div class="rp-hint">Not it — one more try.</div>`}
+      </div>`;
+      if (wr.tries < 2) { input.select(); return; }
+    }
+    const b = document.getElementById("wr-check");
+    b.textContent = "Next →"; b.onclick = advance;
+    input.disabled = true;
+  };
+
+  document.getElementById("wr-check").onclick = check;
+  input.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); document.getElementById("wr-check").click(); } };
+  document.getElementById("wr-skip").onclick = () => {
+    if (wr.tries === 0) wr.wrong++;
+    wr.tries = 2;
+    v().innerHTML = `<div class="rp-no"><div class="rp-line"><span class="rp-lbl">The word is</span>
+      <span lang="fr">${esc(card.fr)}</span></div>${card.expl ? `<div class="rp-hint">${esc(card.expl)}</div>` : ""}</div>`;
+    input.value = card.fr; input.disabled = true;
+    const b = document.getElementById("wr-check");
+    b.textContent = "Next →"; b.onclick = advance;
+  };
 }

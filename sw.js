@@ -1,6 +1,6 @@
 /* Service worker — cache-first for the app shell so the trainer works offline
    (train on the metro, in a lift, on a plane). Bump CACHE on every deploy. */
-const CACHE = "launchpad-v12";
+const CACHE = "launchpad-v13";
 
 const ASSETS = [
   "./",

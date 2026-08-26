@@ -42,6 +42,7 @@ function render() {
   else if (App.view === "topics") renderTopicsView();
   else if (App.view === "topic") renderTopicView();
   else if (App.view === "dialogue") renderDialogueView();
+  else if (App.view === "write") renderWriteView();
   else if (App.view === "roleplay") renderRoleplayView();
   else if (App.view === "writing") renderWriting();
   else if (App.view === "settings") renderSettings();

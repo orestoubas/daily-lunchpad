@@ -113,3 +113,16 @@
   .rp-lbl { min-width: 100%; }
   .rp-scroll { max-height: 34vh; }
 }
+
+/* ---- Write it ---- */
+.wr-card { text-align: center; }
+.wr-count { font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); }
+.wr-en { font-size: 1.5rem; font-weight: 800; margin: 10px 0 2px; }
+.wr-pos { font-size: .72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+.wr-card input {
+  width: 100%; max-width: 420px; font: inherit; font-size: 1.1rem; text-align: center;
+  padding: 12px 14px; border-radius: var(--r-md); border: 2px solid var(--grid); background: var(--surface-1);
+}
+.wr-card input:focus-visible { outline: 2px solid var(--c-french); outline-offset: 1px; }
+.wr-card .rp-row { justify-content: center; }
+.wr-card .rp-line { justify-content: center; }

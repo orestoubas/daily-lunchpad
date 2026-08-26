@@ -263,6 +263,98 @@ const navOverflow = await navNarrow.evaluate(() => {
 });
 ok(navOverflow === 0, `top nav scrolls sideways at 360px (${navOverflow}px)`);
 
+/* ---------- 10. Conversations: stages, unlock, typing and completion ---------- */
+const tp = await newPage({ viewport: { width: 1200, height: 900 } });
+await tp.goto(APP);
+await tp.evaluate(() => localStorage.clear());
+await tp.reload();
+await tp.waitForTimeout(400);
+
+const hasTopics = await tp.evaluate(() => typeof TOPICS !== "undefined" && Object.keys(TOPICS).length > 0);
+if (hasTopics) {
+  ok(!!(await tp.$(".topics-card")), "Conversations card missing from the dashboard");
+  await tp.click('.topics-card [data-nav="topics"]');
+  await tp.waitForTimeout(300);
+
+  const shape = await tp.evaluate(() => ({
+    cards: document.querySelectorAll(".topiccard").length,
+    locked: document.querySelectorAll(".topiccard.locked").length,
+    levels: [...document.querySelectorAll("[data-tlevel]")].map(b => ({ l: b.dataset.tlevel, off: b.disabled }))
+  }));
+  ok(shape.cards === 10, `expected 10 topics at the first level, got ${shape.cards}`);
+  ok(shape.locked === shape.cards - 1, "only the first topic of a level should start unlocked");
+  ok(shape.levels.length > 1 && shape.levels[1].off, "a higher level must stay locked until the one below is done");
+
+  await tp.click('.topiccard:not(.locked) [data-topic]');
+  await tp.waitForTimeout(300);
+  const stages = await tp.evaluate(() => ({
+    all: document.querySelectorAll(".tp-stage").length,
+    open: document.querySelectorAll(".tp-stage:not(.locked)").length,
+    names: (typeof TOPIC_STAGES !== "undefined" ? TOPIC_STAGES : []).join(",")
+  }));
+  ok(stages.all === 5, `expected 5 stages, got ${stages.all}`);
+  ok(stages.open === 1, "stages must unlock in order, not all at once");
+  ok(stages.names.includes("write"), "the write-it stage is missing");
+
+  // the dialogue must actually carry hover glosses
+  await tp.evaluate(() => { App.view = "dialogue"; render(); });
+  await tp.waitForTimeout(300);
+  const glosses = await tp.evaluate(() => document.querySelectorAll(".gl[data-gl]").length);
+  ok(glosses > 0, "dialogue has no hover translations");
+
+  // typing is graded on meaning, not on the keyboard
+  const grading = await tp.evaluate(() => {
+    const key = Object.keys(TOPICS)[0];
+    const card = writeSet(TOPICS[key])[0];
+    const plain = card.fr.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    const noArt = card.fr.replace(/^(le|la|les|l')\s*/i, "");
+    return {
+      exact: gradeWritten(card.fr, card.fr).verdict,
+      loose: gradeWritten(plain, card.fr).verdict,
+      article: /^(le|la|les|l')/i.test(card.fr) ? gradeWritten(noArt, card.fr).verdict : "article",
+      junk: gradeWritten("xyzzy", card.fr).verdict
+    };
+  });
+  ok(grading.exact === "correct", "an exact answer must be marked correct");
+  ok(grading.loose === "correct", "accents and case must not decide a written answer");
+  ok(grading.article === "article", "a missing article should be flagged, not silently accepted");
+  ok(grading.junk === "wrong", "a wrong word must not be accepted");
+
+  // role-play accepts every listed phrasing and nothing else
+  const rp = await tp.evaluate(() => {
+    const key = Object.keys(TOPICS)[0];
+    const turn = TOPICS[key].dialogue.find(t => t.who === "you" && t.accept && t.accept.length);
+    if (!turn) return null;
+    return {
+      all: turn.accept.every(a => matchesAccepted(a, turn.accept)),
+      upper: matchesAccepted(turn.accept[0].toUpperCase(), turn.accept),
+      junk: matchesAccepted("bonjour monsieur le poisson", turn.accept)
+    };
+  });
+  ok(rp && rp.all, "every listed phrasing must be accepted");
+  ok(rp && rp.upper, "role-play must ignore case");
+  ok(rp && !rp.junk, "role-play must reject a wrong sentence");
+
+  // finishing every stage finishes the topic, awards the badge and opens the next
+  const done = await tp.evaluate(() => {
+    const key = Object.keys(TOPICS)[0];
+    TOPIC_STAGES.forEach(s => completeTopicStage(key, s, 100));
+    const slug = TOPICS[key].slug, level = TOPICS[key].level;
+    return {
+      done: topicDone(App.state, key),
+      xp: App.state.game.topics[key].xp,
+      badge: !!App.state.game.badges["topic-" + slug],
+      next: topicUnlocked(App.state, topicsAtLevel(level)[1].slug, level),
+      phrases: Object.keys(App.state.srs).filter(k => k.startsWith("ph-")).length
+    };
+  });
+  ok(done.done, "completing every stage should finish the topic");
+  ok(done.xp === 500, `a finished topic should be worth 500 XP, got ${done.xp}`);
+  ok(done.badge, "finishing a topic should award its badge");
+  ok(done.next, "finishing a topic should unlock the next one");
+  ok(done.phrases > 0, "the topic's phrases should enter the review schedule");
+}
+
 await browser.close();
 
 /* ---------- report ---------- */
@@ -272,4 +364,4 @@ if (failures.length) {
   failures.forEach(f => console.error(" ✗ " + f));
   process.exit(1);
 }
-console.log("smoke test passed — routine, epso block, mock, library, writing, backup, mobile, top nav");
+console.log("smoke test passed — routine, epso block, mock, library, writing, backup, mobile, top nav, conversations");
