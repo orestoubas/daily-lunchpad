@@ -1,3505 +1,1007 @@
-/* French vocabulary bank — CEFR-tagged cards for the spaced-repetition engine. */
+/* French vocabulary bank — CEFR-tagged cards for the spaced-repetition engine.
+   pos and gender drive distractor selection: a noun question must never be
+   answerable just by being the only noun in the list. */
 "use strict";
 
 const FRENCH_VOCAB = [
-  {
-    "id": "v001",
-    "level": "A2",
-    "fr": "la réunion",
-    "en": "the meeting",
-    "ex": "La réunion commence à neuf heures."
-  },
-  {
-    "id": "v002",
-    "level": "A2",
-    "fr": "le bureau",
-    "en": "the office / desk",
-    "ex": "Je vais au bureau en métro."
-  },
-  {
-    "id": "v003",
-    "level": "A2",
-    "fr": "le collègue",
-    "en": "the colleague",
-    "ex": "Mon collègue est très sympathique."
-  },
-  {
-    "id": "v004",
-    "level": "A2",
-    "fr": "le dossier",
-    "en": "the file / folder",
-    "ex": "J'ai mis le dossier sur ton bureau."
-  },
-  {
-    "id": "v005",
-    "level": "A2",
-    "fr": "envoyer",
-    "en": "to send",
-    "ex": "Je vais envoyer le courriel demain matin."
-  },
-  {
-    "id": "v006",
-    "level": "A2",
-    "fr": "recevoir",
-    "en": "to receive",
-    "ex": "Nous avons reçu votre message hier."
-  },
-  {
-    "id": "v007",
-    "level": "A2",
-    "fr": "la semaine",
-    "en": "the week",
-    "ex": "La semaine prochaine, je suis en vacances."
-  },
-  {
-    "id": "v008",
-    "level": "A2",
-    "fr": "tôt",
-    "en": "early",
-    "ex": "Je me lève tôt tous les jours."
-  },
-  {
-    "id": "v009",
-    "level": "A2",
-    "fr": "en retard",
-    "en": "late",
-    "ex": "Désolé, je suis en retard à cause du train."
-  },
-  {
-    "id": "v010",
-    "level": "A2",
-    "fr": "la réponse",
-    "en": "the answer / reply",
-    "ex": "J'attends encore sa réponse."
-  },
-  {
-    "id": "v011",
-    "level": "A2",
-    "fr": "demander",
-    "en": "to ask (for)",
-    "ex": "Elle demande une information au guichet."
-  },
-  {
-    "id": "v012",
-    "level": "A2",
-    "fr": "comprendre",
-    "en": "to understand",
-    "ex": "Je ne comprends pas cette phrase."
-  },
-  {
-    "id": "v013",
-    "level": "A2",
-    "fr": "aider",
-    "en": "to help",
-    "ex": "Tu peux m'aider avec ce document ?"
-  },
-  {
-    "id": "v014",
-    "level": "A2",
-    "fr": "chercher",
-    "en": "to look for",
-    "ex": "Je cherche la salle de réunion."
-  },
-  {
-    "id": "v015",
-    "level": "A2",
-    "fr": "trouver",
-    "en": "to find",
-    "ex": "J'ai trouvé la solution au problème."
-  },
-  {
-    "id": "v016",
-    "level": "A2",
-    "fr": "commencer",
-    "en": "to begin",
-    "ex": "Le cours commence dans dix minutes."
-  },
-  {
-    "id": "v017",
-    "level": "A2",
-    "fr": "finir",
-    "en": "to finish",
-    "ex": "Je finis mon travail à dix-huit heures."
-  },
-  {
-    "id": "v018",
-    "level": "A2",
-    "fr": "le rendez-vous",
-    "en": "the appointment",
-    "ex": "J'ai un rendez-vous chez le médecin jeudi."
-  },
-  {
-    "id": "v019",
-    "level": "A2",
-    "fr": "la ville",
-    "en": "the city",
-    "ex": "Bruxelles est une ville internationale."
-  },
-  {
-    "id": "v020",
-    "level": "A2",
-    "fr": "le pays",
-    "en": "the country",
-    "ex": "La France est un grand pays européen."
-  },
-  {
-    "id": "v021",
-    "level": "A2",
-    "fr": "la langue",
-    "en": "the language",
-    "ex": "Elle parle trois langues étrangères."
-  },
-  {
-    "id": "v022",
-    "level": "A2",
-    "fr": "apprendre",
-    "en": "to learn",
-    "ex": "J'apprends le français tous les matins."
-  },
-  {
-    "id": "v023",
-    "level": "A2",
-    "fr": "le repas",
-    "en": "the meal",
-    "ex": "Nous prenons le repas de midi ensemble."
-  },
-  {
-    "id": "v024",
-    "level": "A2",
-    "fr": "acheter",
-    "en": "to buy",
-    "ex": "Il achète un billet de train pour Paris."
-  },
-  {
-    "id": "v025",
-    "level": "A2",
-    "fr": "payer",
-    "en": "to pay",
-    "ex": "Vous pouvez payer par carte."
-  },
-  {
-    "id": "v026",
-    "level": "A2",
-    "fr": "cher / chère",
-    "en": "expensive / dear",
-    "ex": "Cet hôtel est trop cher pour moi."
-  },
-  {
-    "id": "v027",
-    "level": "A2",
-    "fr": "le temps",
-    "en": "the time / weather",
-    "ex": "Je n'ai pas le temps aujourd'hui."
-  },
-  {
-    "id": "v028",
-    "level": "A2",
-    "fr": "demain",
-    "en": "tomorrow",
-    "ex": "On se voit demain après la réunion."
-  },
-  {
-    "id": "v029",
-    "level": "A2",
-    "fr": "hier",
-    "en": "yesterday",
-    "ex": "Hier, j'ai travaillé jusqu'à vingt heures."
-  },
-  {
-    "id": "v030",
-    "level": "A2",
-    "fr": "souvent",
-    "en": "often",
-    "ex": "Je voyage souvent pour le travail."
-  },
-  {
-    "id": "v031",
-    "level": "A2",
-    "fr": "toujours",
-    "en": "always",
-    "ex": "Elle arrive toujours à l'heure."
-  },
-  {
-    "id": "v032",
-    "level": "A2",
-    "fr": "jamais",
-    "en": "never",
-    "ex": "Il ne boit jamais de café le soir."
-  },
-  {
-    "id": "v033",
-    "level": "A2",
-    "fr": "la question",
-    "en": "the question",
-    "ex": "Avez-vous des questions sur ce point ?"
-  },
-  {
-    "id": "v034",
-    "level": "A2",
-    "fr": "important(e)",
-    "en": "important",
-    "ex": "C'est une décision très importante."
-  },
-  {
-    "id": "v035",
-    "level": "A2",
-    "fr": "facile",
-    "en": "easy",
-    "ex": "Ce test est plus facile que prévu."
-  },
-  {
-    "id": "v036",
-    "level": "A2",
-    "fr": "difficile",
-    "en": "difficult",
-    "ex": "La grammaire française est parfois difficile."
-  },
-  {
-    "id": "v037",
-    "level": "A2",
-    "fr": "travailler",
-    "en": "to work",
-    "ex": "Je travaille dans une institution européenne."
-  },
-  {
-    "id": "v038",
-    "level": "A2",
-    "fr": "l'entreprise",
-    "en": "the company",
-    "ex": "Cette entreprise emploie deux cents personnes."
-  },
-  {
-    "id": "v039",
-    "level": "A2",
-    "fr": "le voyage",
-    "en": "the trip",
-    "ex": "Le voyage à Strasbourg dure quatre heures."
-  },
-  {
-    "id": "v040",
-    "level": "A2",
-    "fr": "ensemble",
-    "en": "together",
-    "ex": "Nous préparons le projet ensemble."
-  },
-  {
-    "id": "v041",
-    "level": "B1",
-    "fr": "l'objectif (m)",
-    "en": "the objective / goal",
-    "ex": "Notre objectif est d'atteindre 90 % de réussite."
-  },
-  {
-    "id": "v042",
-    "level": "B1",
-    "fr": "l'échéance (f)",
-    "en": "the deadline",
-    "ex": "L'échéance du projet est fixée à vendredi."
-  },
-  {
-    "id": "v043",
-    "level": "B1",
-    "fr": "la compétence",
-    "en": "the skill / competence",
-    "ex": "Ce poste exige des compétences en informatique."
-  },
-  {
-    "id": "v044",
-    "level": "B1",
-    "fr": "améliorer",
-    "en": "to improve",
-    "ex": "Je veux améliorer mon niveau de français."
-  },
-  {
-    "id": "v045",
-    "level": "B1",
-    "fr": "la formation",
-    "en": "the training",
-    "ex": "Elle suit une formation en gestion de projet."
-  },
-  {
-    "id": "v046",
-    "level": "B1",
-    "fr": "le stage",
-    "en": "the internship",
-    "ex": "Il a fait un stage à la Commission européenne."
-  },
-  {
-    "id": "v047",
-    "level": "B1",
-    "fr": "postuler",
-    "en": "to apply (for a job)",
-    "ex": "J'ai postulé à un concours européen."
-  },
-  {
-    "id": "v048",
-    "level": "B1",
-    "fr": "l'entretien (m)",
-    "en": "the interview",
-    "ex": "L'entretien d'embauche a duré une heure."
-  },
-  {
-    "id": "v049",
-    "level": "B1",
-    "fr": "le salaire",
-    "en": "the salary",
-    "ex": "Le salaire est négociable selon l'expérience."
-  },
-  {
-    "id": "v050",
-    "level": "B1",
-    "fr": "la réussite",
-    "en": "the success",
-    "ex": "La réussite demande de la discipline."
-  },
-  {
-    "id": "v051",
-    "level": "B1",
-    "fr": "échouer",
-    "en": "to fail",
-    "ex": "Il a échoué de peu à l'examen."
-  },
-  {
-    "id": "v052",
-    "level": "B1",
-    "fr": "l'avis (m)",
-    "en": "the opinion",
-    "ex": "À mon avis, cette mesure est nécessaire."
-  },
-  {
-    "id": "v053",
-    "level": "B1",
-    "fr": "convaincre",
-    "en": "to convince",
-    "ex": "Elle a convaincu ses collègues d'adopter le plan."
-  },
-  {
-    "id": "v054",
-    "level": "B1",
-    "fr": "le comportement",
-    "en": "the behaviour",
-    "ex": "Son comportement en réunion est professionnel."
-  },
-  {
-    "id": "v055",
-    "level": "B1",
-    "fr": "la confiance",
-    "en": "the trust / confidence",
-    "ex": "La confiance se gagne avec le temps."
-  },
-  {
-    "id": "v056",
-    "level": "B1",
-    "fr": "s'inscrire",
-    "en": "to register / sign up",
-    "ex": "Je me suis inscrit au concours EPSO."
-  },
-  {
-    "id": "v057",
-    "level": "B1",
-    "fr": "le niveau",
-    "en": "the level",
-    "ex": "Son niveau de français correspond au B1."
-  },
-  {
-    "id": "v058",
-    "level": "B1",
-    "fr": "la moyenne",
-    "en": "the average",
-    "ex": "Ma moyenne aux tests dépasse quatre-vingts pour cent."
-  },
-  {
-    "id": "v059",
-    "level": "B1",
-    "fr": "augmenter",
-    "en": "to increase",
-    "ex": "Les prix ont augmenté de cinq pour cent."
-  },
-  {
-    "id": "v060",
-    "level": "B1",
-    "fr": "diminuer",
-    "en": "to decrease",
-    "ex": "Le chômage diminue lentement cette année."
-  },
-  {
-    "id": "v061",
-    "level": "B1",
-    "fr": "la croissance",
-    "en": "the growth",
-    "ex": "La croissance économique reste faible en Europe."
-  },
-  {
-    "id": "v062",
-    "level": "B1",
-    "fr": "le chômage",
-    "en": "the unemployment",
-    "ex": "Le chômage des jeunes est un vrai défi."
-  },
-  {
-    "id": "v063",
-    "level": "B1",
-    "fr": "l'impôt (m)",
-    "en": "the tax",
-    "ex": "Chaque citoyen paie des impôts sur le revenu."
-  },
-  {
-    "id": "v064",
-    "level": "B1",
-    "fr": "la loi",
-    "en": "the law",
-    "ex": "Le Parlement a voté une nouvelle loi."
-  },
-  {
-    "id": "v065",
-    "level": "B1",
-    "fr": "le droit",
-    "en": "the right / law (field)",
-    "ex": "Elle étudie le droit européen à Bruxelles."
-  },
-  {
-    "id": "v066",
-    "level": "B1",
-    "fr": "élire",
-    "en": "to elect",
-    "ex": "Les citoyens élisent leurs députés tous les cinq ans."
-  },
-  {
-    "id": "v067",
-    "level": "B1",
-    "fr": "le citoyen",
-    "en": "the citizen",
-    "ex": "Tout citoyen européen peut voter aux élections européennes."
-  },
-  {
-    "id": "v068",
-    "level": "B1",
-    "fr": "la frontière",
-    "en": "the border",
-    "ex": "On traverse la frontière sans contrôle dans l'espace Schengen."
-  },
-  {
-    "id": "v069",
-    "level": "B1",
-    "fr": "l'environnement (m)",
-    "en": "the environment",
-    "ex": "Protéger l'environnement est une priorité de l'Union."
-  },
-  {
-    "id": "v070",
-    "level": "B1",
-    "fr": "la santé",
-    "en": "the health",
-    "ex": "La santé publique relève surtout des États membres."
-  },
-  {
-    "id": "v071",
-    "level": "B1",
-    "fr": "la sécurité",
-    "en": "the security / safety",
-    "ex": "La sécurité routière s'est améliorée depuis dix ans."
-  },
-  {
-    "id": "v072",
-    "level": "B1",
-    "fr": "le développement",
-    "en": "the development",
-    "ex": "Le développement durable guide nos politiques."
-  },
-  {
-    "id": "v073",
-    "level": "B1",
-    "fr": "soutenir",
-    "en": "to support",
-    "ex": "L'Union soutient les régions les plus pauvres."
-  },
-  {
-    "id": "v074",
-    "level": "B1",
-    "fr": "empêcher",
-    "en": "to prevent",
-    "ex": "Rien ne peut empêcher le progrès technologique."
-  },
-  {
-    "id": "v075",
-    "level": "B1",
-    "fr": "atteindre",
-    "en": "to reach / achieve",
-    "ex": "Nous avons atteint notre objectif annuel."
-  },
-  {
-    "id": "v076",
-    "level": "B1",
-    "fr": "le résultat",
-    "en": "the result",
-    "ex": "Les résultats du test seront publiés lundi."
-  },
-  {
-    "id": "v077",
-    "level": "B1",
-    "fr": "d'ailleurs",
-    "en": "besides / by the way",
-    "ex": "D'ailleurs, il connaît très bien ce sujet."
-  },
-  {
-    "id": "v078",
-    "level": "B1",
-    "fr": "pourtant",
-    "en": "yet / however",
-    "ex": "C'est simple, pourtant beaucoup se trompent."
-  },
-  {
-    "id": "v079",
-    "level": "B1",
-    "fr": "grâce à",
-    "en": "thanks to",
-    "ex": "Grâce à toi, le projet a réussi."
-  },
-  {
-    "id": "v080",
-    "level": "B1",
-    "fr": "malgré",
-    "en": "despite",
-    "ex": "Malgré la pluie, la visite a eu lieu."
-  },
-  {
-    "id": "v081",
-    "level": "B2",
-    "fr": "l'enjeu (m)",
-    "en": "the stake / challenge",
-    "ex": "Le climat est l'enjeu majeur de notre décennie."
-  },
-  {
-    "id": "v082",
-    "level": "B2",
-    "fr": "la mise en œuvre",
-    "en": "the implementation",
-    "ex": "La mise en œuvre de la directive prendra deux ans."
-  },
-  {
-    "id": "v083",
-    "level": "B2",
-    "fr": "le préalable",
-    "en": "the prerequisite",
-    "ex": "Un accord politique est un préalable indispensable."
-  },
-  {
-    "id": "v084",
-    "level": "B2",
-    "fr": "l'élargissement (m)",
-    "en": "the enlargement",
-    "ex": "L'élargissement de l'Union exige des réformes."
-  },
-  {
-    "id": "v085",
-    "level": "B2",
-    "fr": "la concurrence",
-    "en": "the competition",
-    "ex": "La Commission veille à une concurrence loyale."
-  },
-  {
-    "id": "v086",
-    "level": "B2",
-    "fr": "la subvention",
-    "en": "the subsidy / grant",
-    "ex": "Cette région reçoit des subventions européennes."
-  },
-  {
-    "id": "v087",
-    "level": "B2",
-    "fr": "le budget",
-    "en": "the budget",
-    "ex": "Le budget pluriannuel couvre sept années."
-  },
-  {
-    "id": "v088",
-    "level": "B2",
-    "fr": "l'encadrement (m)",
-    "en": "the framework / supervision",
-    "ex": "L'encadrement des aides d'État est strict."
-  },
-  {
-    "id": "v089",
-    "level": "B2",
-    "fr": "aboutir à",
-    "en": "to lead to / result in",
-    "ex": "Les négociations ont abouti à un compromis."
-  },
-  {
-    "id": "v090",
-    "level": "B2",
-    "fr": "entériner",
-    "en": "to ratify / endorse",
-    "ex": "Le Conseil a entériné l'accord conclu hier."
-  },
-  {
-    "id": "v091",
-    "level": "B2",
-    "fr": "préconiser",
-    "en": "to recommend / advocate",
-    "ex": "Le rapport préconise une réforme du système."
-  },
-  {
-    "id": "v092",
-    "level": "B2",
-    "fr": "s'engager à",
-    "en": "to commit to",
-    "ex": "Les États se sont engagés à réduire leurs émissions."
-  },
-  {
-    "id": "v093",
-    "level": "B2",
-    "fr": "la cohésion",
-    "en": "the cohesion",
-    "ex": "La politique de cohésion réduit les écarts régionaux."
-  },
-  {
-    "id": "v094",
-    "level": "B2",
-    "fr": "la subsidiarité",
-    "en": "the subsidiarity",
-    "ex": "La subsidiarité limite l'action de l'Union au nécessaire."
-  },
-  {
-    "id": "v095",
-    "level": "B2",
-    "fr": "le traité",
-    "en": "the treaty",
-    "ex": "Le traité de Lisbonne est entré en vigueur en 2009."
-  },
-  {
-    "id": "v096",
-    "level": "B2",
-    "fr": "la directive",
-    "en": "the directive",
-    "ex": "Une directive fixe un objectif à transposer en droit national."
-  },
-  {
-    "id": "v097",
-    "level": "B2",
-    "fr": "le règlement",
-    "en": "the regulation",
-    "ex": "Un règlement s'applique directement dans tous les États membres."
-  },
-  {
-    "id": "v098",
-    "level": "B2",
-    "fr": "la portée",
-    "en": "the scope / reach",
-    "ex": "Cette décision a une portée considérable."
-  },
-  {
-    "id": "v099",
-    "level": "B2",
-    "fr": "en vigueur",
-    "en": "in force",
-    "ex": "Cette règle est en vigueur depuis janvier."
-  },
-  {
-    "id": "v100",
-    "level": "B2",
-    "fr": "le recours",
-    "en": "the appeal / recourse",
-    "ex": "L'entreprise a introduit un recours devant la Cour."
-  },
-  {
-    "id": "v101",
-    "level": "B2",
-    "fr": "trancher",
-    "en": "to settle / decide",
-    "ex": "La Cour de justice a tranché le litige."
-  },
-  {
-    "id": "v102",
-    "level": "B2",
-    "fr": "le litige",
-    "en": "the dispute",
-    "ex": "Le litige commercial dure depuis trois ans."
-  },
-  {
-    "id": "v103",
-    "level": "B2",
-    "fr": "l'ampleur (f)",
-    "en": "the extent / magnitude",
-    "ex": "On mesure mal l'ampleur du phénomène."
-  },
-  {
-    "id": "v104",
-    "level": "B2",
-    "fr": "la contrainte",
-    "en": "the constraint",
-    "ex": "Nous travaillons sous de fortes contraintes budgétaires."
-  },
-  {
-    "id": "v105",
-    "level": "B2",
-    "fr": "l'essor (m)",
-    "en": "the rapid growth / rise",
-    "ex": "L'essor du numérique transforme l'économie."
-  },
-  {
-    "id": "v106",
-    "level": "B2",
-    "fr": "le clivage",
-    "en": "the divide / split",
-    "ex": "Ce débat révèle un clivage entre générations."
-  },
-  {
-    "id": "v107",
-    "level": "B2",
-    "fr": "la concertation",
-    "en": "the consultation / dialogue",
-    "ex": "La réforme a été menée en concertation avec les syndicats."
-  },
-  {
-    "id": "v108",
-    "level": "B2",
-    "fr": "l'aboutissement (m)",
-    "en": "the culmination / outcome",
-    "ex": "Ce texte est l'aboutissement de longues négociations."
-  },
-  {
-    "id": "v109",
-    "level": "B2",
-    "fr": "étayer",
-    "en": "to support / back up (an argument)",
-    "ex": "Il faut étayer votre argument par des chiffres."
-  },
-  {
-    "id": "v110",
-    "level": "B2",
-    "fr": "nuancer",
-    "en": "to qualify / nuance",
-    "ex": "Permettez-moi de nuancer cette affirmation."
-  },
-  {
-    "id": "v111",
-    "level": "B2",
-    "fr": "la vraisemblance",
-    "en": "the plausibility / likelihood",
-    "ex": "Selon toute vraisemblance, l'accord sera signé."
-  },
-  {
-    "id": "v112",
-    "level": "B2",
-    "fr": "en revanche",
-    "en": "on the other hand",
-    "ex": "Le coût est élevé ; en revanche, les bénéfices sont durables."
-  },
-  {
-    "id": "v113",
-    "level": "B2",
-    "fr": "dès lors que",
-    "en": "as soon as / given that",
-    "ex": "Dès lors que la loi est adoptée, elle s'impose à tous."
-  },
-  {
-    "id": "v114",
-    "level": "B2",
-    "fr": "quant à",
-    "en": "as for / regarding",
-    "ex": "Quant au budget, il sera examiné en novembre."
-  },
-  {
-    "id": "v115",
-    "level": "B2",
-    "fr": "sous réserve de",
-    "en": "subject to",
-    "ex": "L'accord s'applique sous réserve de ratification."
-  },
-  {
-    "id": "v116",
-    "level": "B2",
-    "fr": "le cas échéant",
-    "en": "if need be / where applicable",
-    "ex": "Le cas échéant, la Commission proposera une révision."
-  },
-  {
-    "id": "v117",
-    "level": "B2",
-    "fr": "la relance",
-    "en": "the recovery / stimulus",
-    "ex": "Le plan de relance a soutenu l'économie après la crise."
-  },
-  {
-    "id": "v118",
-    "level": "B2",
-    "fr": "l'assainissement (m)",
-    "en": "the consolidation / clean-up",
-    "ex": "L'assainissement des finances publiques reste prioritaire."
-  },
-  {
-    "id": "v119",
-    "level": "B2",
-    "fr": "la passation de marché",
-    "en": "the procurement",
-    "ex": "La passation de marchés publics obéit à des règles strictes."
-  },
-  {
-    "id": "v120",
-    "level": "B2",
-    "fr": "l'État de droit",
-    "en": "the rule of law",
-    "ex": "Le respect de l'État de droit conditionne certains fonds européens."
-  },
-  {
-    "id": "v121",
-    "level": "A2",
-    "fr": "le matin",
-    "en": "the morning",
-    "ex": "Je lis mes courriels le matin."
-  },
-  {
-    "id": "v122",
-    "level": "A2",
-    "fr": "le soir",
-    "en": "the evening",
-    "ex": "Le soir, je rentre chez moi vers dix-neuf heures."
-  },
-  {
-    "id": "v123",
-    "level": "A2",
-    "fr": "la porte",
-    "en": "the door",
-    "ex": "Ferme la porte, s'il te plaît."
-  },
-  {
-    "id": "v124",
-    "level": "A2",
-    "fr": "la fenêtre",
-    "en": "the window",
-    "ex": "On peut ouvrir la fenêtre ? Il fait chaud."
-  },
-  {
-    "id": "v125",
-    "level": "A2",
-    "fr": "répondre",
-    "en": "to answer",
-    "ex": "Je vais répondre à ce message cet après-midi."
-  },
-  {
-    "id": "v126",
-    "level": "A2",
-    "fr": "appeler",
-    "en": "to call",
-    "ex": "Tu peux m'appeler après la réunion ?"
-  },
-  {
-    "id": "v127",
-    "level": "A2",
-    "fr": "écrire",
-    "en": "to write",
-    "ex": "Elle écrit un rapport pour son chef."
-  },
-  {
-    "id": "v128",
-    "level": "A2",
-    "fr": "lire",
-    "en": "to read",
-    "ex": "Je lis le journal dans le train."
-  },
-  {
-    "id": "v129",
-    "level": "A2",
-    "fr": "écouter",
-    "en": "to listen",
-    "ex": "J'écoute un podcast en français chaque matin."
-  },
-  {
-    "id": "v130",
-    "level": "A2",
-    "fr": "boire",
-    "en": "to drink",
-    "ex": "Il boit un café avant de commencer."
-  },
-  {
-    "id": "v131",
-    "level": "A2",
-    "fr": "l'eau (f)",
-    "en": "the water",
-    "ex": "Un verre d'eau, s'il vous plaît."
-  },
-  {
-    "id": "v132",
-    "level": "A2",
-    "fr": "le pain",
-    "en": "the bread",
-    "ex": "J'achète du pain à la boulangerie."
-  },
-  {
-    "id": "v133",
-    "level": "A2",
-    "fr": "la gare",
-    "en": "the station",
-    "ex": "La gare est à cinq minutes du bureau."
-  },
-  {
-    "id": "v134",
-    "level": "A2",
-    "fr": "le billet",
-    "en": "the ticket",
-    "ex": "J'ai réservé un billet pour Strasbourg."
-  },
-  {
-    "id": "v135",
-    "level": "A2",
-    "fr": "la rue",
-    "en": "the street",
-    "ex": "Le restaurant est dans la rue à côté."
-  },
-  {
-    "id": "v136",
-    "level": "A2",
-    "fr": "la maison",
-    "en": "the house",
-    "ex": "Je travaille à la maison le vendredi."
-  },
-  {
-    "id": "v137",
-    "level": "A2",
-    "fr": "l'appartement (m)",
-    "en": "the flat / apartment",
-    "ex": "Son appartement est près du centre."
-  },
-  {
-    "id": "v138",
-    "level": "A2",
-    "fr": "la clé",
-    "en": "the key",
-    "ex": "J'ai oublié mes clés au bureau."
-  },
-  {
-    "id": "v139",
-    "level": "A2",
-    "fr": "ouvrir",
-    "en": "to open",
-    "ex": "Le secrétariat ouvre à huit heures et demie."
-  },
-  {
-    "id": "v140",
-    "level": "A2",
-    "fr": "fermer",
-    "en": "to close",
-    "ex": "La bibliothèque ferme à vingt heures."
-  },
-  {
-    "id": "v141",
-    "level": "A2",
-    "fr": "donner",
-    "en": "to give",
-    "ex": "Elle me donne les documents demain."
-  },
-  {
-    "id": "v142",
-    "level": "A2",
-    "fr": "l'argent (m)",
-    "en": "the money",
-    "ex": "Je n'ai pas assez d'argent sur moi."
-  },
-  {
-    "id": "v143",
-    "level": "A2",
-    "fr": "le prix",
-    "en": "the price",
-    "ex": "Le prix du billet a changé."
-  },
-  {
-    "id": "v144",
-    "level": "A2",
-    "fr": "gratuit(e)",
-    "en": "free (of charge)",
-    "ex": "L'entrée du musée est gratuite le dimanche."
-  },
-  {
-    "id": "v145",
-    "level": "A2",
-    "fr": "le magasin",
-    "en": "the shop",
-    "ex": "Le magasin est ouvert jusqu'à dix-neuf heures."
-  },
-  {
-    "id": "v146",
-    "level": "A2",
-    "fr": "le vêtement",
-    "en": "the piece of clothing",
-    "ex": "Il faut des vêtements chauds en hiver."
-  },
-  {
-    "id": "v147",
-    "level": "A2",
-    "fr": "porter",
-    "en": "to wear / to carry",
-    "ex": "Elle porte une veste bleue aujourd'hui."
-  },
-  {
-    "id": "v148",
-    "level": "A2",
-    "fr": "la famille",
-    "en": "the family",
-    "ex": "Ma famille habite en Grèce."
-  },
-  {
-    "id": "v149",
-    "level": "A2",
-    "fr": "l'enfant (m/f)",
-    "en": "the child",
-    "ex": "Les enfants vont à l'école à huit heures."
-  },
-  {
-    "id": "v150",
-    "level": "A2",
-    "fr": "le frère",
-    "en": "the brother",
-    "ex": "Mon frère travaille à Athènes."
-  },
-  {
-    "id": "v151",
-    "level": "A2",
-    "fr": "la sœur",
-    "en": "the sister",
-    "ex": "Ma sœur parle très bien français."
-  },
-  {
-    "id": "v152",
-    "level": "A2",
-    "fr": "l'ami(e)",
-    "en": "the friend",
-    "ex": "Je dîne avec des amis ce soir."
-  },
-  {
-    "id": "v153",
-    "level": "A2",
-    "fr": "rencontrer",
-    "en": "to meet",
-    "ex": "J'ai rencontré un ancien collègue au café."
-  },
-  {
-    "id": "v154",
-    "level": "A2",
-    "fr": "inviter",
-    "en": "to invite",
-    "ex": "Ils nous ont invités à leur fête."
-  },
-  {
-    "id": "v155",
-    "level": "A2",
-    "fr": "la fête",
-    "en": "the party / celebration",
-    "ex": "On organise une fête pour son départ."
-  },
-  {
-    "id": "v156",
-    "level": "A2",
-    "fr": "les vacances (f pl)",
-    "en": "the holidays",
-    "ex": "Je prends mes vacances en août."
-  },
-  {
-    "id": "v157",
-    "level": "A2",
-    "fr": "le soleil",
-    "en": "the sun",
-    "ex": "Il y a du soleil aujourd'hui."
-  },
-  {
-    "id": "v158",
-    "level": "A2",
-    "fr": "la pluie",
-    "en": "the rain",
-    "ex": "La pluie a duré toute la journée."
-  },
-  {
-    "id": "v159",
-    "level": "A2",
-    "fr": "froid(e)",
-    "en": "cold",
-    "ex": "Il fait froid dans cette salle."
-  },
-  {
-    "id": "v160",
-    "level": "A2",
-    "fr": "chaud(e)",
-    "en": "hot / warm",
-    "ex": "L'été est très chaud dans le sud."
-  },
-  {
-    "id": "v161",
-    "level": "A2",
-    "fr": "le médecin",
-    "en": "the doctor",
-    "ex": "Je vais chez le médecin à seize heures."
-  },
-  {
-    "id": "v162",
-    "level": "A2",
-    "fr": "malade",
-    "en": "sick / ill",
-    "ex": "Il est malade, il reste à la maison."
-  },
-  {
-    "id": "v163",
-    "level": "A2",
-    "fr": "fatigué(e)",
-    "en": "tired",
-    "ex": "Je suis fatigué après cette longue semaine."
-  },
-  {
-    "id": "v164",
-    "level": "A2",
-    "fr": "content(e)",
-    "en": "happy / pleased",
-    "ex": "Elle est contente de son nouveau poste."
-  },
-  {
-    "id": "v165",
-    "level": "A2",
-    "fr": "le nom",
-    "en": "the name / surname",
-    "ex": "Écrivez votre nom sur le formulaire."
-  },
-  {
-    "id": "v166",
-    "level": "A2",
-    "fr": "l'adresse (f)",
-    "en": "the address",
-    "ex": "Quelle est votre adresse électronique ?"
-  },
-  {
-    "id": "v167",
-    "level": "A2",
-    "fr": "habiter",
-    "en": "to live (somewhere)",
-    "ex": "J'habite à Bruxelles depuis un an."
-  },
-  {
-    "id": "v168",
-    "level": "A2",
-    "fr": "la salle",
-    "en": "the room / hall",
-    "ex": "La salle de réunion est au deuxième étage."
-  },
-  {
-    "id": "v169",
-    "level": "A2",
-    "fr": "l'ordinateur (m)",
-    "en": "the computer",
-    "ex": "Mon ordinateur est trop lent ce matin."
-  },
-  {
-    "id": "v170",
-    "level": "A2",
-    "fr": "le courriel",
-    "en": "the e-mail",
-    "ex": "Je t'envoie le courriel tout de suite."
-  },
-  {
-    "id": "v171",
-    "level": "A2",
-    "fr": "signer",
-    "en": "to sign",
-    "ex": "Vous devez signer ici, en bas de la page."
-  },
-  {
-    "id": "v172",
-    "level": "A2",
-    "fr": "le formulaire",
-    "en": "the form",
-    "ex": "Remplissez le formulaire en ligne."
-  },
-  {
-    "id": "v173",
-    "level": "A2",
-    "fr": "attendre",
-    "en": "to wait",
-    "ex": "J'attends le bus depuis dix minutes."
-  },
-  {
-    "id": "v174",
-    "level": "A2",
-    "fr": "arriver",
-    "en": "to arrive",
-    "ex": "Le train arrive à neuf heures dix."
-  },
-  {
-    "id": "v175",
-    "level": "A2",
-    "fr": "partir",
-    "en": "to leave",
-    "ex": "Nous partons demain matin très tôt."
-  },
-  {
-    "id": "v176",
-    "level": "A2",
-    "fr": "rester",
-    "en": "to stay",
-    "ex": "Je reste au bureau jusqu'à dix-huit heures."
-  },
-  {
-    "id": "v177",
-    "level": "A2",
-    "fr": "penser",
-    "en": "to think",
-    "ex": "Je pense que c'est une bonne idée."
-  },
-  {
-    "id": "v178",
-    "level": "A2",
-    "fr": "oublier",
-    "en": "to forget",
-    "ex": "N'oublie pas la réunion de quatorze heures."
-  },
-  {
-    "id": "v179",
-    "level": "A2",
-    "fr": "se souvenir de",
-    "en": "to remember",
-    "ex": "Tu te souviens de son nom ?"
-  },
-  {
-    "id": "v180",
-    "level": "A2",
-    "fr": "la photo",
-    "en": "the photo",
-    "ex": "Il faut une photo pour le badge."
-  },
-  {
-    "id": "v181",
-    "level": "B1",
-    "fr": "l'équipe (f)",
-    "en": "the team",
-    "ex": "Notre équipe compte huit personnes."
-  },
-  {
-    "id": "v182",
-    "level": "B1",
-    "fr": "le projet",
-    "en": "the project",
-    "ex": "Le projet doit être livré avant l'été."
-  },
-  {
-    "id": "v183",
-    "level": "B1",
-    "fr": "gérer",
-    "en": "to manage",
-    "ex": "Elle gère trois dossiers en même temps."
-  },
-  {
-    "id": "v184",
-    "level": "B1",
-    "fr": "le responsable",
-    "en": "the person in charge / manager",
-    "ex": "Le responsable du service est en déplacement."
-  },
-  {
-    "id": "v185",
-    "level": "B1",
-    "fr": "embaucher",
-    "en": "to hire",
-    "ex": "L'entreprise va embaucher dix personnes cette année."
-  },
-  {
-    "id": "v186",
-    "level": "B1",
-    "fr": "licencier",
-    "en": "to dismiss / lay off",
-    "ex": "L'usine a licencié une partie de son personnel."
-  },
-  {
-    "id": "v187",
-    "level": "B1",
-    "fr": "la grève",
-    "en": "the strike",
-    "ex": "Les trains sont annulés à cause de la grève."
-  },
-  {
-    "id": "v188",
-    "level": "B1",
-    "fr": "le syndicat",
-    "en": "the trade union",
-    "ex": "Les syndicats négocient avec la direction."
-  },
-  {
-    "id": "v189",
-    "level": "B1",
-    "fr": "le contrat",
-    "en": "the contract",
-    "ex": "Elle a signé un contrat de deux ans."
-  },
-  {
-    "id": "v190",
-    "level": "B1",
-    "fr": "le délai",
-    "en": "the time limit / lead time",
-    "ex": "Le délai de réponse est de quinze jours."
-  },
-  {
-    "id": "v191",
-    "level": "B1",
-    "fr": "prévoir",
-    "en": "to plan / foresee",
-    "ex": "On prévoit une réunion la semaine prochaine."
-  },
-  {
-    "id": "v192",
-    "level": "B1",
-    "fr": "annuler",
-    "en": "to cancel",
-    "ex": "La visite a été annulée au dernier moment."
-  },
-  {
-    "id": "v193",
-    "level": "B1",
-    "fr": "reporter",
-    "en": "to postpone",
-    "ex": "La réunion est reportée à jeudi."
-  },
-  {
-    "id": "v194",
-    "level": "B1",
-    "fr": "confirmer",
-    "en": "to confirm",
-    "ex": "Merci de confirmer votre présence avant lundi."
-  },
-  {
-    "id": "v195",
-    "level": "B1",
-    "fr": "participer à",
-    "en": "to take part in",
-    "ex": "Je participe à une conférence à Vienne."
-  },
-  {
-    "id": "v196",
-    "level": "B1",
-    "fr": "la dépense",
-    "en": "the expense / spending",
-    "ex": "Il faut réduire les dépenses de fonctionnement."
-  },
-  {
-    "id": "v197",
-    "level": "B1",
-    "fr": "épargner",
-    "en": "to save (money)",
-    "ex": "Elle épargne un peu chaque mois."
-  },
-  {
-    "id": "v198",
-    "level": "B1",
-    "fr": "emprunter",
-    "en": "to borrow",
-    "ex": "Ils ont emprunté pour acheter leur appartement."
-  },
-  {
-    "id": "v199",
-    "level": "B1",
-    "fr": "le prêt",
-    "en": "the loan",
-    "ex": "La banque a accordé le prêt en une semaine."
-  },
-  {
-    "id": "v200",
-    "level": "B1",
-    "fr": "investir",
-    "en": "to invest",
-    "ex": "La région investit dans les transports publics."
-  },
-  {
-    "id": "v201",
-    "level": "B1",
-    "fr": "le marché",
-    "en": "the market",
-    "ex": "Cette société est leader sur le marché européen."
-  },
-  {
-    "id": "v202",
-    "level": "B1",
-    "fr": "le client",
-    "en": "the customer / client",
-    "ex": "Le client attend une réponse rapide."
-  },
-  {
-    "id": "v203",
-    "level": "B1",
-    "fr": "le fournisseur",
-    "en": "the supplier",
-    "ex": "Nous avons changé de fournisseur cette année."
-  },
-  {
-    "id": "v204",
-    "level": "B1",
-    "fr": "la facture",
-    "en": "the invoice / bill",
-    "ex": "La facture doit être payée sous trente jours."
-  },
-  {
-    "id": "v205",
-    "level": "B1",
-    "fr": "la commande",
-    "en": "the order",
-    "ex": "Votre commande a été expédiée hier."
-  },
-  {
-    "id": "v206",
-    "level": "B1",
-    "fr": "livrer",
-    "en": "to deliver",
-    "ex": "Le matériel sera livré vendredi."
-  },
-  {
-    "id": "v207",
-    "level": "B1",
-    "fr": "le service",
-    "en": "the department / service",
-    "ex": "Le service juridique examine le contrat."
-  },
-  {
-    "id": "v208",
-    "level": "B1",
-    "fr": "la qualité",
-    "en": "the quality",
-    "ex": "La qualité du dossier est excellente."
-  },
-  {
-    "id": "v209",
-    "level": "B1",
-    "fr": "se plaindre",
-    "en": "to complain",
-    "ex": "Plusieurs usagers se sont plaints du retard."
-  },
-  {
-    "id": "v210",
-    "level": "B1",
-    "fr": "la plainte",
-    "en": "the complaint",
-    "ex": "Le médiateur a reçu de nombreuses plaintes."
-  },
-  {
-    "id": "v211",
-    "level": "B1",
-    "fr": "résoudre",
-    "en": "to solve",
-    "ex": "Nous avons résolu le problème technique."
-  },
-  {
-    "id": "v212",
-    "level": "B1",
-    "fr": "l'enquête (f)",
-    "en": "the survey / investigation",
-    "ex": "Une enquête a été ouverte sur cette affaire."
-  },
-  {
-    "id": "v213",
-    "level": "B1",
-    "fr": "le sondage",
-    "en": "the opinion poll",
-    "ex": "Selon un sondage, la majorité approuve la réforme."
-  },
-  {
-    "id": "v214",
-    "level": "B1",
-    "fr": "la plupart de",
-    "en": "most of",
-    "ex": "La plupart des candidats réussissent ce test."
-  },
-  {
-    "id": "v215",
-    "level": "B1",
-    "fr": "environ",
-    "en": "about / approximately",
-    "ex": "Le trajet dure environ quarante minutes."
-  },
-  {
-    "id": "v216",
-    "level": "B1",
-    "fr": "presque",
-    "en": "almost",
-    "ex": "Le rapport est presque terminé."
-  },
-  {
-    "id": "v217",
-    "level": "B1",
-    "fr": "selon",
-    "en": "according to",
-    "ex": "Selon la Commission, la croissance va repartir."
-  },
-  {
-    "id": "v218",
-    "level": "B1",
-    "fr": "cependant",
-    "en": "however",
-    "ex": "Le plan est ambitieux ; cependant, il est réalisable."
-  },
-  {
-    "id": "v219",
-    "level": "B1",
-    "fr": "alors que",
-    "en": "whereas / while",
-    "ex": "Il est resté calme alors que la situation était tendue."
-  },
-  {
-    "id": "v220",
-    "level": "B1",
-    "fr": "tandis que",
-    "en": "while / whereas",
-    "ex": "Les exportations montent tandis que les importations baissent."
-  },
-  {
-    "id": "v221",
-    "level": "B1",
-    "fr": "à cause de",
-    "en": "because of (negative)",
-    "ex": "Le vol est retardé à cause du brouillard."
-  },
-  {
-    "id": "v222",
-    "level": "B1",
-    "fr": "être en train de",
-    "en": "to be in the middle of (doing)",
-    "ex": "Je suis en train de rédiger la note."
-  },
-  {
-    "id": "v223",
-    "level": "B1",
-    "fr": "il s'agit de",
-    "en": "it is about / it concerns",
-    "ex": "Il s'agit d'un projet pilote de deux ans."
-  },
-  {
-    "id": "v224",
-    "level": "B1",
-    "fr": "la société",
-    "en": "the company / society",
-    "ex": "Cette société a son siège à Luxembourg."
-  },
-  {
-    "id": "v225",
-    "level": "B1",
-    "fr": "le domaine",
-    "en": "the field / area",
-    "ex": "Elle est experte dans le domaine de l'énergie."
-  },
-  {
-    "id": "v226",
-    "level": "B1",
-    "fr": "le secteur",
-    "en": "the sector",
-    "ex": "Le secteur du tourisme se redresse."
-  },
-  {
-    "id": "v227",
-    "level": "B1",
-    "fr": "la carrière",
-    "en": "the career",
-    "ex": "Il a fait toute sa carrière dans la fonction publique."
-  },
-  {
-    "id": "v228",
-    "level": "B1",
-    "fr": "l'expérience (f)",
-    "en": "the experience",
-    "ex": "Ce poste exige trois ans d'expérience."
-  },
-  {
-    "id": "v229",
-    "level": "B1",
-    "fr": "le diplôme",
-    "en": "the degree / diploma",
-    "ex": "Un diplôme universitaire est requis pour ce concours."
-  },
-  {
-    "id": "v230",
-    "level": "B1",
-    "fr": "la candidature",
-    "en": "the application",
-    "ex": "Elle a déposé sa candidature en ligne."
-  },
-  {
-    "id": "v231",
-    "level": "B1",
-    "fr": "le concours",
-    "en": "the competition (exam)",
-    "ex": "Le concours comprend des tests de raisonnement."
-  },
-  {
-    "id": "v232",
-    "level": "B1",
-    "fr": "l'épreuve (f)",
-    "en": "the test / exam paper",
-    "ex": "L'épreuve numérique dure trente minutes."
-  },
-  {
-    "id": "v233",
-    "level": "B1",
-    "fr": "la note",
-    "en": "the mark / memo",
-    "ex": "Il a obtenu une très bonne note à l'écrit."
-  },
-  {
-    "id": "v234",
-    "level": "B1",
-    "fr": "s'entraîner",
-    "en": "to practise / train",
-    "ex": "Je m'entraîne dix minutes par jour."
-  },
-  {
-    "id": "v235",
-    "level": "B1",
-    "fr": "le progrès",
-    "en": "the progress",
-    "ex": "Tu as fait de vrais progrès en français."
-  },
-  {
-    "id": "v236",
-    "level": "B1",
-    "fr": "l'habitude (f)",
-    "en": "the habit",
-    "ex": "C'est devenu une habitude quotidienne."
-  },
-  {
-    "id": "v237",
-    "level": "B1",
-    "fr": "la réclamation",
-    "en": "the formal complaint / claim",
-    "ex": "Vous pouvez introduire une réclamation en ligne."
-  },
-  {
-    "id": "v238",
-    "level": "B1",
-    "fr": "le déplacement",
-    "en": "the (business) trip / travel",
-    "ex": "Elle est en déplacement à Strasbourg cette semaine."
-  },
-  {
-    "id": "v239",
-    "level": "B1",
-    "fr": "la réforme",
-    "en": "the reform",
-    "ex": "La réforme des retraites fait débat."
-  },
-  {
-    "id": "v240",
-    "level": "B1",
-    "fr": "le débat",
-    "en": "the debate",
-    "ex": "Le débat a duré plus de deux heures."
-  },
-  {
-    "id": "v241",
-    "level": "B2",
-    "fr": "la gouvernance",
-    "en": "the governance",
-    "ex": "La gouvernance économique de la zone euro a été renforcée."
-  },
-  {
-    "id": "v242",
-    "level": "B2",
-    "fr": "la disposition",
-    "en": "the provision (legal)",
-    "ex": "Cette disposition entre en vigueur immédiatement."
-  },
-  {
-    "id": "v243",
-    "level": "B2",
-    "fr": "l'amendement (m)",
-    "en": "the amendment",
-    "ex": "Le Parlement a adopté plusieurs amendements au texte."
-  },
-  {
-    "id": "v244",
-    "level": "B2",
-    "fr": "le scrutin",
-    "en": "the ballot / vote",
-    "ex": "Le scrutin s'est déroulé sans incident."
-  },
-  {
-    "id": "v245",
-    "level": "B2",
-    "fr": "l'abstention (f)",
-    "en": "the abstention",
-    "ex": "L'abstention a atteint un niveau record."
-  },
-  {
-    "id": "v246",
-    "level": "B2",
-    "fr": "le mandat",
-    "en": "the mandate / term of office",
-    "ex": "Son mandat de cinq ans s'achève en 2029."
-  },
-  {
-    "id": "v247",
-    "level": "B2",
-    "fr": "le consensus",
-    "en": "the consensus",
-    "ex": "Le Conseil européen décide généralement par consensus."
-  },
-  {
-    "id": "v248",
-    "level": "B2",
-    "fr": "l'unanimité (f)",
-    "en": "the unanimity",
-    "ex": "La fiscalité exige encore l'unanimité au Conseil."
-  },
-  {
-    "id": "v249",
-    "level": "B2",
-    "fr": "le seuil",
-    "en": "the threshold",
-    "ex": "Le déficit dépasse le seuil de trois pour cent."
-  },
-  {
-    "id": "v250",
-    "level": "B2",
-    "fr": "la dérogation",
-    "en": "the derogation / exemption",
-    "ex": "Le règlement prévoit une dérogation pour les PME."
-  },
-  {
-    "id": "v251",
-    "level": "B2",
-    "fr": "la fiscalité",
-    "en": "the tax system / taxation",
-    "ex": "La fiscalité des entreprises varie selon les États."
-  },
-  {
-    "id": "v252",
-    "level": "B2",
-    "fr": "le prélèvement",
-    "en": "the levy / deduction",
-    "ex": "Un prélèvement sur les plastiques alimente le budget."
-  },
-  {
-    "id": "v253",
-    "level": "B2",
-    "fr": "l'endettement (m)",
-    "en": "the indebtedness",
-    "ex": "L'endettement public s'est alourdi après la crise."
-  },
-  {
-    "id": "v254",
-    "level": "B2",
-    "fr": "la conjoncture",
-    "en": "the economic situation",
-    "ex": "La conjoncture reste incertaine en zone euro."
-  },
-  {
-    "id": "v255",
-    "level": "B2",
-    "fr": "la récession",
-    "en": "the recession",
-    "ex": "Le pays est sorti de la récession au printemps."
-  },
-  {
-    "id": "v256",
-    "level": "B2",
-    "fr": "la reprise",
-    "en": "the recovery",
-    "ex": "La reprise s'appuie sur la consommation des ménages."
-  },
-  {
-    "id": "v257",
-    "level": "B2",
-    "fr": "le ralentissement",
-    "en": "the slowdown",
-    "ex": "On observe un ralentissement de l'inflation."
-  },
-  {
-    "id": "v258",
-    "level": "B2",
-    "fr": "la flambée",
-    "en": "the surge (prices)",
-    "ex": "La flambée des prix de l'énergie a pesé sur les ménages."
-  },
-  {
-    "id": "v259",
-    "level": "B2",
-    "fr": "la pénurie",
-    "en": "the shortage",
-    "ex": "Une pénurie de main-d'œuvre touche plusieurs secteurs."
-  },
-  {
-    "id": "v260",
-    "level": "B2",
-    "fr": "l'approvisionnement (m)",
-    "en": "the supply / procurement",
-    "ex": "La sécurité d'approvisionnement énergétique est stratégique."
-  },
-  {
-    "id": "v261",
-    "level": "B2",
-    "fr": "l'appel d'offres (m)",
-    "en": "the call for tenders",
-    "ex": "Le marché a été attribué après un appel d'offres."
-  },
-  {
-    "id": "v262",
-    "level": "B2",
-    "fr": "le cahier des charges",
-    "en": "the specifications / requirements",
-    "ex": "Le cahier des charges définit les critères techniques."
-  },
-  {
-    "id": "v263",
-    "level": "B2",
-    "fr": "la veille",
-    "en": "the monitoring / watch",
-    "ex": "Ce service assure une veille réglementaire."
-  },
-  {
-    "id": "v264",
-    "level": "B2",
-    "fr": "le bilan",
-    "en": "the assessment / balance sheet",
-    "ex": "Le bilan de la présidence est globalement positif."
-  },
-  {
-    "id": "v265",
-    "level": "B2",
-    "fr": "l'échantillon (m)",
-    "en": "the sample",
-    "ex": "L'enquête repose sur un échantillon de mille personnes."
-  },
-  {
-    "id": "v266",
-    "level": "B2",
-    "fr": "la synthèse",
-    "en": "the summary / synthesis",
-    "ex": "Préparez une synthèse d'une page pour la direction."
-  },
-  {
-    "id": "v267",
-    "level": "B2",
-    "fr": "rédiger",
-    "en": "to draft / write up",
-    "ex": "Il rédige le compte rendu de la réunion."
-  },
-  {
-    "id": "v268",
-    "level": "B2",
-    "fr": "le compte rendu",
-    "en": "the minutes / report",
-    "ex": "Le compte rendu sera diffusé demain."
-  },
-  {
-    "id": "v269",
-    "level": "B2",
-    "fr": "l'ordre du jour (m)",
-    "en": "the agenda",
-    "ex": "Ce point n'est pas à l'ordre du jour."
-  },
-  {
-    "id": "v270",
-    "level": "B2",
-    "fr": "la séance",
-    "en": "the sitting / session",
-    "ex": "La séance plénière se tient à Strasbourg."
-  },
-  {
-    "id": "v271",
-    "level": "B2",
-    "fr": "siéger",
-    "en": "to sit (in an assembly)",
-    "ex": "La Cour siège à Luxembourg."
-  },
-  {
-    "id": "v272",
-    "level": "B2",
-    "fr": "statuer",
-    "en": "to rule (on)",
-    "ex": "Le tribunal statuera sur ce recours en octobre."
-  },
-  {
-    "id": "v273",
-    "level": "B2",
-    "fr": "abroger",
-    "en": "to repeal",
-    "ex": "Cette loi obsolète a été abrogée."
-  },
-  {
-    "id": "v274",
-    "level": "B2",
-    "fr": "entraver",
-    "en": "to hinder / impede",
-    "ex": "Ces règles entravent la libre circulation des services."
-  },
-  {
-    "id": "v275",
-    "level": "B2",
-    "fr": "découler de",
-    "en": "to stem from",
-    "ex": "Ces obligations découlent du traité."
-  },
-  {
-    "id": "v276",
-    "level": "B2",
-    "fr": "relever de",
-    "en": "to fall within (the remit of)",
-    "ex": "La santé relève surtout des États membres."
-  },
-  {
-    "id": "v277",
-    "level": "B2",
-    "fr": "incomber à",
-    "en": "to be incumbent upon",
-    "ex": "Cette responsabilité incombe à l'employeur."
-  },
-  {
-    "id": "v278",
-    "level": "B2",
-    "fr": "en l'occurrence",
-    "en": "in this case / as it happens",
-    "ex": "Le délai, en l'occurrence, était trop court."
-  },
-  {
-    "id": "v279",
-    "level": "B2",
-    "fr": "à l'issue de",
-    "en": "at the end of / following",
-    "ex": "À l'issue du sommet, une déclaration a été publiée."
-  },
-  {
-    "id": "v280",
-    "level": "B2",
-    "fr": "au sein de",
-    "en": "within",
-    "ex": "Il travaille au sein de la direction générale du commerce."
-  },
-  {
-    "id": "v281",
-    "level": "B2",
-    "fr": "en amont",
-    "en": "upstream / beforehand",
-    "ex": "Il faut associer les régions en amont de la décision."
-  },
-  {
-    "id": "v282",
-    "level": "B2",
-    "fr": "en aval",
-    "en": "downstream / afterwards",
-    "ex": "Le contrôle intervient en aval de la mise en œuvre."
-  },
-  {
-    "id": "v283",
-    "level": "B2",
-    "fr": "d'emblée",
-    "en": "from the outset",
-    "ex": "D'emblée, la négociation s'est annoncée difficile."
-  },
-  {
-    "id": "v284",
-    "level": "B2",
-    "fr": "désormais",
-    "en": "from now on",
-    "ex": "Les demandes se font désormais en ligne."
-  },
-  {
-    "id": "v285",
-    "level": "B2",
-    "fr": "voire",
-    "en": "or even / indeed",
-    "ex": "Le processus prendra des mois, voire des années."
-  },
-  {
-    "id": "v286",
-    "level": "B2",
-    "fr": "le levier",
-    "en": "the lever (fig.)",
-    "ex": "Le budget est un levier puissant de réforme."
-  },
-  {
-    "id": "v287",
-    "level": "B2",
-    "fr": "la marge de manœuvre",
-    "en": "the room for manoeuvre",
-    "ex": "Les États gardent une marge de manœuvre budgétaire limitée."
-  },
-  {
-    "id": "v288",
-    "level": "B2",
-    "fr": "le garde-fou",
-    "en": "the safeguard",
-    "ex": "Le texte prévoit des garde-fous contre les abus."
-  },
-  {
-    "id": "v289",
-    "level": "B2",
-    "fr": "l'écueil (m)",
-    "en": "the pitfall",
-    "ex": "Le principal écueil serait de décider sans consulter."
-  },
-  {
-    "id": "v290",
-    "level": "B2",
-    "fr": "la refonte",
-    "en": "the overhaul / recast",
-    "ex": "Une refonte du règlement est en préparation."
-  },
-  {
-    "id": "v291",
-    "level": "B2",
-    "fr": "l'essoufflement (m)",
-    "en": "the loss of momentum",
-    "ex": "On note un essoufflement de la demande intérieure."
-  },
-  {
-    "id": "v292",
-    "level": "B2",
-    "fr": "pallier",
-    "en": "to mitigate / make up for",
-    "ex": "Des mesures temporaires pallient le manque de personnel."
-  },
-  {
-    "id": "v293",
-    "level": "B2",
-    "fr": "s'inscrire dans",
-    "en": "to be part of / fit into",
-    "ex": "Cette initiative s'inscrit dans le pacte vert."
-  },
-  {
-    "id": "v294",
-    "level": "B2",
-    "fr": "la montée en puissance",
-    "en": "the ramp-up / rise",
-    "ex": "On assiste à la montée en puissance des énergies renouvelables."
-  },
-  {
-    "id": "v295",
-    "level": "B2",
-    "fr": "le chevauchement",
-    "en": "the overlap",
-    "ex": "Il faut éviter les chevauchements de compétences."
-  },
-  {
-    "id": "v296",
-    "level": "B2",
-    "fr": "la lourdeur",
-    "en": "the cumbersomeness / red tape",
-    "ex": "Les entreprises dénoncent la lourdeur administrative."
-  },
-  {
-    "id": "v297",
-    "level": "B2",
-    "fr": "l'allègement (m)",
-    "en": "the lightening / relief",
-    "ex": "Un allègement des charges est prévu pour les PME."
-  },
-  {
-    "id": "v298",
-    "level": "B2",
-    "fr": "le volet",
-    "en": "the component / strand",
-    "ex": "Le volet social du plan reste à négocier."
-  },
-  {
-    "id": "v299",
-    "level": "B2",
-    "fr": "l'ancrage (m)",
-    "en": "the anchoring",
-    "ex": "L'ancrage des anticipations d'inflation est essentiel."
-  },
-  {
-    "id": "v300",
-    "level": "B2",
-    "fr": "la feuille de route",
-    "en": "the roadmap",
-    "ex": "La Commission a présenté sa feuille de route pour 2030."
-  },
-  {
-    "id": "v301",
-    "level": "B1",
-    "fr": "le but",
-    "en": "the aim / purpose",
-    "ex": "Le but de cette réforme est de simplifier les démarches."
-  },
-  {
-    "id": "v302",
-    "level": "B1",
-    "fr": "le défi",
-    "en": "the challenge",
-    "ex": "Le vieillissement de la population est un défi majeur."
-  },
-  {
-    "id": "v303",
-    "level": "B1",
-    "fr": "la mesure",
-    "en": "the measure",
-    "ex": "Le gouvernement a annoncé plusieurs mesures contre l'inflation."
-  },
-  {
-    "id": "v304",
-    "level": "B1",
-    "fr": "la décision",
-    "en": "the decision",
-    "ex": "La décision sera prise après consultation des États membres."
-  },
-  {
-    "id": "v305",
-    "level": "B1",
-    "fr": "proposer",
-    "en": "to propose",
-    "ex": "La Commission propose de réviser le règlement existant."
-  },
-  {
-    "id": "v306",
-    "level": "B1",
-    "fr": "refuser",
-    "en": "to refuse",
-    "ex": "Le Conseil a refusé de modifier le texte initial."
-  },
-  {
-    "id": "v307",
-    "level": "B1",
-    "fr": "permettre de",
-    "en": "to allow to",
-    "ex": "Ce dispositif permet de réduire les délais de traitement."
-  },
-  {
-    "id": "v308",
-    "level": "B1",
-    "fr": "interdire",
-    "en": "to forbid / ban",
-    "ex": "La loi interdit toute discrimination à l'embauche."
-  },
-  {
-    "id": "v309",
-    "level": "B1",
-    "fr": "obtenir",
-    "en": "to obtain / get",
-    "ex": "Elle a obtenu une bourse pour poursuivre ses études."
-  },
-  {
-    "id": "v310",
-    "level": "B1",
-    "fr": "essayer de",
-    "en": "to try to",
-    "ex": "J'essaie de lire un article en français chaque jour."
-  },
-  {
-    "id": "v311",
-    "level": "B1",
-    "fr": "éviter",
-    "en": "to avoid",
-    "ex": "Il faut éviter les répétitions dans un texte formel."
-  },
-  {
-    "id": "v312",
-    "level": "B1",
-    "fr": "le choix",
-    "en": "the choice",
-    "ex": "Le choix du candidat revient au jury de sélection."
-  },
-  {
-    "id": "v313",
-    "level": "B1",
-    "fr": "la raison",
-    "en": "the reason",
-    "ex": "Il a démissionné pour des raisons personnelles."
-  },
-  {
-    "id": "v314",
-    "level": "B1",
-    "fr": "la conséquence",
-    "en": "the consequence",
-    "ex": "Cette décision aura des conséquences sur tout le secteur."
-  },
-  {
-    "id": "v315",
-    "level": "B1",
-    "fr": "le changement",
-    "en": "the change",
-    "ex": "Le changement de logiciel a perturbé le service."
-  },
-  {
-    "id": "v316",
-    "level": "B1",
-    "fr": "le rôle",
-    "en": "the role",
-    "ex": "Le Parlement joue un rôle central dans la procédure."
-  },
-  {
-    "id": "v317",
-    "level": "B1",
-    "fr": "la tâche",
-    "en": "the task",
-    "ex": "Chaque agent connaît précisément ses tâches quotidiennes."
-  },
-  {
-    "id": "v318",
-    "level": "B1",
-    "fr": "l'occasion (f)",
-    "en": "the opportunity",
-    "ex": "Cette conférence est l'occasion de rencontrer des experts."
-  },
-  {
-    "id": "v319",
-    "level": "B1",
-    "fr": "nécessaire",
-    "en": "necessary",
-    "ex": "Il est nécessaire de justifier chaque dépense engagée."
-  },
-  {
-    "id": "v320",
-    "level": "B1",
-    "fr": "efficace",
-    "en": "effective / efficient",
-    "ex": "Cette méthode s'est révélée très efficace en pratique."
-  },
-  {
-    "id": "v321",
-    "level": "B1",
-    "fr": "le manque",
-    "en": "the lack / shortage",
-    "ex": "Le manque de personnel ralentit le traitement des dossiers."
-  },
-  {
-    "id": "v322",
-    "level": "B1",
-    "fr": "le besoin",
-    "en": "the need",
-    "ex": "L'enquête met en lumière les besoins des usagers."
-  },
-  {
-    "id": "v323",
-    "level": "B1",
-    "fr": "le point de vue",
-    "en": "the point of view",
-    "ex": "De mon point de vue, la proposition reste incomplète."
-  },
-  {
-    "id": "v324",
-    "level": "B1",
-    "fr": "partager",
-    "en": "to share",
-    "ex": "Je partage entièrement l'analyse de mes collègues."
-  },
-  {
-    "id": "v325",
-    "level": "B1",
-    "fr": "exprimer",
-    "en": "to express",
-    "ex": "Chacun peut exprimer son opinion pendant le débat."
-  },
-  {
-    "id": "v326",
-    "level": "B1",
-    "fr": "expliquer",
-    "en": "to explain",
-    "ex": "Le rapport explique clairement l'origine du problème."
-  },
-  {
-    "id": "v327",
-    "level": "B1",
-    "fr": "préciser",
-    "en": "to specify / clarify",
-    "ex": "Pouvez-vous préciser le calendrier des prochaines étapes ?"
-  },
-  {
-    "id": "v328",
-    "level": "B1",
-    "fr": "remarquer",
-    "en": "to notice",
-    "ex": "J'ai remarqué une erreur dans le tableau financier."
-  },
-  {
-    "id": "v329",
-    "level": "B1",
-    "fr": "avoir lieu",
-    "en": "to take place",
-    "ex": "La prochaine réunion aura lieu le douze mars."
-  },
-  {
-    "id": "v330",
-    "level": "B1",
-    "fr": "durer",
-    "en": "to last",
-    "ex": "Les négociations ont duré plus de six mois."
-  },
-  {
-    "id": "v331",
-    "level": "B1",
-    "fr": "le fonctionnaire",
-    "en": "the civil servant",
-    "ex": "Un fonctionnaire européen doit respecter un devoir de réserve."
-  },
-  {
-    "id": "v332",
-    "level": "B1",
-    "fr": "l'administration (f)",
-    "en": "the administration",
-    "ex": "L'administration répond aux courriers dans un délai raisonnable."
-  },
-  {
-    "id": "v333",
-    "level": "B1",
-    "fr": "la pièce jointe",
-    "en": "the attachment",
-    "ex": "Vous trouverez le formulaire en pièce jointe."
-  },
-  {
-    "id": "v334",
-    "level": "B1",
-    "fr": "le renseignement",
-    "en": "the piece of information",
-    "ex": "Le service d'accueil fournit tous les renseignements utiles."
-  },
-  {
-    "id": "v335",
-    "level": "B1",
-    "fr": "l'horaire (m)",
-    "en": "the timetable / working hours",
-    "ex": "Les horaires de travail sont flexibles dans ce service."
-  },
-  {
-    "id": "v336",
-    "level": "B1",
-    "fr": "le congé",
-    "en": "the leave / time off",
-    "ex": "Elle prend un congé parental de trois mois."
-  },
-  {
-    "id": "v337",
-    "level": "B1",
-    "fr": "le télétravail",
-    "en": "remote work",
-    "ex": "Le télétravail est autorisé deux jours par semaine."
-  },
-  {
-    "id": "v338",
-    "level": "B1",
-    "fr": "la direction",
-    "en": "the management",
-    "ex": "La direction a validé le plan de formation."
-  },
-  {
-    "id": "v339",
-    "level": "B1",
-    "fr": "le personnel",
-    "en": "the staff",
-    "ex": "Le personnel a été informé de la réorganisation."
-  },
-  {
-    "id": "v340",
-    "level": "B1",
-    "fr": "le bénéfice",
-    "en": "the profit",
-    "ex": "L'entreprise a réalisé des bénéfices records l'an dernier."
-  },
-  {
-    "id": "v341",
-    "level": "B1",
-    "fr": "le coût",
-    "en": "the cost",
-    "ex": "Le coût total du projet dépasse deux millions d'euros."
-  },
-  {
-    "id": "v342",
-    "level": "B1",
-    "fr": "le revenu",
-    "en": "the income",
-    "ex": "Les revenus des ménages progressent lentement."
-  },
-  {
-    "id": "v343",
-    "level": "B1",
-    "fr": "la retraite",
-    "en": "the retirement / pension",
-    "ex": "Il partira à la retraite à soixante-cinq ans."
-  },
-  {
-    "id": "v344",
-    "level": "B1",
-    "fr": "l'assurance (f)",
-    "en": "the insurance",
-    "ex": "Une assurance maladie est obligatoire pour tous les résidents."
-  },
-  {
-    "id": "v345",
-    "level": "B1",
-    "fr": "le logement",
-    "en": "the housing / accommodation",
-    "ex": "Le logement social manque dans les grandes villes."
-  },
-  {
-    "id": "v346",
-    "level": "B1",
-    "fr": "le loyer",
-    "en": "the rent",
-    "ex": "Les loyers ont fortement augmenté au centre-ville."
-  },
-  {
-    "id": "v347",
-    "level": "B1",
-    "fr": "déménager",
-    "en": "to move house",
-    "ex": "Nous déménageons à Bruxelles au mois de septembre."
-  },
-  {
-    "id": "v348",
-    "level": "B1",
-    "fr": "la population",
-    "en": "the population",
-    "ex": "La population rurale diminue depuis plusieurs décennies."
-  },
-  {
-    "id": "v349",
-    "level": "B1",
-    "fr": "la solidarité",
-    "en": "the solidarity",
-    "ex": "La solidarité entre États membres a joué pendant la crise."
-  },
-  {
-    "id": "v350",
-    "level": "B1",
-    "fr": "la pauvreté",
-    "en": "the poverty",
-    "ex": "La pauvreté touche encore un enfant sur cinq."
-  },
-  {
-    "id": "v351",
-    "level": "B1",
-    "fr": "le gouvernement",
-    "en": "the government",
-    "ex": "Le gouvernement présentera son budget en octobre."
-  },
-  {
-    "id": "v352",
-    "level": "B1",
-    "fr": "le ministre",
-    "en": "the minister",
-    "ex": "La ministre de l'Environnement a défendu le texte."
-  },
-  {
-    "id": "v353",
-    "level": "B1",
-    "fr": "voter",
-    "en": "to vote",
-    "ex": "Les députés voteront le texte en séance plénière."
-  },
-  {
-    "id": "v354",
-    "level": "B1",
-    "fr": "la presse",
-    "en": "the press",
-    "ex": "La presse nationale a largement commenté cette décision."
-  },
-  {
-    "id": "v355",
-    "level": "B1",
-    "fr": "l'actualité (f)",
-    "en": "the news / current affairs",
-    "ex": "Je suis l'actualité européenne sur plusieurs sites."
-  },
-  {
-    "id": "v356",
-    "level": "B1",
-    "fr": "publier",
-    "en": "to publish",
-    "ex": "L'institut publiera ses prévisions au début du mois."
-  },
-  {
-    "id": "v357",
-    "level": "B1",
-    "fr": "le logiciel",
-    "en": "the software",
-    "ex": "Ce logiciel facilite la gestion des candidatures."
-  },
-  {
-    "id": "v358",
-    "level": "B1",
-    "fr": "les données (f pl)",
-    "en": "the data",
-    "ex": "Les données personnelles sont protégées par le règlement européen."
-  },
-  {
-    "id": "v359",
-    "level": "B1",
-    "fr": "la pollution",
-    "en": "the pollution",
-    "ex": "La pollution de l'air provoque des maladies respiratoires."
-  },
-  {
-    "id": "v360",
-    "level": "B1",
-    "fr": "l'énergie renouvelable (f)",
-    "en": "renewable energy",
-    "ex": "Les énergies renouvelables couvrent un tiers de la production."
-  },
-  {
-    "id": "v361",
-    "level": "B2",
-    "fr": "néanmoins",
-    "en": "nevertheless",
-    "ex": "Le texte est ambitieux ; néanmoins, son financement reste incertain."
-  },
-  {
-    "id": "v362",
-    "level": "B2",
-    "fr": "toutefois",
-    "en": "however",
-    "ex": "La reprise se confirme ; toutefois, les risques persistent."
-  },
-  {
-    "id": "v363",
-    "level": "B2",
-    "fr": "or",
-    "en": "now / and yet (in argument)",
-    "ex": "Tous attendaient un accord ; or, les discussions ont échoué."
-  },
-  {
-    "id": "v364",
-    "level": "B2",
-    "fr": "en outre",
-    "en": "moreover",
-    "ex": "Le rapport est incomplet ; en outre, ses chiffres sont anciens."
-  },
-  {
-    "id": "v365",
-    "level": "B2",
-    "fr": "par ailleurs",
-    "en": "besides / moreover",
-    "ex": "Par ailleurs, la Commission a lancé une consultation publique."
-  },
-  {
-    "id": "v366",
-    "level": "B2",
-    "fr": "de surcroît",
-    "en": "furthermore",
-    "ex": "La procédure est longue et, de surcroît, très coûteuse."
-  },
-  {
-    "id": "v367",
-    "level": "B2",
-    "fr": "en définitive",
-    "en": "ultimately / in the end",
-    "ex": "En définitive, le compromis satisfait la plupart des délégations."
-  },
-  {
-    "id": "v368",
-    "level": "B2",
-    "fr": "en tout état de cause",
-    "en": "in any case",
-    "ex": "En tout état de cause, la décision appartient au Conseil."
-  },
-  {
-    "id": "v369",
-    "level": "B2",
-    "fr": "il n'en demeure pas moins que",
-    "en": "the fact remains that",
-    "ex": "Il n'en demeure pas moins que les inégalités persistent."
-  },
-  {
-    "id": "v370",
-    "level": "B2",
-    "fr": "dans la mesure où",
-    "en": "insofar as",
-    "ex": "Le recours est recevable dans la mesure où le délai est respecté."
-  },
-  {
-    "id": "v371",
-    "level": "B2",
-    "fr": "étant donné que",
-    "en": "given that",
-    "ex": "Étant donné que le budget est voté, les projets démarreront."
-  },
-  {
-    "id": "v372",
-    "level": "B2",
-    "fr": "compte tenu de",
-    "en": "in view of",
-    "ex": "Compte tenu des délais, la réunion sera reportée."
-  },
-  {
-    "id": "v373",
-    "level": "B2",
-    "fr": "au regard de",
-    "en": "in the light of",
-    "ex": "Au regard du droit européen, cette pratique est illégale."
-  },
-  {
-    "id": "v374",
-    "level": "B2",
-    "fr": "en dépit de",
-    "en": "in spite of",
-    "ex": "En dépit des efforts, les émissions augmentent encore."
-  },
-  {
-    "id": "v375",
-    "level": "B2",
-    "fr": "faute de",
-    "en": "for lack of",
-    "ex": "Faute de moyens, le programme a été suspendu."
-  },
-  {
-    "id": "v376",
-    "level": "B2",
-    "fr": "à défaut de",
-    "en": "in the absence of / failing",
-    "ex": "À défaut d'accord, la Commission présentera une proposition."
-  },
-  {
-    "id": "v377",
-    "level": "B2",
-    "fr": "quitte à",
-    "en": "even if it means",
-    "ex": "Il défendra sa position, quitte à déplaire à certains."
-  },
-  {
-    "id": "v378",
-    "level": "B2",
-    "fr": "sous peine de",
-    "en": "on pain of / failing which",
-    "ex": "Le formulaire doit être signé, sous peine de rejet."
-  },
-  {
-    "id": "v379",
-    "level": "B2",
-    "fr": "de sorte que",
-    "en": "so that",
-    "ex": "Le texte a été clarifié de sorte que chacun le comprenne."
-  },
-  {
-    "id": "v380",
-    "level": "B2",
-    "fr": "au point de",
-    "en": "to the point of",
-    "ex": "La charge de travail a augmenté au point de décourager l'équipe."
-  },
-  {
-    "id": "v381",
-    "level": "B2",
-    "fr": "si bien que",
-    "en": "with the result that",
-    "ex": "Les données manquaient, si bien que l'analyse a été reportée."
-  },
-  {
-    "id": "v382",
-    "level": "B2",
-    "fr": "d'autant plus que",
-    "en": "all the more so as",
-    "ex": "La réforme est urgente, d'autant plus que la population vieillit."
-  },
-  {
-    "id": "v383",
-    "level": "B2",
-    "fr": "loin de",
-    "en": "far from",
-    "ex": "Loin de résoudre le problème, cette mesure l'aggrave."
-  },
-  {
-    "id": "v384",
-    "level": "B2",
-    "fr": "à l'instar de",
-    "en": "like / following the example of",
-    "ex": "À l'instar de ses voisins, le pays a durci sa législation."
-  },
-  {
-    "id": "v385",
-    "level": "B2",
-    "fr": "par conséquent",
-    "en": "consequently",
-    "ex": "Le quorum n'était pas atteint ; par conséquent, le vote est annulé."
-  },
-  {
-    "id": "v386",
-    "level": "B2",
-    "fr": "en matière de",
-    "en": "as regards / in the field of",
-    "ex": "L'Union dispose de compétences limitées en matière de santé."
-  },
-  {
-    "id": "v387",
-    "level": "B2",
-    "fr": "à l'égard de",
-    "en": "with regard to / towards",
-    "ex": "La Commission reste vigilante à l'égard des aides d'État."
-  },
-  {
-    "id": "v388",
-    "level": "B2",
-    "fr": "au titre de",
-    "en": "under (a scheme) / by way of",
-    "ex": "Ces fonds sont versés au titre de la politique de cohésion."
-  },
-  {
-    "id": "v389",
-    "level": "B2",
-    "fr": "en vertu de",
-    "en": "pursuant to / under",
-    "ex": "En vertu du traité, la Cour contrôle la légalité des actes."
-  },
-  {
-    "id": "v390",
-    "level": "B2",
-    "fr": "conformément à",
-    "en": "in accordance with",
-    "ex": "Le dossier a été traité conformément aux règles internes."
-  },
-  {
-    "id": "v391",
-    "level": "B2",
-    "fr": "par le biais de",
-    "en": "by means of / through",
-    "ex": "L'aide sera versée par le biais des agences nationales."
-  },
-  {
-    "id": "v392",
-    "level": "B2",
-    "fr": "dans le cadre de",
-    "en": "within the framework of",
-    "ex": "Ces mesures entrent dans le cadre du plan national."
-  },
-  {
-    "id": "v393",
-    "level": "B2",
-    "fr": "à hauteur de",
-    "en": "up to (an amount)",
-    "ex": "L'Union cofinance le projet à hauteur de soixante pour cent."
-  },
-  {
-    "id": "v394",
-    "level": "B2",
-    "fr": "au-delà de",
-    "en": "beyond",
-    "ex": "Au-delà des chiffres, il faut examiner les causes profondes."
-  },
-  {
-    "id": "v395",
-    "level": "B2",
-    "fr": "en deçà de",
-    "en": "below / short of",
-    "ex": "Les résultats restent en deçà des objectifs fixés."
-  },
-  {
-    "id": "v396",
-    "level": "B2",
-    "fr": "ne serait-ce que",
-    "en": "if only / even just",
-    "ex": "Chacun doit contribuer, ne serait-ce que modestement."
-  },
-  {
-    "id": "v397",
-    "level": "B2",
-    "fr": "en l'état",
-    "en": "as it stands",
-    "ex": "En l'état, le texte ne recueille pas de majorité."
-  },
-  {
-    "id": "v398",
-    "level": "B2",
-    "fr": "certes",
-    "en": "admittedly / of course",
-    "ex": "Certes, les progrès sont réels, mais ils restent fragiles."
-  },
-  {
-    "id": "v399",
-    "level": "B2",
-    "fr": "ainsi que",
-    "en": "as well as",
-    "ex": "Les ministres, ainsi que leurs conseillers, assisteront à la séance."
-  },
-  {
-    "id": "v400",
-    "level": "B2",
-    "fr": "veiller à",
-    "en": "to ensure / see to it that",
-    "ex": "La Commission veille à la bonne application des traités."
-  },
-  {
-    "id": "v401",
-    "level": "B2",
-    "fr": "s'attacher à",
-    "en": "to strive to / focus on",
-    "ex": "Le rapport s'attache à comparer les pratiques nationales."
-  },
-  {
-    "id": "v402",
-    "level": "B2",
-    "fr": "mener à bien",
-    "en": "to carry through successfully",
-    "ex": "L'équipe a mené à bien une réforme particulièrement complexe."
-  },
-  {
-    "id": "v403",
-    "level": "B2",
-    "fr": "se doter de",
-    "en": "to equip oneself with",
-    "ex": "L'Union s'est dotée d'un nouvel instrument budgétaire."
-  },
-  {
-    "id": "v404",
-    "level": "B2",
-    "fr": "se heurter à",
-    "en": "to come up against",
-    "ex": "Le projet se heurte à l'opposition de plusieurs États."
-  },
-  {
-    "id": "v405",
-    "level": "B2",
-    "fr": "faire face à",
-    "en": "to face / cope with",
-    "ex": "Les autorités doivent faire face à une pénurie de logements."
-  },
-  {
-    "id": "v406",
-    "level": "B2",
-    "fr": "faire l'objet de",
-    "en": "to be the subject of",
-    "ex": "Cette proposition fera l'objet d'un examen approfondi."
-  },
-  {
-    "id": "v407",
-    "level": "B2",
-    "fr": "tenir compte de",
-    "en": "to take into account",
-    "ex": "Le texte tient compte des observations des parties prenantes."
-  },
-  {
-    "id": "v408",
-    "level": "B2",
-    "fr": "prendre acte de",
-    "en": "to take note of",
-    "ex": "Le Conseil a pris acte du rapport de la Cour."
-  },
-  {
-    "id": "v409",
-    "level": "B2",
-    "fr": "se traduire par",
-    "en": "to result in / take the form of",
-    "ex": "La réforme s'est traduite par une baisse des charges."
-  },
-  {
-    "id": "v410",
-    "level": "B2",
-    "fr": "se solder par",
-    "en": "to end in",
-    "ex": "Les discussions se sont soldées par un échec."
-  },
-  {
-    "id": "v411",
-    "level": "B2",
-    "fr": "déboucher sur",
-    "en": "to lead to",
-    "ex": "Le sommet devrait déboucher sur une déclaration commune."
-  },
-  {
-    "id": "v412",
-    "level": "B2",
-    "fr": "avoir trait à",
-    "en": "to relate to",
-    "ex": "Les questions ayant trait au budget seront traitées demain."
-  },
-  {
-    "id": "v413",
-    "level": "B2",
-    "fr": "reposer sur",
-    "en": "to rest on / be based on",
-    "ex": "Ce raisonnement repose sur des données contestables."
-  },
-  {
-    "id": "v414",
-    "level": "B2",
-    "fr": "s'appuyer sur",
-    "en": "to rely on / draw on",
-    "ex": "L'auteur s'appuie sur plusieurs études récentes."
-  },
-  {
-    "id": "v415",
-    "level": "B2",
-    "fr": "consister à",
-    "en": "to consist in",
-    "ex": "Sa mission consiste à coordonner les services concernés."
-  },
-  {
-    "id": "v416",
-    "level": "B2",
-    "fr": "viser à",
-    "en": "to aim to",
-    "ex": "Cette directive vise à harmoniser les normes techniques."
-  },
-  {
-    "id": "v417",
-    "level": "B2",
-    "fr": "contribuer à",
-    "en": "to contribute to",
-    "ex": "Ces investissements contribuent à la transition énergétique."
-  },
-  {
-    "id": "v418",
-    "level": "B2",
-    "fr": "remédier à",
-    "en": "to remedy",
-    "ex": "Il faut remédier rapidement à ce déséquilibre régional."
-  },
-  {
-    "id": "v419",
-    "level": "B2",
-    "fr": "renoncer à",
-    "en": "to give up / waive",
-    "ex": "Le pays a renoncé à son droit de veto."
-  },
-  {
-    "id": "v420",
-    "level": "B2",
-    "fr": "se prononcer sur",
-    "en": "to give a ruling / opinion on",
-    "ex": "Le tribunal se prononcera sur cette affaire en juin."
-  },
-  {
-    "id": "v421",
-    "level": "B2",
-    "fr": "allouer",
-    "en": "to allocate",
-    "ex": "Une enveloppe importante a été allouée à la recherche."
-  },
-  {
-    "id": "v422",
-    "level": "B2",
-    "fr": "inciter à",
-    "en": "to encourage / prompt to",
-    "ex": "Ce crédit d'impôt incite les entreprises à investir."
-  },
-  {
-    "id": "v423",
-    "level": "B2",
-    "fr": "pâtir de",
-    "en": "to suffer from",
-    "ex": "Les régions frontalières pâtissent de ces nouvelles restrictions."
-  },
-  {
-    "id": "v424",
-    "level": "B2",
-    "fr": "bénéficier de",
-    "en": "to benefit from",
-    "ex": "Les PME bénéficient d'un régime simplifié."
-  },
-  {
-    "id": "v425",
-    "level": "B2",
-    "fr": "parvenir à",
-    "en": "to manage to / reach",
-    "ex": "Les négociateurs sont parvenus à un accord au petit matin."
-  },
-  {
-    "id": "v426",
-    "level": "B2",
-    "fr": "se prévaloir de",
-    "en": "to avail oneself of",
-    "ex": "Nul ne peut se prévaloir de sa propre négligence."
-  },
-  {
-    "id": "v427",
-    "level": "B2",
-    "fr": "remettre en cause",
-    "en": "to call into question",
-    "ex": "Cet arrêt remet en cause une jurisprudence ancienne."
-  },
-  {
-    "id": "v428",
-    "level": "B2",
-    "fr": "mettre en place",
-    "en": "to set up / establish",
-    "ex": "Un dispositif de contrôle a été mis en place."
-  },
-  {
-    "id": "v429",
-    "level": "B2",
-    "fr": "mettre l'accent sur",
-    "en": "to emphasise",
-    "ex": "Le rapport met l'accent sur la formation des jeunes."
-  },
-  {
-    "id": "v430",
-    "level": "B2",
-    "fr": "prendre en charge",
-    "en": "to take responsibility for / cover",
-    "ex": "L'Union prend en charge une partie des frais."
-  },
-  {
-    "id": "v431",
-    "level": "B2",
-    "fr": "faire valoir",
-    "en": "to assert / point out",
-    "ex": "L'avocat a fait valoir un vice de procédure."
-  },
-  {
-    "id": "v432",
-    "level": "B2",
-    "fr": "faire état de",
-    "en": "to report / mention",
-    "ex": "La presse a fait état de tensions entre délégations."
-  },
-  {
-    "id": "v433",
-    "level": "B2",
-    "fr": "aller de pair avec",
-    "en": "to go hand in hand with",
-    "ex": "La croissance doit aller de pair avec la protection sociale."
-  },
-  {
-    "id": "v434",
-    "level": "B2",
-    "fr": "peser sur",
-    "en": "to weigh on",
-    "ex": "L'incertitude pèse sur les décisions d'investissement."
-  },
-  {
-    "id": "v435",
-    "level": "B2",
-    "fr": "s'avérer",
-    "en": "to prove to be",
-    "ex": "Cette solution s'est avérée plus coûteuse que prévu."
-  },
-  {
-    "id": "v436",
-    "level": "B2",
-    "fr": "constater",
-    "en": "to note / observe",
-    "ex": "Les experts constatent une amélioration de la qualité de l'air."
-  },
-  {
-    "id": "v437",
-    "level": "B2",
-    "fr": "souligner",
-    "en": "to underline / stress",
-    "ex": "Le rapporteur a souligné l'urgence de la situation."
-  },
-  {
-    "id": "v438",
-    "level": "B2",
-    "fr": "faire preuve de",
-    "en": "to show / demonstrate",
-    "ex": "Les autorités ont fait preuve d'une grande réactivité."
-  },
-  {
-    "id": "v439",
-    "level": "B2",
-    "fr": "accroître",
-    "en": "to increase / enhance",
-    "ex": "Il faut accroître la transparence des procédures budgétaires."
-  },
-  {
-    "id": "v440",
-    "level": "B2",
-    "fr": "restreindre",
-    "en": "to restrict",
-    "ex": "Ces règles restreignent l'accès au marché intérieur."
-  },
-  {
-    "id": "v441",
-    "level": "B2",
-    "fr": "assouplir",
-    "en": "to relax / ease (rules)",
-    "ex": "La Commission envisage d'assouplir certaines obligations déclaratives."
-  },
-  {
-    "id": "v442",
-    "level": "B2",
-    "fr": "durcir",
-    "en": "to tighten / toughen",
-    "ex": "Plusieurs États ont durci leur législation migratoire."
-  },
-  {
-    "id": "v443",
-    "level": "B2",
-    "fr": "renforcer",
-    "en": "to strengthen",
-    "ex": "Il convient de renforcer les contrôles aux frontières extérieures."
-  },
-  {
-    "id": "v444",
-    "level": "B2",
-    "fr": "entraîner",
-    "en": "to lead to / bring about",
-    "ex": "Ce retard entraînera des surcoûts pour tout le programme."
-  },
-  {
-    "id": "v445",
-    "level": "B2",
-    "fr": "susciter",
-    "en": "to arouse / give rise to",
-    "ex": "Cette proposition a suscité de vives réactions."
-  },
-  {
-    "id": "v446",
-    "level": "B2",
-    "fr": "freiner",
-    "en": "to slow down / curb",
-    "ex": "Des formalités excessives freinent l'investissement privé."
-  },
-  {
-    "id": "v447",
-    "level": "B2",
-    "fr": "combler",
-    "en": "to fill / close (a gap)",
-    "ex": "Il faut combler l'écart entre les régions riches et pauvres."
-  },
-  {
-    "id": "v448",
-    "level": "B2",
-    "fr": "octroyer",
-    "en": "to grant",
-    "ex": "La banque a octroyé un prêt à taux réduit."
-  },
-  {
-    "id": "v449",
-    "level": "B2",
-    "fr": "transposer",
-    "en": "to transpose (into national law)",
-    "ex": "Les États doivent transposer la directive avant décembre."
-  },
-  {
-    "id": "v450",
-    "level": "B2",
-    "fr": "la démarche",
-    "en": "the approach / step taken",
-    "ex": "Cette démarche pragmatique a séduit plusieurs délégations."
-  },
-  {
-    "id": "v451",
-    "level": "B2",
-    "fr": "le constat",
-    "en": "the observation / finding",
-    "ex": "Le constat est sévère mais partagé par tous."
-  },
-  {
-    "id": "v452",
-    "level": "B2",
-    "fr": "les lignes directrices (f pl)",
-    "en": "the guidelines",
-    "ex": "La Commission a publié de nouvelles lignes directrices."
-  },
-  {
-    "id": "v453",
-    "level": "B2",
-    "fr": "la norme",
-    "en": "the standard / norm",
-    "ex": "Les normes environnementales seront progressivement renforcées."
-  },
-  {
-    "id": "v454",
-    "level": "B2",
-    "fr": "le critère",
-    "en": "the criterion",
-    "ex": "Les critères de sélection figurent dans l'avis de concours."
-  },
-  {
-    "id": "v455",
-    "level": "B2",
-    "fr": "l'indicateur (m)",
-    "en": "the indicator",
-    "ex": "Plusieurs indicateurs signalent un ralentissement de l'activité."
-  },
-  {
-    "id": "v456",
-    "level": "B2",
-    "fr": "le décalage",
-    "en": "the gap / discrepancy",
-    "ex": "On observe un décalage entre les annonces et les actes."
-  },
-  {
-    "id": "v457",
-    "level": "B2",
-    "fr": "la procédure",
-    "en": "the procedure",
-    "ex": "La procédure de recrutement dure environ neuf mois."
-  },
-  {
-    "id": "v458",
-    "level": "B2",
-    "fr": "le dispositif",
-    "en": "the scheme / arrangement",
-    "ex": "Ce dispositif d'aide bénéficie surtout aux petites entreprises."
-  },
-  {
-    "id": "v459",
-    "level": "B2",
-    "fr": "le mécanisme",
-    "en": "the mechanism",
-    "ex": "Un mécanisme de solidarité a été créé entre États membres."
-  },
-  {
-    "id": "v460",
-    "level": "B2",
-    "fr": "les modalités (f pl)",
-    "en": "the detailed arrangements",
-    "ex": "Les modalités d'application seront précisées ultérieurement."
-  },
-  {
-    "id": "v461",
-    "level": "B2",
-    "fr": "la contrepartie",
-    "en": "the consideration / quid pro quo",
-    "ex": "Les aides sont accordées en contrepartie d'engagements précis."
-  },
-  {
-    "id": "v462",
-    "level": "B2",
-    "fr": "l'atout (m)",
-    "en": "the asset / advantage",
-    "ex": "Le multilinguisme constitue un atout dans la fonction publique."
-  },
-  {
-    "id": "v463",
-    "level": "B2",
-    "fr": "l'inconvénient (m)",
-    "en": "the drawback",
-    "ex": "Cette solution présente un inconvénient majeur, à savoir son coût."
-  },
-  {
-    "id": "v464",
-    "level": "B2",
-    "fr": "la lacune",
-    "en": "the gap / shortcoming",
-    "ex": "L'audit a révélé de sérieuses lacunes dans le contrôle."
-  },
-  {
-    "id": "v465",
-    "level": "B2",
-    "fr": "la main-d'œuvre",
-    "en": "the workforce / labour",
-    "ex": "Le secteur agricole peine à recruter de la main-d'œuvre."
-  },
-  {
-    "id": "v466",
-    "level": "B2",
-    "fr": "le taux",
-    "en": "the rate",
-    "ex": "Le taux de chômage est tombé sous les six pour cent."
-  },
-  {
-    "id": "v467",
-    "level": "B2",
-    "fr": "l'écart (m)",
-    "en": "the gap / difference",
-    "ex": "L'écart salarial entre femmes et hommes se réduit lentement."
-  },
-  {
-    "id": "v468",
-    "level": "B2",
-    "fr": "la hausse",
-    "en": "the rise / increase",
-    "ex": "Une hausse des prix alimentaires a été enregistrée."
-  },
-  {
-    "id": "v469",
-    "level": "B2",
-    "fr": "la baisse",
-    "en": "the fall / decline",
-    "ex": "La baisse des investissements inquiète les économistes."
-  },
-  {
-    "id": "v470",
-    "level": "B2",
-    "fr": "l'excédent (m)",
-    "en": "the surplus",
-    "ex": "Le pays affiche un excédent commercial depuis deux ans."
-  },
-  {
-    "id": "v471",
-    "level": "B2",
-    "fr": "le déficit",
-    "en": "the deficit",
-    "ex": "Le déficit public devra être ramené sous les trois pour cent."
-  },
-  {
-    "id": "v472",
-    "level": "B2",
-    "fr": "le contribuable",
-    "en": "the taxpayer",
-    "ex": "Cette fraude coûte cher aux contribuables européens."
-  },
-  {
-    "id": "v473",
-    "level": "B2",
-    "fr": "l'usager (m)",
-    "en": "the user (of a public service)",
-    "ex": "Les usagers réclament un service plus rapide."
-  },
-  {
-    "id": "v474",
-    "level": "B2",
-    "fr": "le ressortissant",
-    "en": "the national (of a country)",
-    "ex": "Les ressortissants de pays tiers doivent obtenir un visa."
-  },
-  {
-    "id": "v475",
-    "level": "B2",
-    "fr": "les flux migratoires (m pl)",
-    "en": "the migration flows",
-    "ex": "Les flux migratoires varient selon la conjoncture économique."
-  },
-  {
-    "id": "v476",
-    "level": "B2",
-    "fr": "l'insertion (f)",
-    "en": "the integration (into work)",
-    "ex": "Ce programme favorise l'insertion professionnelle des jeunes diplômés."
-  },
-  {
-    "id": "v477",
-    "level": "B2",
-    "fr": "la précarité",
-    "en": "the insecurity / precariousness",
-    "ex": "La précarité de l'emploi touche surtout les jeunes."
-  },
-  {
-    "id": "v478",
-    "level": "B2",
-    "fr": "l'inégalité (f)",
-    "en": "the inequality",
-    "ex": "Les inégalités territoriales se sont creusées depuis la crise."
-  },
-  {
-    "id": "v479",
-    "level": "B2",
-    "fr": "le ménage",
-    "en": "the household",
-    "ex": "Les ménages modestes subissent le plus fortement l'inflation."
-  },
-  {
-    "id": "v480",
-    "level": "B2",
-    "fr": "le pouvoir d'achat",
-    "en": "the purchasing power",
-    "ex": "L'inflation a érodé le pouvoir d'achat des salariés."
-  },
-  {
-    "id": "v481",
-    "level": "B2",
-    "fr": "la filière",
-    "en": "the sector / supply chain",
-    "ex": "La filière automobile emploie des millions de personnes."
-  },
-  {
-    "id": "v482",
-    "level": "B2",
-    "fr": "la souveraineté",
-    "en": "the sovereignty",
-    "ex": "Certains États défendent leur souveraineté en matière fiscale."
-  },
-  {
-    "id": "v483",
-    "level": "B2",
-    "fr": "le porte-parole",
-    "en": "the spokesperson",
-    "ex": "Le porte-parole de la Commission a démenti cette information."
-  },
-  {
-    "id": "v484",
-    "level": "B2",
-    "fr": "le communiqué de presse",
-    "en": "the press release",
-    "ex": "Un communiqué de presse sera diffusé en fin de journée."
-  },
-  {
-    "id": "v485",
-    "level": "B2",
-    "fr": "les pourparlers (m pl)",
-    "en": "the talks",
-    "ex": "Les pourparlers ont repris après plusieurs semaines d'interruption."
-  },
-  {
-    "id": "v486",
-    "level": "B2",
-    "fr": "le compromis",
-    "en": "the compromise",
-    "ex": "Un compromis a été trouvé au terme d'une longue nuit."
-  },
-  {
-    "id": "v487",
-    "level": "B2",
-    "fr": "la revendication",
-    "en": "the demand / claim",
-    "ex": "Les revendications salariales restent au cœur du conflit."
-  },
-  {
-    "id": "v488",
-    "level": "B2",
-    "fr": "la sanction",
-    "en": "the penalty / sanction",
-    "ex": "Des sanctions financières frappent les États en infraction."
-  },
-  {
-    "id": "v489",
-    "level": "B2",
-    "fr": "le manquement",
-    "en": "the breach / failure to comply",
-    "ex": "La Cour a constaté un manquement aux obligations du traité."
-  },
-  {
-    "id": "v490",
-    "level": "B2",
-    "fr": "la juridiction",
-    "en": "the court / jurisdiction",
-    "ex": "Les juridictions nationales appliquent aussi le droit européen."
-  },
-  {
-    "id": "v491",
-    "level": "B2",
-    "fr": "l'arrêt (m)",
-    "en": "the court ruling",
-    "ex": "L'arrêt de la Cour fera jurisprudence pendant longtemps."
-  },
-  {
-    "id": "v492",
-    "level": "B2",
-    "fr": "la jurisprudence",
-    "en": "the case law",
-    "ex": "La jurisprudence a précisé la portée de cette notion."
-  },
-  {
-    "id": "v493",
-    "level": "B2",
-    "fr": "la clause",
-    "en": "the clause",
-    "ex": "Le contrat contient une clause de confidentialité stricte."
-  },
-  {
-    "id": "v494",
-    "level": "B2",
-    "fr": "la majorité qualifiée",
-    "en": "the qualified majority",
-    "ex": "Le texte a été adopté à la majorité qualifiée."
-  },
-  {
-    "id": "v495",
-    "level": "B2",
-    "fr": "la transparence",
-    "en": "the transparency",
-    "ex": "La transparence des institutions renforce la confiance des citoyens."
-  },
-  {
-    "id": "v496",
-    "level": "B2",
-    "fr": "l'opinion publique (f)",
-    "en": "the public opinion",
-    "ex": "L'opinion publique se montre partagée sur cette question."
-  },
-  {
-    "id": "v497",
-    "level": "B2",
-    "fr": "la désinformation",
-    "en": "the disinformation",
-    "ex": "La lutte contre la désinformation mobilise plusieurs services."
-  },
-  {
-    "id": "v498",
-    "level": "B2",
-    "fr": "la mise en garde",
-    "en": "the warning",
-    "ex": "La mise en garde des experts est restée sans effet."
-  },
-  {
-    "id": "v499",
-    "level": "B2",
-    "fr": "le vieillissement",
-    "en": "the ageing",
-    "ex": "Le vieillissement démographique pèse sur les systèmes de retraite."
-  },
-  {
-    "id": "v500",
-    "level": "B2",
-    "fr": "la transition énergétique",
-    "en": "the energy transition",
-    "ex": "La transition énergétique exige des investissements massifs."
-  }
+  {"id": "v001", "level": "A2", "fr": "la réunion", "en": "the meeting", "ex": "La réunion commence à neuf heures.", "pos": "noun", "gender": "f"},
+  {"id": "v002", "level": "A2", "fr": "le bureau", "en": "the office / desk", "ex": "Je vais au bureau en métro.", "pos": "noun", "gender": "m"},
+  {"id": "v003", "level": "A2", "fr": "le collègue", "en": "the colleague", "ex": "Mon collègue est très sympathique.", "pos": "noun", "gender": "m"},
+  {"id": "v004", "level": "A2", "fr": "le dossier", "en": "the file / folder", "ex": "J'ai mis le dossier sur ton bureau.", "pos": "noun", "gender": "m"},
+  {"id": "v005", "level": "A2", "fr": "envoyer", "en": "to send", "ex": "Je vais envoyer le courriel demain matin.", "pos": "verb"},
+  {"id": "v006", "level": "A2", "fr": "recevoir", "en": "to receive", "ex": "Nous avons reçu votre message hier.", "pos": "verb"},
+  {"id": "v007", "level": "A2", "fr": "la semaine", "en": "the week", "ex": "La semaine prochaine, je suis en vacances.", "pos": "noun", "gender": "f"},
+  {"id": "v008", "level": "A2", "fr": "tôt", "en": "early", "ex": "Je me lève tôt tous les jours.", "pos": "adv"},
+  {"id": "v009", "level": "A2", "fr": "en retard", "en": "late", "ex": "Désolé, je suis en retard à cause du train.", "pos": "prep"},
+  {"id": "v010", "level": "A2", "fr": "la réponse", "en": "the answer / reply", "ex": "J'attends encore sa réponse.", "pos": "noun", "gender": "f"},
+  {"id": "v011", "level": "A2", "fr": "demander", "en": "to ask (for)", "ex": "Elle demande une information au guichet.", "pos": "verb"},
+  {"id": "v012", "level": "A2", "fr": "comprendre", "en": "to understand", "ex": "Je ne comprends pas cette phrase.", "pos": "verb"},
+  {"id": "v013", "level": "A2", "fr": "aider", "en": "to help", "ex": "Tu peux m'aider avec ce document ?", "pos": "verb"},
+  {"id": "v014", "level": "A2", "fr": "chercher", "en": "to look for", "ex": "Je cherche la salle de réunion.", "pos": "verb"},
+  {"id": "v015", "level": "A2", "fr": "trouver", "en": "to find", "ex": "J'ai trouvé la solution au problème.", "pos": "verb"},
+  {"id": "v016", "level": "A2", "fr": "commencer", "en": "to begin", "ex": "Le cours commence dans dix minutes.", "pos": "verb"},
+  {"id": "v017", "level": "A2", "fr": "finir", "en": "to finish", "ex": "Je finis mon travail à dix-huit heures.", "pos": "verb"},
+  {"id": "v018", "level": "A2", "fr": "le rendez-vous", "en": "the appointment", "ex": "J'ai un rendez-vous chez le médecin jeudi.", "pos": "noun", "gender": "m"},
+  {"id": "v019", "level": "A2", "fr": "la ville", "en": "the city", "ex": "Bruxelles est une ville internationale.", "pos": "noun", "gender": "f"},
+  {"id": "v020", "level": "A2", "fr": "le pays", "en": "the country", "ex": "La France est un grand pays européen.", "pos": "noun", "gender": "m"},
+  {"id": "v021", "level": "A2", "fr": "la langue", "en": "the language", "ex": "Elle parle trois langues étrangères.", "pos": "noun", "gender": "f"},
+  {"id": "v022", "level": "A2", "fr": "apprendre", "en": "to learn", "ex": "J'apprends le français tous les matins.", "pos": "verb"},
+  {"id": "v023", "level": "A2", "fr": "le repas", "en": "the meal", "ex": "Nous prenons le repas de midi ensemble.", "pos": "noun", "gender": "m"},
+  {"id": "v024", "level": "A2", "fr": "acheter", "en": "to buy", "ex": "Il achète un billet de train pour Paris.", "pos": "verb"},
+  {"id": "v025", "level": "A2", "fr": "payer", "en": "to pay", "ex": "Vous pouvez payer par carte.", "pos": "verb"},
+  {"id": "v026", "level": "A2", "fr": "cher / chère", "en": "expensive / dear", "ex": "Cet hôtel est trop cher pour moi.", "pos": "adj"},
+  {"id": "v027", "level": "A2", "fr": "le temps", "en": "the time / weather", "ex": "Je n'ai pas le temps aujourd'hui.", "pos": "noun", "gender": "m"},
+  {"id": "v028", "level": "A2", "fr": "demain", "en": "tomorrow", "ex": "On se voit demain après la réunion.", "pos": "adv"},
+  {"id": "v029", "level": "A2", "fr": "hier", "en": "yesterday", "ex": "Hier, j'ai travaillé jusqu'à vingt heures.", "pos": "adv"},
+  {"id": "v030", "level": "A2", "fr": "souvent", "en": "often", "ex": "Je voyage souvent pour le travail.", "pos": "adv"},
+  {"id": "v031", "level": "A2", "fr": "toujours", "en": "always", "ex": "Elle arrive toujours à l'heure.", "pos": "adv"},
+  {"id": "v032", "level": "A2", "fr": "jamais", "en": "never", "ex": "Il ne boit jamais de café le soir.", "pos": "adv"},
+  {"id": "v033", "level": "A2", "fr": "la question", "en": "the question", "ex": "Avez-vous des questions sur ce point ?", "pos": "noun", "gender": "f"},
+  {"id": "v034", "level": "A2", "fr": "important(e)", "en": "important", "ex": "C'est une décision très importante.", "pos": "adj"},
+  {"id": "v035", "level": "A2", "fr": "facile", "en": "easy", "ex": "Ce test est plus facile que prévu.", "pos": "adj"},
+  {"id": "v036", "level": "A2", "fr": "difficile", "en": "difficult", "ex": "La grammaire française est parfois difficile.", "pos": "adj"},
+  {"id": "v037", "level": "A2", "fr": "travailler", "en": "to work", "ex": "Je travaille dans une institution européenne.", "pos": "verb"},
+  {"id": "v038", "level": "A2", "fr": "l'entreprise", "en": "the company", "ex": "Cette entreprise emploie deux cents personnes.", "pos": "noun"},
+  {"id": "v039", "level": "A2", "fr": "le voyage", "en": "the trip", "ex": "Le voyage à Strasbourg dure quatre heures.", "pos": "noun", "gender": "m"},
+  {"id": "v040", "level": "A2", "fr": "ensemble", "en": "together", "ex": "Nous préparons le projet ensemble.", "pos": "adv"},
+  {"id": "v041", "level": "B1", "fr": "l'objectif (m)", "en": "the objective / goal", "ex": "Notre objectif est d'atteindre 90 % de réussite.", "pos": "noun", "gender": "m"},
+  {"id": "v042", "level": "B1", "fr": "l'échéance (f)", "en": "the deadline", "ex": "L'échéance du projet est fixée à vendredi.", "pos": "noun", "gender": "f"},
+  {"id": "v043", "level": "B1", "fr": "la compétence", "en": "the skill / competence", "ex": "Ce poste exige des compétences en informatique.", "pos": "noun", "gender": "f"},
+  {"id": "v044", "level": "B1", "fr": "améliorer", "en": "to improve", "ex": "Je veux améliorer mon niveau de français.", "pos": "verb"},
+  {"id": "v045", "level": "B1", "fr": "la formation", "en": "the training", "ex": "Elle suit une formation en gestion de projet.", "pos": "noun", "gender": "f"},
+  {"id": "v046", "level": "B1", "fr": "le stage", "en": "the internship", "ex": "Il a fait un stage à la Commission européenne.", "pos": "noun", "gender": "m"},
+  {"id": "v047", "level": "B1", "fr": "postuler", "en": "to apply (for a job)", "ex": "J'ai postulé à un concours européen.", "pos": "verb"},
+  {"id": "v048", "level": "B1", "fr": "l'entretien (m)", "en": "the interview", "ex": "L'entretien d'embauche a duré une heure.", "pos": "noun", "gender": "m"},
+  {"id": "v049", "level": "B1", "fr": "le salaire", "en": "the salary", "ex": "Le salaire est négociable selon l'expérience.", "pos": "noun", "gender": "m"},
+  {"id": "v050", "level": "B1", "fr": "la réussite", "en": "the success", "ex": "La réussite demande de la discipline.", "pos": "noun", "gender": "f"},
+  {"id": "v051", "level": "B1", "fr": "échouer", "en": "to fail", "ex": "Il a échoué de peu à l'examen.", "pos": "verb"},
+  {"id": "v052", "level": "B1", "fr": "l'avis (m)", "en": "the opinion", "ex": "À mon avis, cette mesure est nécessaire.", "pos": "noun", "gender": "m"},
+  {"id": "v053", "level": "B1", "fr": "convaincre", "en": "to convince", "ex": "Elle a convaincu ses collègues d'adopter le plan.", "pos": "verb"},
+  {"id": "v054", "level": "B1", "fr": "le comportement", "en": "the behaviour", "ex": "Son comportement en réunion est professionnel.", "pos": "noun", "gender": "m"},
+  {"id": "v055", "level": "B1", "fr": "la confiance", "en": "the trust / confidence", "ex": "La confiance se gagne avec le temps.", "pos": "noun", "gender": "f"},
+  {"id": "v056", "level": "B1", "fr": "s'inscrire", "en": "to register / sign up", "ex": "Je me suis inscrit au concours EPSO.", "pos": "verb"},
+  {"id": "v057", "level": "B1", "fr": "le niveau", "en": "the level", "ex": "Son niveau de français correspond au B1.", "pos": "noun", "gender": "m"},
+  {"id": "v058", "level": "B1", "fr": "la moyenne", "en": "the average", "ex": "Ma moyenne aux tests dépasse quatre-vingts pour cent.", "pos": "noun", "gender": "f"},
+  {"id": "v059", "level": "B1", "fr": "augmenter", "en": "to increase", "ex": "Les prix ont augmenté de cinq pour cent.", "pos": "verb"},
+  {"id": "v060", "level": "B1", "fr": "diminuer", "en": "to decrease", "ex": "Le chômage diminue lentement cette année.", "pos": "verb"},
+  {"id": "v061", "level": "B1", "fr": "la croissance", "en": "the growth", "ex": "La croissance économique reste faible en Europe.", "pos": "noun", "gender": "f"},
+  {"id": "v062", "level": "B1", "fr": "le chômage", "en": "the unemployment", "ex": "Le chômage des jeunes est un vrai défi.", "pos": "noun", "gender": "m"},
+  {"id": "v063", "level": "B1", "fr": "l'impôt (m)", "en": "the tax", "ex": "Chaque citoyen paie des impôts sur le revenu.", "pos": "noun", "gender": "m"},
+  {"id": "v064", "level": "B1", "fr": "la loi", "en": "the law", "ex": "Le Parlement a voté une nouvelle loi.", "pos": "noun", "gender": "f"},
+  {"id": "v065", "level": "B1", "fr": "le droit", "en": "the right / law (field)", "ex": "Elle étudie le droit européen à Bruxelles.", "pos": "noun", "gender": "m"},
+  {"id": "v066", "level": "B1", "fr": "élire", "en": "to elect", "ex": "Les citoyens élisent leurs députés tous les cinq ans.", "pos": "verb"},
+  {"id": "v067", "level": "B1", "fr": "le citoyen", "en": "the citizen", "ex": "Tout citoyen européen peut voter aux élections européennes.", "pos": "noun", "gender": "m"},
+  {"id": "v068", "level": "B1", "fr": "la frontière", "en": "the border", "ex": "On traverse la frontière sans contrôle dans l'espace Schengen.", "pos": "noun", "gender": "f"},
+  {"id": "v069", "level": "B1", "fr": "l'environnement (m)", "en": "the environment", "ex": "Protéger l'environnement est une priorité de l'Union.", "pos": "noun", "gender": "m"},
+  {"id": "v070", "level": "B1", "fr": "la santé", "en": "the health", "ex": "La santé publique relève surtout des États membres.", "pos": "noun", "gender": "f"},
+  {"id": "v071", "level": "B1", "fr": "la sécurité", "en": "the security / safety", "ex": "La sécurité routière s'est améliorée depuis dix ans.", "pos": "noun", "gender": "f"},
+  {"id": "v072", "level": "B1", "fr": "le développement", "en": "the development", "ex": "Le développement durable guide nos politiques.", "pos": "noun", "gender": "m"},
+  {"id": "v073", "level": "B1", "fr": "soutenir", "en": "to support", "ex": "L'Union soutient les régions les plus pauvres.", "pos": "verb"},
+  {"id": "v074", "level": "B1", "fr": "empêcher", "en": "to prevent", "ex": "Rien ne peut empêcher le progrès technologique.", "pos": "verb"},
+  {"id": "v075", "level": "B1", "fr": "atteindre", "en": "to reach / achieve", "ex": "Nous avons atteint notre objectif annuel.", "pos": "verb"},
+  {"id": "v076", "level": "B1", "fr": "le résultat", "en": "the result", "ex": "Les résultats du test seront publiés lundi.", "pos": "noun", "gender": "m"},
+  {"id": "v077", "level": "B1", "fr": "d'ailleurs", "en": "besides / by the way", "ex": "D'ailleurs, il connaît très bien ce sujet.", "pos": "adv"},
+  {"id": "v078", "level": "B1", "fr": "pourtant", "en": "yet / however", "ex": "C'est simple, pourtant beaucoup se trompent.", "pos": "adv"},
+  {"id": "v079", "level": "B1", "fr": "grâce à", "en": "thanks to", "ex": "Grâce à toi, le projet a réussi.", "pos": "prep"},
+  {"id": "v080", "level": "B1", "fr": "malgré", "en": "despite", "ex": "Malgré la pluie, la visite a eu lieu.", "pos": "prep"},
+  {"id": "v081", "level": "B2", "fr": "l'enjeu (m)", "en": "the stake / challenge", "ex": "Le climat est l'enjeu majeur de notre décennie.", "pos": "noun", "gender": "m"},
+  {"id": "v082", "level": "B2", "fr": "la mise en œuvre", "en": "the implementation", "ex": "La mise en œuvre de la directive prendra deux ans.", "pos": "noun", "gender": "f"},
+  {"id": "v083", "level": "B2", "fr": "le préalable", "en": "the prerequisite", "ex": "Un accord politique est un préalable indispensable.", "pos": "noun", "gender": "m"},
+  {"id": "v084", "level": "B2", "fr": "l'élargissement (m)", "en": "the enlargement", "ex": "L'élargissement de l'Union exige des réformes.", "pos": "noun", "gender": "m"},
+  {"id": "v085", "level": "B2", "fr": "la concurrence", "en": "the competition", "ex": "La Commission veille à une concurrence loyale.", "pos": "noun", "gender": "f"},
+  {"id": "v086", "level": "B2", "fr": "la subvention", "en": "the subsidy / grant", "ex": "Cette région reçoit des subventions européennes.", "pos": "noun", "gender": "f"},
+  {"id": "v087", "level": "B2", "fr": "le budget", "en": "the budget", "ex": "Le budget pluriannuel couvre sept années.", "pos": "noun", "gender": "m"},
+  {"id": "v088", "level": "B2", "fr": "l'encadrement (m)", "en": "the framework / supervision", "ex": "L'encadrement des aides d'État est strict.", "pos": "noun", "gender": "m"},
+  {"id": "v089", "level": "B2", "fr": "aboutir à", "en": "to lead to / result in", "ex": "Les négociations ont abouti à un compromis.", "pos": "verb"},
+  {"id": "v090", "level": "B2", "fr": "entériner", "en": "to ratify / endorse", "ex": "Le Conseil a entériné l'accord conclu hier.", "pos": "verb"},
+  {"id": "v091", "level": "B2", "fr": "préconiser", "en": "to recommend / advocate", "ex": "Le rapport préconise une réforme du système.", "pos": "verb"},
+  {"id": "v092", "level": "B2", "fr": "s'engager à", "en": "to commit to", "ex": "Les États se sont engagés à réduire leurs émissions.", "pos": "verb"},
+  {"id": "v093", "level": "B2", "fr": "la cohésion", "en": "the cohesion", "ex": "La politique de cohésion réduit les écarts régionaux.", "pos": "noun", "gender": "f"},
+  {"id": "v094", "level": "B2", "fr": "la subsidiarité", "en": "the subsidiarity", "ex": "La subsidiarité limite l'action de l'Union au nécessaire.", "pos": "noun", "gender": "f"},
+  {"id": "v095", "level": "B2", "fr": "le traité", "en": "the treaty", "ex": "Le traité de Lisbonne est entré en vigueur en 2009.", "pos": "noun", "gender": "m"},
+  {"id": "v096", "level": "B2", "fr": "la directive", "en": "the directive", "ex": "Une directive fixe un objectif à transposer en droit national.", "pos": "noun", "gender": "f"},
+  {"id": "v097", "level": "B2", "fr": "le règlement", "en": "the regulation", "ex": "Un règlement s'applique directement dans tous les États membres.", "pos": "noun", "gender": "m"},
+  {"id": "v098", "level": "B2", "fr": "la portée", "en": "the scope / reach", "ex": "Cette décision a une portée considérable.", "pos": "noun", "gender": "f"},
+  {"id": "v099", "level": "B2", "fr": "en vigueur", "en": "in force", "ex": "Cette règle est en vigueur depuis janvier.", "pos": "prep"},
+  {"id": "v100", "level": "B2", "fr": "le recours", "en": "the appeal / recourse", "ex": "L'entreprise a introduit un recours devant la Cour.", "pos": "noun", "gender": "m"},
+  {"id": "v101", "level": "B2", "fr": "trancher", "en": "to settle / decide", "ex": "La Cour de justice a tranché le litige.", "pos": "verb"},
+  {"id": "v102", "level": "B2", "fr": "le litige", "en": "the dispute", "ex": "Le litige commercial dure depuis trois ans.", "pos": "noun", "gender": "m"},
+  {"id": "v103", "level": "B2", "fr": "l'ampleur (f)", "en": "the extent / magnitude", "ex": "On mesure mal l'ampleur du phénomène.", "pos": "noun", "gender": "f"},
+  {"id": "v104", "level": "B2", "fr": "la contrainte", "en": "the constraint", "ex": "Nous travaillons sous de fortes contraintes budgétaires.", "pos": "noun", "gender": "f"},
+  {"id": "v105", "level": "B2", "fr": "l'essor (m)", "en": "the rapid growth / rise", "ex": "L'essor du numérique transforme l'économie.", "pos": "noun", "gender": "m"},
+  {"id": "v106", "level": "B2", "fr": "le clivage", "en": "the divide / split", "ex": "Ce débat révèle un clivage entre générations.", "pos": "noun", "gender": "m"},
+  {"id": "v107", "level": "B2", "fr": "la concertation", "en": "the consultation / dialogue", "ex": "La réforme a été menée en concertation avec les syndicats.", "pos": "noun", "gender": "f"},
+  {"id": "v108", "level": "B2", "fr": "l'aboutissement (m)", "en": "the culmination / outcome", "ex": "Ce texte est l'aboutissement de longues négociations.", "pos": "noun", "gender": "m"},
+  {"id": "v109", "level": "B2", "fr": "étayer", "en": "to support / back up (an argument)", "ex": "Il faut étayer votre argument par des chiffres.", "pos": "verb"},
+  {"id": "v110", "level": "B2", "fr": "nuancer", "en": "to qualify / nuance", "ex": "Permettez-moi de nuancer cette affirmation.", "pos": "verb"},
+  {"id": "v111", "level": "B2", "fr": "la vraisemblance", "en": "the plausibility / likelihood", "ex": "Selon toute vraisemblance, l'accord sera signé.", "pos": "noun", "gender": "f"},
+  {"id": "v112", "level": "B2", "fr": "en revanche", "en": "on the other hand", "ex": "Le coût est élevé ; en revanche, les bénéfices sont durables.", "pos": "prep"},
+  {"id": "v113", "level": "B2", "fr": "dès lors que", "en": "as soon as / given that", "ex": "Dès lors que la loi est adoptée, elle s'impose à tous.", "pos": "prep"},
+  {"id": "v114", "level": "B2", "fr": "quant à", "en": "as for / regarding", "ex": "Quant au budget, il sera examiné en novembre.", "pos": "prep"},
+  {"id": "v115", "level": "B2", "fr": "sous réserve de", "en": "subject to", "ex": "L'accord s'applique sous réserve de ratification.", "pos": "prep"},
+  {"id": "v116", "level": "B2", "fr": "le cas échéant", "en": "if need be / where applicable", "ex": "Le cas échéant, la Commission proposera une révision.", "pos": "noun", "gender": "m"},
+  {"id": "v117", "level": "B2", "fr": "la relance", "en": "the recovery / stimulus", "ex": "Le plan de relance a soutenu l'économie après la crise.", "pos": "noun", "gender": "f"},
+  {"id": "v118", "level": "B2", "fr": "l'assainissement (m)", "en": "the consolidation / clean-up", "ex": "L'assainissement des finances publiques reste prioritaire.", "pos": "noun", "gender": "m"},
+  {"id": "v119", "level": "B2", "fr": "la passation de marché", "en": "the procurement", "ex": "La passation de marchés publics obéit à des règles strictes.", "pos": "noun", "gender": "f"},
+  {"id": "v120", "level": "B2", "fr": "l'État de droit", "en": "the rule of law", "ex": "Le respect de l'État de droit conditionne certains fonds européens.", "pos": "noun"},
+  {"id": "v121", "level": "A2", "fr": "le matin", "en": "the morning", "ex": "Je lis mes courriels le matin.", "pos": "noun", "gender": "m"},
+  {"id": "v122", "level": "A2", "fr": "le soir", "en": "the evening", "ex": "Le soir, je rentre chez moi vers dix-neuf heures.", "pos": "noun", "gender": "m"},
+  {"id": "v123", "level": "A2", "fr": "la porte", "en": "the door", "ex": "Ferme la porte, s'il te plaît.", "pos": "noun", "gender": "f"},
+  {"id": "v124", "level": "A2", "fr": "la fenêtre", "en": "the window", "ex": "On peut ouvrir la fenêtre ? Il fait chaud.", "pos": "noun", "gender": "f"},
+  {"id": "v125", "level": "A2", "fr": "répondre", "en": "to answer", "ex": "Je vais répondre à ce message cet après-midi.", "pos": "verb"},
+  {"id": "v126", "level": "A2", "fr": "appeler", "en": "to call", "ex": "Tu peux m'appeler après la réunion ?", "pos": "verb"},
+  {"id": "v127", "level": "A2", "fr": "écrire", "en": "to write", "ex": "Elle écrit un rapport pour son chef.", "pos": "verb"},
+  {"id": "v128", "level": "A2", "fr": "lire", "en": "to read", "ex": "Je lis le journal dans le train.", "pos": "verb"},
+  {"id": "v129", "level": "A2", "fr": "écouter", "en": "to listen", "ex": "J'écoute un podcast en français chaque matin.", "pos": "verb"},
+  {"id": "v130", "level": "A2", "fr": "boire", "en": "to drink", "ex": "Il boit un café avant de commencer.", "pos": "verb"},
+  {"id": "v131", "level": "A2", "fr": "l'eau (f)", "en": "the water", "ex": "Un verre d'eau, s'il vous plaît.", "pos": "noun", "gender": "f"},
+  {"id": "v132", "level": "A2", "fr": "le pain", "en": "the bread", "ex": "J'achète du pain à la boulangerie.", "pos": "noun", "gender": "m"},
+  {"id": "v133", "level": "A2", "fr": "la gare", "en": "the station", "ex": "La gare est à cinq minutes du bureau.", "pos": "noun", "gender": "f"},
+  {"id": "v134", "level": "A2", "fr": "le billet", "en": "the ticket", "ex": "J'ai réservé un billet pour Strasbourg.", "pos": "noun", "gender": "m"},
+  {"id": "v135", "level": "A2", "fr": "la rue", "en": "the street", "ex": "Le restaurant est dans la rue à côté.", "pos": "noun", "gender": "f"},
+  {"id": "v136", "level": "A2", "fr": "la maison", "en": "the house", "ex": "Je travaille à la maison le vendredi.", "pos": "noun", "gender": "f"},
+  {"id": "v137", "level": "A2", "fr": "l'appartement (m)", "en": "the flat / apartment", "ex": "Son appartement est près du centre.", "pos": "noun", "gender": "m"},
+  {"id": "v138", "level": "A2", "fr": "la clé", "en": "the key", "ex": "J'ai oublié mes clés au bureau.", "pos": "noun", "gender": "f"},
+  {"id": "v139", "level": "A2", "fr": "ouvrir", "en": "to open", "ex": "Le secrétariat ouvre à huit heures et demie.", "pos": "verb"},
+  {"id": "v140", "level": "A2", "fr": "fermer", "en": "to close", "ex": "La bibliothèque ferme à vingt heures.", "pos": "verb"},
+  {"id": "v141", "level": "A2", "fr": "donner", "en": "to give", "ex": "Elle me donne les documents demain.", "pos": "verb"},
+  {"id": "v142", "level": "A2", "fr": "l'argent (m)", "en": "the money", "ex": "Je n'ai pas assez d'argent sur moi.", "pos": "noun", "gender": "m"},
+  {"id": "v143", "level": "A2", "fr": "le prix", "en": "the price", "ex": "Le prix du billet a changé.", "pos": "noun", "gender": "m"},
+  {"id": "v144", "level": "A2", "fr": "gratuit(e)", "en": "free (of charge)", "ex": "L'entrée du musée est gratuite le dimanche.", "pos": "adj"},
+  {"id": "v145", "level": "A2", "fr": "le magasin", "en": "the shop", "ex": "Le magasin est ouvert jusqu'à dix-neuf heures.", "pos": "noun", "gender": "m"},
+  {"id": "v146", "level": "A2", "fr": "le vêtement", "en": "the piece of clothing", "ex": "Il faut des vêtements chauds en hiver.", "pos": "noun", "gender": "m"},
+  {"id": "v147", "level": "A2", "fr": "porter", "en": "to wear / to carry", "ex": "Elle porte une veste bleue aujourd'hui.", "pos": "verb"},
+  {"id": "v148", "level": "A2", "fr": "la famille", "en": "the family", "ex": "Ma famille habite en Grèce.", "pos": "noun", "gender": "f"},
+  {"id": "v149", "level": "A2", "fr": "l'enfant (m/f)", "en": "the child", "ex": "Les enfants vont à l'école à huit heures.", "pos": "noun"},
+  {"id": "v150", "level": "A2", "fr": "le frère", "en": "the brother", "ex": "Mon frère travaille à Athènes.", "pos": "noun", "gender": "m"},
+  {"id": "v151", "level": "A2", "fr": "la sœur", "en": "the sister", "ex": "Ma sœur parle très bien français.", "pos": "noun", "gender": "f"},
+  {"id": "v152", "level": "A2", "fr": "l'ami(e)", "en": "the friend", "ex": "Je dîne avec des amis ce soir.", "pos": "noun"},
+  {"id": "v153", "level": "A2", "fr": "rencontrer", "en": "to meet", "ex": "J'ai rencontré un ancien collègue au café.", "pos": "verb"},
+  {"id": "v154", "level": "A2", "fr": "inviter", "en": "to invite", "ex": "Ils nous ont invités à leur fête.", "pos": "verb"},
+  {"id": "v155", "level": "A2", "fr": "la fête", "en": "the party / celebration", "ex": "On organise une fête pour son départ.", "pos": "noun", "gender": "f"},
+  {"id": "v156", "level": "A2", "fr": "les vacances (f pl)", "en": "the holidays", "ex": "Je prends mes vacances en août.", "pos": "noun"},
+  {"id": "v157", "level": "A2", "fr": "le soleil", "en": "the sun", "ex": "Il y a du soleil aujourd'hui.", "pos": "noun", "gender": "m"},
+  {"id": "v158", "level": "A2", "fr": "la pluie", "en": "the rain", "ex": "La pluie a duré toute la journée.", "pos": "noun", "gender": "f"},
+  {"id": "v159", "level": "A2", "fr": "froid(e)", "en": "cold", "ex": "Il fait froid dans cette salle.", "pos": "adj"},
+  {"id": "v160", "level": "A2", "fr": "chaud(e)", "en": "hot / warm", "ex": "L'été est très chaud dans le sud.", "pos": "adj"},
+  {"id": "v161", "level": "A2", "fr": "le médecin", "en": "the doctor", "ex": "Je vais chez le médecin à seize heures.", "pos": "noun", "gender": "m"},
+  {"id": "v162", "level": "A2", "fr": "malade", "en": "sick / ill", "ex": "Il est malade, il reste à la maison.", "pos": "adj"},
+  {"id": "v163", "level": "A2", "fr": "fatigué(e)", "en": "tired", "ex": "Je suis fatigué après cette longue semaine.", "pos": "adj"},
+  {"id": "v164", "level": "A2", "fr": "content(e)", "en": "happy / pleased", "ex": "Elle est contente de son nouveau poste.", "pos": "adj"},
+  {"id": "v165", "level": "A2", "fr": "le nom", "en": "the name / surname", "ex": "Écrivez votre nom sur le formulaire.", "pos": "noun", "gender": "m"},
+  {"id": "v166", "level": "A2", "fr": "l'adresse (f)", "en": "the address", "ex": "Quelle est votre adresse électronique ?", "pos": "noun", "gender": "f"},
+  {"id": "v167", "level": "A2", "fr": "habiter", "en": "to live (somewhere)", "ex": "J'habite à Bruxelles depuis un an.", "pos": "verb"},
+  {"id": "v168", "level": "A2", "fr": "la salle", "en": "the room / hall", "ex": "La salle de réunion est au deuxième étage.", "pos": "noun", "gender": "f"},
+  {"id": "v169", "level": "A2", "fr": "l'ordinateur (m)", "en": "the computer", "ex": "Mon ordinateur est trop lent ce matin.", "pos": "noun", "gender": "m"},
+  {"id": "v170", "level": "A2", "fr": "le courriel", "en": "the e-mail", "ex": "Je t'envoie le courriel tout de suite.", "pos": "noun", "gender": "m"},
+  {"id": "v171", "level": "A2", "fr": "signer", "en": "to sign", "ex": "Vous devez signer ici, en bas de la page.", "pos": "verb"},
+  {"id": "v172", "level": "A2", "fr": "le formulaire", "en": "the form", "ex": "Remplissez le formulaire en ligne.", "pos": "noun", "gender": "m"},
+  {"id": "v173", "level": "A2", "fr": "attendre", "en": "to wait", "ex": "J'attends le bus depuis dix minutes.", "pos": "verb"},
+  {"id": "v174", "level": "A2", "fr": "arriver", "en": "to arrive", "ex": "Le train arrive à neuf heures dix.", "pos": "verb"},
+  {"id": "v175", "level": "A2", "fr": "partir", "en": "to leave", "ex": "Nous partons demain matin très tôt.", "pos": "verb"},
+  {"id": "v176", "level": "A2", "fr": "rester", "en": "to stay", "ex": "Je reste au bureau jusqu'à dix-huit heures.", "pos": "verb"},
+  {"id": "v177", "level": "A2", "fr": "penser", "en": "to think", "ex": "Je pense que c'est une bonne idée.", "pos": "verb"},
+  {"id": "v178", "level": "A2", "fr": "oublier", "en": "to forget", "ex": "N'oublie pas la réunion de quatorze heures.", "pos": "verb"},
+  {"id": "v179", "level": "A2", "fr": "se souvenir de", "en": "to remember", "ex": "Tu te souviens de son nom ?", "pos": "verb"},
+  {"id": "v180", "level": "A2", "fr": "la photo", "en": "the photo", "ex": "Il faut une photo pour le badge.", "pos": "noun", "gender": "f"},
+  {"id": "v181", "level": "B1", "fr": "l'équipe (f)", "en": "the team", "ex": "Notre équipe compte huit personnes.", "pos": "noun", "gender": "f"},
+  {"id": "v182", "level": "B1", "fr": "le projet", "en": "the project", "ex": "Le projet doit être livré avant l'été.", "pos": "noun", "gender": "m"},
+  {"id": "v183", "level": "B1", "fr": "gérer", "en": "to manage", "ex": "Elle gère trois dossiers en même temps.", "pos": "verb"},
+  {"id": "v184", "level": "B1", "fr": "le responsable", "en": "the person in charge / manager", "ex": "Le responsable du service est en déplacement.", "pos": "noun", "gender": "m"},
+  {"id": "v185", "level": "B1", "fr": "embaucher", "en": "to hire", "ex": "L'entreprise va embaucher dix personnes cette année.", "pos": "verb"},
+  {"id": "v186", "level": "B1", "fr": "licencier", "en": "to dismiss / lay off", "ex": "L'usine a licencié une partie de son personnel.", "pos": "verb"},
+  {"id": "v187", "level": "B1", "fr": "la grève", "en": "the strike", "ex": "Les trains sont annulés à cause de la grève.", "pos": "noun", "gender": "f"},
+  {"id": "v188", "level": "B1", "fr": "le syndicat", "en": "the trade union", "ex": "Les syndicats négocient avec la direction.", "pos": "noun", "gender": "m"},
+  {"id": "v189", "level": "B1", "fr": "le contrat", "en": "the contract", "ex": "Elle a signé un contrat de deux ans.", "pos": "noun", "gender": "m"},
+  {"id": "v190", "level": "B1", "fr": "le délai", "en": "the time limit / lead time", "ex": "Le délai de réponse est de quinze jours.", "pos": "noun", "gender": "m"},
+  {"id": "v191", "level": "B1", "fr": "prévoir", "en": "to plan / foresee", "ex": "On prévoit une réunion la semaine prochaine.", "pos": "verb"},
+  {"id": "v192", "level": "B1", "fr": "annuler", "en": "to cancel", "ex": "La visite a été annulée au dernier moment.", "pos": "verb"},
+  {"id": "v193", "level": "B1", "fr": "reporter", "en": "to postpone", "ex": "La réunion est reportée à jeudi.", "pos": "verb"},
+  {"id": "v194", "level": "B1", "fr": "confirmer", "en": "to confirm", "ex": "Merci de confirmer votre présence avant lundi.", "pos": "verb"},
+  {"id": "v195", "level": "B1", "fr": "participer à", "en": "to take part in", "ex": "Je participe à une conférence à Vienne.", "pos": "verb"},
+  {"id": "v196", "level": "B1", "fr": "la dépense", "en": "the expense / spending", "ex": "Il faut réduire les dépenses de fonctionnement.", "pos": "noun", "gender": "f"},
+  {"id": "v197", "level": "B1", "fr": "épargner", "en": "to save (money)", "ex": "Elle épargne un peu chaque mois.", "pos": "verb"},
+  {"id": "v198", "level": "B1", "fr": "emprunter", "en": "to borrow", "ex": "Ils ont emprunté pour acheter leur appartement.", "pos": "verb"},
+  {"id": "v199", "level": "B1", "fr": "le prêt", "en": "the loan", "ex": "La banque a accordé le prêt en une semaine.", "pos": "noun", "gender": "m"},
+  {"id": "v200", "level": "B1", "fr": "investir", "en": "to invest", "ex": "La région investit dans les transports publics.", "pos": "verb"},
+  {"id": "v201", "level": "B1", "fr": "le marché", "en": "the market", "ex": "Cette société est leader sur le marché européen.", "pos": "noun", "gender": "m"},
+  {"id": "v202", "level": "B1", "fr": "le client", "en": "the customer / client", "ex": "Le client attend une réponse rapide.", "pos": "noun", "gender": "m"},
+  {"id": "v203", "level": "B1", "fr": "le fournisseur", "en": "the supplier", "ex": "Nous avons changé de fournisseur cette année.", "pos": "noun", "gender": "m"},
+  {"id": "v204", "level": "B1", "fr": "la facture", "en": "the invoice / bill", "ex": "La facture doit être payée sous trente jours.", "pos": "noun", "gender": "f"},
+  {"id": "v205", "level": "B1", "fr": "la commande", "en": "the order", "ex": "Votre commande a été expédiée hier.", "pos": "noun", "gender": "f"},
+  {"id": "v206", "level": "B1", "fr": "livrer", "en": "to deliver", "ex": "Le matériel sera livré vendredi.", "pos": "verb"},
+  {"id": "v207", "level": "B1", "fr": "le service", "en": "the department / service", "ex": "Le service juridique examine le contrat.", "pos": "noun", "gender": "m"},
+  {"id": "v208", "level": "B1", "fr": "la qualité", "en": "the quality", "ex": "La qualité du dossier est excellente.", "pos": "noun", "gender": "f"},
+  {"id": "v209", "level": "B1", "fr": "se plaindre", "en": "to complain", "ex": "Plusieurs usagers se sont plaints du retard.", "pos": "verb"},
+  {"id": "v210", "level": "B1", "fr": "la plainte", "en": "the complaint", "ex": "Le médiateur a reçu de nombreuses plaintes.", "pos": "noun", "gender": "f"},
+  {"id": "v211", "level": "B1", "fr": "résoudre", "en": "to solve", "ex": "Nous avons résolu le problème technique.", "pos": "verb"},
+  {"id": "v212", "level": "B1", "fr": "l'enquête (f)", "en": "the survey / investigation", "ex": "Une enquête a été ouverte sur cette affaire.", "pos": "noun", "gender": "f"},
+  {"id": "v213", "level": "B1", "fr": "le sondage", "en": "the opinion poll", "ex": "Selon un sondage, la majorité approuve la réforme.", "pos": "noun", "gender": "m"},
+  {"id": "v214", "level": "B1", "fr": "la plupart de", "en": "most of", "ex": "La plupart des candidats réussissent ce test.", "pos": "noun", "gender": "f"},
+  {"id": "v215", "level": "B1", "fr": "environ", "en": "about / approximately", "ex": "Le trajet dure environ quarante minutes.", "pos": "adv"},
+  {"id": "v216", "level": "B1", "fr": "presque", "en": "almost", "ex": "Le rapport est presque terminé.", "pos": "adv"},
+  {"id": "v217", "level": "B1", "fr": "selon", "en": "according to", "ex": "Selon la Commission, la croissance va repartir.", "pos": "prep"},
+  {"id": "v218", "level": "B1", "fr": "cependant", "en": "however", "ex": "Le plan est ambitieux ; cependant, il est réalisable.", "pos": "adv"},
+  {"id": "v219", "level": "B1", "fr": "alors que", "en": "whereas / while", "ex": "Il est resté calme alors que la situation était tendue.", "pos": "prep"},
+  {"id": "v220", "level": "B1", "fr": "tandis que", "en": "while / whereas", "ex": "Les exportations montent tandis que les importations baissent.", "pos": "prep"},
+  {"id": "v221", "level": "B1", "fr": "à cause de", "en": "because of (negative)", "ex": "Le vol est retardé à cause du brouillard.", "pos": "prep"},
+  {"id": "v222", "level": "B1", "fr": "être en train de", "en": "to be in the middle of (doing)", "ex": "Je suis en train de rédiger la note.", "pos": "verb"},
+  {"id": "v223", "level": "B1", "fr": "il s'agit de", "en": "it is about / it concerns", "ex": "Il s'agit d'un projet pilote de deux ans.", "pos": "prep"},
+  {"id": "v224", "level": "B1", "fr": "la société", "en": "the company / society", "ex": "Cette société a son siège à Luxembourg.", "pos": "noun", "gender": "f"},
+  {"id": "v225", "level": "B1", "fr": "le domaine", "en": "the field / area", "ex": "Elle est experte dans le domaine de l'énergie.", "pos": "noun", "gender": "m"},
+  {"id": "v226", "level": "B1", "fr": "le secteur", "en": "the sector", "ex": "Le secteur du tourisme se redresse.", "pos": "noun", "gender": "m"},
+  {"id": "v227", "level": "B1", "fr": "la carrière", "en": "the career", "ex": "Il a fait toute sa carrière dans la fonction publique.", "pos": "noun", "gender": "f"},
+  {"id": "v228", "level": "B1", "fr": "l'expérience (f)", "en": "the experience", "ex": "Ce poste exige trois ans d'expérience.", "pos": "noun", "gender": "f"},
+  {"id": "v229", "level": "B1", "fr": "le diplôme", "en": "the degree / diploma", "ex": "Un diplôme universitaire est requis pour ce concours.", "pos": "noun", "gender": "m"},
+  {"id": "v230", "level": "B1", "fr": "la candidature", "en": "the application", "ex": "Elle a déposé sa candidature en ligne.", "pos": "noun", "gender": "f"},
+  {"id": "v231", "level": "B1", "fr": "le concours", "en": "the competition (exam)", "ex": "Le concours comprend des tests de raisonnement.", "pos": "noun", "gender": "m"},
+  {"id": "v232", "level": "B1", "fr": "l'épreuve (f)", "en": "the test / exam paper", "ex": "L'épreuve numérique dure trente minutes.", "pos": "noun", "gender": "f"},
+  {"id": "v233", "level": "B1", "fr": "la note", "en": "the mark / memo", "ex": "Il a obtenu une très bonne note à l'écrit.", "pos": "noun", "gender": "f"},
+  {"id": "v234", "level": "B1", "fr": "s'entraîner", "en": "to practise / train", "ex": "Je m'entraîne dix minutes par jour.", "pos": "verb"},
+  {"id": "v235", "level": "B1", "fr": "le progrès", "en": "the progress", "ex": "Tu as fait de vrais progrès en français.", "pos": "noun", "gender": "m"},
+  {"id": "v236", "level": "B1", "fr": "l'habitude (f)", "en": "the habit", "ex": "C'est devenu une habitude quotidienne.", "pos": "noun", "gender": "f"},
+  {"id": "v237", "level": "B1", "fr": "la réclamation", "en": "the formal complaint / claim", "ex": "Vous pouvez introduire une réclamation en ligne.", "pos": "noun", "gender": "f"},
+  {"id": "v238", "level": "B1", "fr": "le déplacement", "en": "the (business) trip / travel", "ex": "Elle est en déplacement à Strasbourg cette semaine.", "pos": "noun", "gender": "m"},
+  {"id": "v239", "level": "B1", "fr": "la réforme", "en": "the reform", "ex": "La réforme des retraites fait débat.", "pos": "noun", "gender": "f"},
+  {"id": "v240", "level": "B1", "fr": "le débat", "en": "the debate", "ex": "Le débat a duré plus de deux heures.", "pos": "noun", "gender": "m"},
+  {"id": "v241", "level": "B2", "fr": "la gouvernance", "en": "the governance", "ex": "La gouvernance économique de la zone euro a été renforcée.", "pos": "noun", "gender": "f"},
+  {"id": "v242", "level": "B2", "fr": "la disposition", "en": "the provision (legal)", "ex": "Cette disposition entre en vigueur immédiatement.", "pos": "noun", "gender": "f"},
+  {"id": "v243", "level": "B2", "fr": "l'amendement (m)", "en": "the amendment", "ex": "Le Parlement a adopté plusieurs amendements au texte.", "pos": "noun", "gender": "m"},
+  {"id": "v244", "level": "B2", "fr": "le scrutin", "en": "the ballot / vote", "ex": "Le scrutin s'est déroulé sans incident.", "pos": "noun", "gender": "m"},
+  {"id": "v245", "level": "B2", "fr": "l'abstention (f)", "en": "the abstention", "ex": "L'abstention a atteint un niveau record.", "pos": "noun", "gender": "f"},
+  {"id": "v246", "level": "B2", "fr": "le mandat", "en": "the mandate / term of office", "ex": "Son mandat de cinq ans s'achève en 2029.", "pos": "noun", "gender": "m"},
+  {"id": "v247", "level": "B2", "fr": "le consensus", "en": "the consensus", "ex": "Le Conseil européen décide généralement par consensus.", "pos": "noun", "gender": "m"},
+  {"id": "v248", "level": "B2", "fr": "l'unanimité (f)", "en": "the unanimity", "ex": "La fiscalité exige encore l'unanimité au Conseil.", "pos": "noun", "gender": "f"},
+  {"id": "v249", "level": "B2", "fr": "le seuil", "en": "the threshold", "ex": "Le déficit dépasse le seuil de trois pour cent.", "pos": "noun", "gender": "m"},
+  {"id": "v250", "level": "B2", "fr": "la dérogation", "en": "the derogation / exemption", "ex": "Le règlement prévoit une dérogation pour les PME.", "pos": "noun", "gender": "f"},
+  {"id": "v251", "level": "B2", "fr": "la fiscalité", "en": "the tax system / taxation", "ex": "La fiscalité des entreprises varie selon les États.", "pos": "noun", "gender": "f"},
+  {"id": "v252", "level": "B2", "fr": "le prélèvement", "en": "the levy / deduction", "ex": "Un prélèvement sur les plastiques alimente le budget.", "pos": "noun", "gender": "m"},
+  {"id": "v253", "level": "B2", "fr": "l'endettement (m)", "en": "the indebtedness", "ex": "L'endettement public s'est alourdi après la crise.", "pos": "noun", "gender": "m"},
+  {"id": "v254", "level": "B2", "fr": "la conjoncture", "en": "the economic situation", "ex": "La conjoncture reste incertaine en zone euro.", "pos": "noun", "gender": "f"},
+  {"id": "v255", "level": "B2", "fr": "la récession", "en": "the recession", "ex": "Le pays est sorti de la récession au printemps.", "pos": "noun", "gender": "f"},
+  {"id": "v256", "level": "B2", "fr": "la reprise", "en": "the recovery", "ex": "La reprise s'appuie sur la consommation des ménages.", "pos": "noun", "gender": "f"},
+  {"id": "v257", "level": "B2", "fr": "le ralentissement", "en": "the slowdown", "ex": "On observe un ralentissement de l'inflation.", "pos": "noun", "gender": "m"},
+  {"id": "v258", "level": "B2", "fr": "la flambée", "en": "the surge (prices)", "ex": "La flambée des prix de l'énergie a pesé sur les ménages.", "pos": "noun", "gender": "f"},
+  {"id": "v259", "level": "B2", "fr": "la pénurie", "en": "the shortage", "ex": "Une pénurie de main-d'œuvre touche plusieurs secteurs.", "pos": "noun", "gender": "f"},
+  {"id": "v260", "level": "B2", "fr": "l'approvisionnement (m)", "en": "the supply / procurement", "ex": "La sécurité d'approvisionnement énergétique est stratégique.", "pos": "noun", "gender": "m"},
+  {"id": "v261", "level": "B2", "fr": "l'appel d'offres (m)", "en": "the call for tenders", "ex": "Le marché a été attribué après un appel d'offres.", "pos": "noun", "gender": "m"},
+  {"id": "v262", "level": "B2", "fr": "le cahier des charges", "en": "the specifications / requirements", "ex": "Le cahier des charges définit les critères techniques.", "pos": "noun", "gender": "m"},
+  {"id": "v263", "level": "B2", "fr": "la veille", "en": "the monitoring / watch", "ex": "Ce service assure une veille réglementaire.", "pos": "noun", "gender": "f"},
+  {"id": "v264", "level": "B2", "fr": "le bilan", "en": "the assessment / balance sheet", "ex": "Le bilan de la présidence est globalement positif.", "pos": "noun", "gender": "m"},
+  {"id": "v265", "level": "B2", "fr": "l'échantillon (m)", "en": "the sample", "ex": "L'enquête repose sur un échantillon de mille personnes.", "pos": "noun", "gender": "m"},
+  {"id": "v266", "level": "B2", "fr": "la synthèse", "en": "the summary / synthesis", "ex": "Préparez une synthèse d'une page pour la direction.", "pos": "noun", "gender": "f"},
+  {"id": "v267", "level": "B2", "fr": "rédiger", "en": "to draft / write up", "ex": "Il rédige le compte rendu de la réunion.", "pos": "verb"},
+  {"id": "v268", "level": "B2", "fr": "le compte rendu", "en": "the minutes / report", "ex": "Le compte rendu sera diffusé demain.", "pos": "noun", "gender": "m"},
+  {"id": "v269", "level": "B2", "fr": "l'ordre du jour (m)", "en": "the agenda", "ex": "Ce point n'est pas à l'ordre du jour.", "pos": "noun", "gender": "m"},
+  {"id": "v270", "level": "B2", "fr": "la séance", "en": "the sitting / session", "ex": "La séance plénière se tient à Strasbourg.", "pos": "noun", "gender": "f"},
+  {"id": "v271", "level": "B2", "fr": "siéger", "en": "to sit (in an assembly)", "ex": "La Cour siège à Luxembourg.", "pos": "verb"},
+  {"id": "v272", "level": "B2", "fr": "statuer", "en": "to rule (on)", "ex": "Le tribunal statuera sur ce recours en octobre.", "pos": "verb"},
+  {"id": "v273", "level": "B2", "fr": "abroger", "en": "to repeal", "ex": "Cette loi obsolète a été abrogée.", "pos": "verb"},
+  {"id": "v274", "level": "B2", "fr": "entraver", "en": "to hinder / impede", "ex": "Ces règles entravent la libre circulation des services.", "pos": "verb"},
+  {"id": "v275", "level": "B2", "fr": "découler de", "en": "to stem from", "ex": "Ces obligations découlent du traité.", "pos": "verb"},
+  {"id": "v276", "level": "B2", "fr": "relever de", "en": "to fall within (the remit of)", "ex": "La santé relève surtout des États membres.", "pos": "verb"},
+  {"id": "v277", "level": "B2", "fr": "incomber à", "en": "to be incumbent upon", "ex": "Cette responsabilité incombe à l'employeur.", "pos": "verb"},
+  {"id": "v278", "level": "B2", "fr": "en l'occurrence", "en": "in this case / as it happens", "ex": "Le délai, en l'occurrence, était trop court.", "pos": "prep"},
+  {"id": "v279", "level": "B2", "fr": "à l'issue de", "en": "at the end of / following", "ex": "À l'issue du sommet, une déclaration a été publiée.", "pos": "prep"},
+  {"id": "v280", "level": "B2", "fr": "au sein de", "en": "within", "ex": "Il travaille au sein de la direction générale du commerce.", "pos": "prep"},
+  {"id": "v281", "level": "B2", "fr": "en amont", "en": "upstream / beforehand", "ex": "Il faut associer les régions en amont de la décision.", "pos": "prep"},
+  {"id": "v282", "level": "B2", "fr": "en aval", "en": "downstream / afterwards", "ex": "Le contrôle intervient en aval de la mise en œuvre.", "pos": "prep"},
+  {"id": "v283", "level": "B2", "fr": "d'emblée", "en": "from the outset", "ex": "D'emblée, la négociation s'est annoncée difficile.", "pos": "adv"},
+  {"id": "v284", "level": "B2", "fr": "désormais", "en": "from now on", "ex": "Les demandes se font désormais en ligne.", "pos": "adv"},
+  {"id": "v285", "level": "B2", "fr": "voire", "en": "or even / indeed", "ex": "Le processus prendra des mois, voire des années.", "pos": "verb"},
+  {"id": "v286", "level": "B2", "fr": "le levier", "en": "the lever (fig.)", "ex": "Le budget est un levier puissant de réforme.", "pos": "noun", "gender": "m"},
+  {"id": "v287", "level": "B2", "fr": "la marge de manœuvre", "en": "the room for manoeuvre", "ex": "Les États gardent une marge de manœuvre budgétaire limitée.", "pos": "noun", "gender": "f"},
+  {"id": "v288", "level": "B2", "fr": "le garde-fou", "en": "the safeguard", "ex": "Le texte prévoit des garde-fous contre les abus.", "pos": "noun", "gender": "m"},
+  {"id": "v289", "level": "B2", "fr": "l'écueil (m)", "en": "the pitfall", "ex": "Le principal écueil serait de décider sans consulter.", "pos": "noun", "gender": "m"},
+  {"id": "v290", "level": "B2", "fr": "la refonte", "en": "the overhaul / recast", "ex": "Une refonte du règlement est en préparation.", "pos": "noun", "gender": "f"},
+  {"id": "v291", "level": "B2", "fr": "l'essoufflement (m)", "en": "the loss of momentum", "ex": "On note un essoufflement de la demande intérieure.", "pos": "noun", "gender": "m"},
+  {"id": "v292", "level": "B2", "fr": "pallier", "en": "to mitigate / make up for", "ex": "Des mesures temporaires pallient le manque de personnel.", "pos": "verb"},
+  {"id": "v293", "level": "B2", "fr": "s'inscrire dans", "en": "to be part of / fit into", "ex": "Cette initiative s'inscrit dans le pacte vert.", "pos": "verb"},
+  {"id": "v294", "level": "B2", "fr": "la montée en puissance", "en": "the ramp-up / rise", "ex": "On assiste à la montée en puissance des énergies renouvelables.", "pos": "noun", "gender": "f"},
+  {"id": "v295", "level": "B2", "fr": "le chevauchement", "en": "the overlap", "ex": "Il faut éviter les chevauchements de compétences.", "pos": "noun", "gender": "m"},
+  {"id": "v296", "level": "B2", "fr": "la lourdeur", "en": "the cumbersomeness / red tape", "ex": "Les entreprises dénoncent la lourdeur administrative.", "pos": "noun", "gender": "f"},
+  {"id": "v297", "level": "B2", "fr": "l'allègement (m)", "en": "the lightening / relief", "ex": "Un allègement des charges est prévu pour les PME.", "pos": "noun", "gender": "m"},
+  {"id": "v298", "level": "B2", "fr": "le volet", "en": "the component / strand", "ex": "Le volet social du plan reste à négocier.", "pos": "noun", "gender": "m"},
+  {"id": "v299", "level": "B2", "fr": "l'ancrage (m)", "en": "the anchoring", "ex": "L'ancrage des anticipations d'inflation est essentiel.", "pos": "noun", "gender": "m"},
+  {"id": "v300", "level": "B2", "fr": "la feuille de route", "en": "the roadmap", "ex": "La Commission a présenté sa feuille de route pour 2030.", "pos": "noun", "gender": "f"},
+  {"id": "v301", "level": "B1", "fr": "le but", "en": "the aim / purpose", "ex": "Le but de cette réforme est de simplifier les démarches.", "pos": "noun", "gender": "m"},
+  {"id": "v302", "level": "B1", "fr": "le défi", "en": "the challenge", "ex": "Le vieillissement de la population est un défi majeur.", "pos": "noun", "gender": "m"},
+  {"id": "v303", "level": "B1", "fr": "la mesure", "en": "the measure", "ex": "Le gouvernement a annoncé plusieurs mesures contre l'inflation.", "pos": "noun", "gender": "f"},
+  {"id": "v304", "level": "B1", "fr": "la décision", "en": "the decision", "ex": "La décision sera prise après consultation des États membres.", "pos": "noun", "gender": "f"},
+  {"id": "v305", "level": "B1", "fr": "proposer", "en": "to propose", "ex": "La Commission propose de réviser le règlement existant.", "pos": "verb"},
+  {"id": "v306", "level": "B1", "fr": "refuser", "en": "to refuse", "ex": "Le Conseil a refusé de modifier le texte initial.", "pos": "verb"},
+  {"id": "v307", "level": "B1", "fr": "permettre de", "en": "to allow to", "ex": "Ce dispositif permet de réduire les délais de traitement.", "pos": "verb"},
+  {"id": "v308", "level": "B1", "fr": "interdire", "en": "to forbid / ban", "ex": "La loi interdit toute discrimination à l'embauche.", "pos": "verb"},
+  {"id": "v309", "level": "B1", "fr": "obtenir", "en": "to obtain / get", "ex": "Elle a obtenu une bourse pour poursuivre ses études.", "pos": "verb"},
+  {"id": "v310", "level": "B1", "fr": "essayer de", "en": "to try to", "ex": "J'essaie de lire un article en français chaque jour.", "pos": "verb"},
+  {"id": "v311", "level": "B1", "fr": "éviter", "en": "to avoid", "ex": "Il faut éviter les répétitions dans un texte formel.", "pos": "verb"},
+  {"id": "v312", "level": "B1", "fr": "le choix", "en": "the choice", "ex": "Le choix du candidat revient au jury de sélection.", "pos": "noun", "gender": "m"},
+  {"id": "v313", "level": "B1", "fr": "la raison", "en": "the reason", "ex": "Il a démissionné pour des raisons personnelles.", "pos": "noun", "gender": "f"},
+  {"id": "v314", "level": "B1", "fr": "la conséquence", "en": "the consequence", "ex": "Cette décision aura des conséquences sur tout le secteur.", "pos": "noun", "gender": "f"},
+  {"id": "v315", "level": "B1", "fr": "le changement", "en": "the change", "ex": "Le changement de logiciel a perturbé le service.", "pos": "noun", "gender": "m"},
+  {"id": "v316", "level": "B1", "fr": "le rôle", "en": "the role", "ex": "Le Parlement joue un rôle central dans la procédure.", "pos": "noun", "gender": "m"},
+  {"id": "v317", "level": "B1", "fr": "la tâche", "en": "the task", "ex": "Chaque agent connaît précisément ses tâches quotidiennes.", "pos": "noun", "gender": "f"},
+  {"id": "v318", "level": "B1", "fr": "l'occasion (f)", "en": "the opportunity", "ex": "Cette conférence est l'occasion de rencontrer des experts.", "pos": "noun", "gender": "f"},
+  {"id": "v319", "level": "B1", "fr": "nécessaire", "en": "necessary", "ex": "Il est nécessaire de justifier chaque dépense engagée.", "pos": "verb"},
+  {"id": "v320", "level": "B1", "fr": "efficace", "en": "effective / efficient", "ex": "Cette méthode s'est révélée très efficace en pratique.", "pos": "adj"},
+  {"id": "v321", "level": "B1", "fr": "le manque", "en": "the lack / shortage", "ex": "Le manque de personnel ralentit le traitement des dossiers.", "pos": "noun", "gender": "m"},
+  {"id": "v322", "level": "B1", "fr": "le besoin", "en": "the need", "ex": "L'enquête met en lumière les besoins des usagers.", "pos": "noun", "gender": "m"},
+  {"id": "v323", "level": "B1", "fr": "le point de vue", "en": "the point of view", "ex": "De mon point de vue, la proposition reste incomplète.", "pos": "noun", "gender": "m"},
+  {"id": "v324", "level": "B1", "fr": "partager", "en": "to share", "ex": "Je partage entièrement l'analyse de mes collègues.", "pos": "verb"},
+  {"id": "v325", "level": "B1", "fr": "exprimer", "en": "to express", "ex": "Chacun peut exprimer son opinion pendant le débat.", "pos": "verb"},
+  {"id": "v326", "level": "B1", "fr": "expliquer", "en": "to explain", "ex": "Le rapport explique clairement l'origine du problème.", "pos": "verb"},
+  {"id": "v327", "level": "B1", "fr": "préciser", "en": "to specify / clarify", "ex": "Pouvez-vous préciser le calendrier des prochaines étapes ?", "pos": "verb"},
+  {"id": "v328", "level": "B1", "fr": "remarquer", "en": "to notice", "ex": "J'ai remarqué une erreur dans le tableau financier.", "pos": "verb"},
+  {"id": "v329", "level": "B1", "fr": "avoir lieu", "en": "to take place", "ex": "La prochaine réunion aura lieu le douze mars.", "pos": "verb"},
+  {"id": "v330", "level": "B1", "fr": "durer", "en": "to last", "ex": "Les négociations ont duré plus de six mois.", "pos": "verb"},
+  {"id": "v331", "level": "B1", "fr": "le fonctionnaire", "en": "the civil servant", "ex": "Un fonctionnaire européen doit respecter un devoir de réserve.", "pos": "noun", "gender": "m"},
+  {"id": "v332", "level": "B1", "fr": "l'administration (f)", "en": "the administration", "ex": "L'administration répond aux courriers dans un délai raisonnable.", "pos": "noun", "gender": "f"},
+  {"id": "v333", "level": "B1", "fr": "la pièce jointe", "en": "the attachment", "ex": "Vous trouverez le formulaire en pièce jointe.", "pos": "noun", "gender": "f"},
+  {"id": "v334", "level": "B1", "fr": "le renseignement", "en": "the piece of information", "ex": "Le service d'accueil fournit tous les renseignements utiles.", "pos": "noun", "gender": "m"},
+  {"id": "v335", "level": "B1", "fr": "l'horaire (m)", "en": "the timetable / working hours", "ex": "Les horaires de travail sont flexibles dans ce service.", "pos": "noun", "gender": "m"},
+  {"id": "v336", "level": "B1", "fr": "le congé", "en": "the leave / time off", "ex": "Elle prend un congé parental de trois mois.", "pos": "noun", "gender": "m"},
+  {"id": "v337", "level": "B1", "fr": "le télétravail", "en": "remote work", "ex": "Le télétravail est autorisé deux jours par semaine.", "pos": "noun", "gender": "m"},
+  {"id": "v338", "level": "B1", "fr": "la direction", "en": "the management", "ex": "La direction a validé le plan de formation.", "pos": "noun", "gender": "f"},
+  {"id": "v339", "level": "B1", "fr": "le personnel", "en": "the staff", "ex": "Le personnel a été informé de la réorganisation.", "pos": "noun", "gender": "m"},
+  {"id": "v340", "level": "B1", "fr": "le bénéfice", "en": "the profit", "ex": "L'entreprise a réalisé des bénéfices records l'an dernier.", "pos": "noun", "gender": "m"},
+  {"id": "v341", "level": "B1", "fr": "le coût", "en": "the cost", "ex": "Le coût total du projet dépasse deux millions d'euros.", "pos": "noun", "gender": "m"},
+  {"id": "v342", "level": "B1", "fr": "le revenu", "en": "the income", "ex": "Les revenus des ménages progressent lentement.", "pos": "noun", "gender": "m"},
+  {"id": "v343", "level": "B1", "fr": "la retraite", "en": "the retirement / pension", "ex": "Il partira à la retraite à soixante-cinq ans.", "pos": "noun", "gender": "f"},
+  {"id": "v344", "level": "B1", "fr": "l'assurance (f)", "en": "the insurance", "ex": "Une assurance maladie est obligatoire pour tous les résidents.", "pos": "noun", "gender": "f"},
+  {"id": "v345", "level": "B1", "fr": "le logement", "en": "the housing / accommodation", "ex": "Le logement social manque dans les grandes villes.", "pos": "noun", "gender": "m"},
+  {"id": "v346", "level": "B1", "fr": "le loyer", "en": "the rent", "ex": "Les loyers ont fortement augmenté au centre-ville.", "pos": "noun", "gender": "m"},
+  {"id": "v347", "level": "B1", "fr": "déménager", "en": "to move house", "ex": "Nous déménageons à Bruxelles au mois de septembre.", "pos": "verb"},
+  {"id": "v348", "level": "B1", "fr": "la population", "en": "the population", "ex": "La population rurale diminue depuis plusieurs décennies.", "pos": "noun", "gender": "f"},
+  {"id": "v349", "level": "B1", "fr": "la solidarité", "en": "the solidarity", "ex": "La solidarité entre États membres a joué pendant la crise.", "pos": "noun", "gender": "f"},
+  {"id": "v350", "level": "B1", "fr": "la pauvreté", "en": "the poverty", "ex": "La pauvreté touche encore un enfant sur cinq.", "pos": "noun", "gender": "f"},
+  {"id": "v351", "level": "B1", "fr": "le gouvernement", "en": "the government", "ex": "Le gouvernement présentera son budget en octobre.", "pos": "noun", "gender": "m"},
+  {"id": "v352", "level": "B1", "fr": "le ministre", "en": "the minister", "ex": "La ministre de l'Environnement a défendu le texte.", "pos": "noun", "gender": "m"},
+  {"id": "v353", "level": "B1", "fr": "voter", "en": "to vote", "ex": "Les députés voteront le texte en séance plénière.", "pos": "verb"},
+  {"id": "v354", "level": "B1", "fr": "la presse", "en": "the press", "ex": "La presse nationale a largement commenté cette décision.", "pos": "noun", "gender": "f"},
+  {"id": "v355", "level": "B1", "fr": "l'actualité (f)", "en": "the news / current affairs", "ex": "Je suis l'actualité européenne sur plusieurs sites.", "pos": "noun", "gender": "f"},
+  {"id": "v356", "level": "B1", "fr": "publier", "en": "to publish", "ex": "L'institut publiera ses prévisions au début du mois.", "pos": "verb"},
+  {"id": "v357", "level": "B1", "fr": "le logiciel", "en": "the software", "ex": "Ce logiciel facilite la gestion des candidatures.", "pos": "noun", "gender": "m"},
+  {"id": "v358", "level": "B1", "fr": "les données (f pl)", "en": "the data", "ex": "Les données personnelles sont protégées par le règlement européen.", "pos": "noun"},
+  {"id": "v359", "level": "B1", "fr": "la pollution", "en": "the pollution", "ex": "La pollution de l'air provoque des maladies respiratoires.", "pos": "noun", "gender": "f"},
+  {"id": "v360", "level": "B1", "fr": "l'énergie renouvelable (f)", "en": "renewable energy", "ex": "Les énergies renouvelables couvrent un tiers de la production.", "pos": "noun", "gender": "f"},
+  {"id": "v361", "level": "B2", "fr": "néanmoins", "en": "nevertheless", "ex": "Le texte est ambitieux ; néanmoins, son financement reste incertain.", "pos": "adv"},
+  {"id": "v362", "level": "B2", "fr": "toutefois", "en": "however", "ex": "La reprise se confirme ; toutefois, les risques persistent.", "pos": "adv"},
+  {"id": "v363", "level": "B2", "fr": "or", "en": "now / and yet (in argument)", "ex": "Tous attendaient un accord ; or, les discussions ont échoué.", "pos": "adj"},
+  {"id": "v364", "level": "B2", "fr": "en outre", "en": "moreover", "ex": "Le rapport est incomplet ; en outre, ses chiffres sont anciens.", "pos": "prep"},
+  {"id": "v365", "level": "B2", "fr": "par ailleurs", "en": "besides / moreover", "ex": "Par ailleurs, la Commission a lancé une consultation publique.", "pos": "prep"},
+  {"id": "v366", "level": "B2", "fr": "de surcroît", "en": "furthermore", "ex": "La procédure est longue et, de surcroît, très coûteuse.", "pos": "prep"},
+  {"id": "v367", "level": "B2", "fr": "en définitive", "en": "ultimately / in the end", "ex": "En définitive, le compromis satisfait la plupart des délégations.", "pos": "prep"},
+  {"id": "v368", "level": "B2", "fr": "en tout état de cause", "en": "in any case", "ex": "En tout état de cause, la décision appartient au Conseil.", "pos": "prep"},
+  {"id": "v369", "level": "B2", "fr": "il n'en demeure pas moins que", "en": "the fact remains that", "ex": "Il n'en demeure pas moins que les inégalités persistent.", "pos": "prep"},
+  {"id": "v370", "level": "B2", "fr": "dans la mesure où", "en": "insofar as", "ex": "Le recours est recevable dans la mesure où le délai est respecté.", "pos": "prep"},
+  {"id": "v371", "level": "B2", "fr": "étant donné que", "en": "given that", "ex": "Étant donné que le budget est voté, les projets démarreront.", "pos": "prep"},
+  {"id": "v372", "level": "B2", "fr": "compte tenu de", "en": "in view of", "ex": "Compte tenu des délais, la réunion sera reportée.", "pos": "prep"},
+  {"id": "v373", "level": "B2", "fr": "au regard de", "en": "in the light of", "ex": "Au regard du droit européen, cette pratique est illégale.", "pos": "prep"},
+  {"id": "v374", "level": "B2", "fr": "en dépit de", "en": "in spite of", "ex": "En dépit des efforts, les émissions augmentent encore.", "pos": "prep"},
+  {"id": "v375", "level": "B2", "fr": "faute de", "en": "for lack of", "ex": "Faute de moyens, le programme a été suspendu.", "pos": "prep"},
+  {"id": "v376", "level": "B2", "fr": "à défaut de", "en": "in the absence of / failing", "ex": "À défaut d'accord, la Commission présentera une proposition.", "pos": "prep"},
+  {"id": "v377", "level": "B2", "fr": "quitte à", "en": "even if it means", "ex": "Il défendra sa position, quitte à déplaire à certains.", "pos": "prep"},
+  {"id": "v378", "level": "B2", "fr": "sous peine de", "en": "on pain of / failing which", "ex": "Le formulaire doit être signé, sous peine de rejet.", "pos": "prep"},
+  {"id": "v379", "level": "B2", "fr": "de sorte que", "en": "so that", "ex": "Le texte a été clarifié de sorte que chacun le comprenne.", "pos": "prep"},
+  {"id": "v380", "level": "B2", "fr": "au point de", "en": "to the point of", "ex": "La charge de travail a augmenté au point de décourager l'équipe.", "pos": "prep"},
+  {"id": "v381", "level": "B2", "fr": "si bien que", "en": "with the result that", "ex": "Les données manquaient, si bien que l'analyse a été reportée.", "pos": "prep"},
+  {"id": "v382", "level": "B2", "fr": "d'autant plus que", "en": "all the more so as", "ex": "La réforme est urgente, d'autant plus que la population vieillit.", "pos": "prep"},
+  {"id": "v383", "level": "B2", "fr": "loin de", "en": "far from", "ex": "Loin de résoudre le problème, cette mesure l'aggrave.", "pos": "prep"},
+  {"id": "v384", "level": "B2", "fr": "à l'instar de", "en": "like / following the example of", "ex": "À l'instar de ses voisins, le pays a durci sa législation.", "pos": "prep"},
+  {"id": "v385", "level": "B2", "fr": "par conséquent", "en": "consequently", "ex": "Le quorum n'était pas atteint ; par conséquent, le vote est annulé.", "pos": "prep"},
+  {"id": "v386", "level": "B2", "fr": "en matière de", "en": "as regards / in the field of", "ex": "L'Union dispose de compétences limitées en matière de santé.", "pos": "prep"},
+  {"id": "v387", "level": "B2", "fr": "à l'égard de", "en": "with regard to / towards", "ex": "La Commission reste vigilante à l'égard des aides d'État.", "pos": "prep"},
+  {"id": "v388", "level": "B2", "fr": "au titre de", "en": "under (a scheme) / by way of", "ex": "Ces fonds sont versés au titre de la politique de cohésion.", "pos": "prep"},
+  {"id": "v389", "level": "B2", "fr": "en vertu de", "en": "pursuant to / under", "ex": "En vertu du traité, la Cour contrôle la légalité des actes.", "pos": "prep"},
+  {"id": "v390", "level": "B2", "fr": "conformément à", "en": "in accordance with", "ex": "Le dossier a été traité conformément aux règles internes.", "pos": "prep"},
+  {"id": "v391", "level": "B2", "fr": "par le biais de", "en": "by means of / through", "ex": "L'aide sera versée par le biais des agences nationales.", "pos": "prep"},
+  {"id": "v392", "level": "B2", "fr": "dans le cadre de", "en": "within the framework of", "ex": "Ces mesures entrent dans le cadre du plan national.", "pos": "prep"},
+  {"id": "v393", "level": "B2", "fr": "à hauteur de", "en": "up to (an amount)", "ex": "L'Union cofinance le projet à hauteur de soixante pour cent.", "pos": "prep"},
+  {"id": "v394", "level": "B2", "fr": "au-delà de", "en": "beyond", "ex": "Au-delà des chiffres, il faut examiner les causes profondes.", "pos": "prep"},
+  {"id": "v395", "level": "B2", "fr": "en deçà de", "en": "below / short of", "ex": "Les résultats restent en deçà des objectifs fixés.", "pos": "prep"},
+  {"id": "v396", "level": "B2", "fr": "ne serait-ce que", "en": "if only / even just", "ex": "Chacun doit contribuer, ne serait-ce que modestement.", "pos": "prep"},
+  {"id": "v397", "level": "B2", "fr": "en l'état", "en": "as it stands", "ex": "En l'état, le texte ne recueille pas de majorité.", "pos": "prep"},
+  {"id": "v398", "level": "B2", "fr": "certes", "en": "admittedly / of course", "ex": "Certes, les progrès sont réels, mais ils restent fragiles.", "pos": "adj"},
+  {"id": "v399", "level": "B2", "fr": "ainsi que", "en": "as well as", "ex": "Les ministres, ainsi que leurs conseillers, assisteront à la séance.", "pos": "prep"},
+  {"id": "v400", "level": "B2", "fr": "veiller à", "en": "to ensure / see to it that", "ex": "La Commission veille à la bonne application des traités.", "pos": "verb"},
+  {"id": "v401", "level": "B2", "fr": "s'attacher à", "en": "to strive to / focus on", "ex": "Le rapport s'attache à comparer les pratiques nationales.", "pos": "verb"},
+  {"id": "v402", "level": "B2", "fr": "mener à bien", "en": "to carry through successfully", "ex": "L'équipe a mené à bien une réforme particulièrement complexe.", "pos": "verb"},
+  {"id": "v403", "level": "B2", "fr": "se doter de", "en": "to equip oneself with", "ex": "L'Union s'est dotée d'un nouvel instrument budgétaire.", "pos": "verb"},
+  {"id": "v404", "level": "B2", "fr": "se heurter à", "en": "to come up against", "ex": "Le projet se heurte à l'opposition de plusieurs États.", "pos": "verb"},
+  {"id": "v405", "level": "B2", "fr": "faire face à", "en": "to face / cope with", "ex": "Les autorités doivent faire face à une pénurie de logements.", "pos": "verb"},
+  {"id": "v406", "level": "B2", "fr": "faire l'objet de", "en": "to be the subject of", "ex": "Cette proposition fera l'objet d'un examen approfondi.", "pos": "verb"},
+  {"id": "v407", "level": "B2", "fr": "tenir compte de", "en": "to take into account", "ex": "Le texte tient compte des observations des parties prenantes.", "pos": "verb"},
+  {"id": "v408", "level": "B2", "fr": "prendre acte de", "en": "to take note of", "ex": "Le Conseil a pris acte du rapport de la Cour.", "pos": "verb"},
+  {"id": "v409", "level": "B2", "fr": "se traduire par", "en": "to result in / take the form of", "ex": "La réforme s'est traduite par une baisse des charges.", "pos": "verb"},
+  {"id": "v410", "level": "B2", "fr": "se solder par", "en": "to end in", "ex": "Les discussions se sont soldées par un échec.", "pos": "verb"},
+  {"id": "v411", "level": "B2", "fr": "déboucher sur", "en": "to lead to", "ex": "Le sommet devrait déboucher sur une déclaration commune.", "pos": "verb"},
+  {"id": "v412", "level": "B2", "fr": "avoir trait à", "en": "to relate to", "ex": "Les questions ayant trait au budget seront traitées demain.", "pos": "verb"},
+  {"id": "v413", "level": "B2", "fr": "reposer sur", "en": "to rest on / be based on", "ex": "Ce raisonnement repose sur des données contestables.", "pos": "verb"},
+  {"id": "v414", "level": "B2", "fr": "s'appuyer sur", "en": "to rely on / draw on", "ex": "L'auteur s'appuie sur plusieurs études récentes.", "pos": "verb"},
+  {"id": "v415", "level": "B2", "fr": "consister à", "en": "to consist in", "ex": "Sa mission consiste à coordonner les services concernés.", "pos": "verb"},
+  {"id": "v416", "level": "B2", "fr": "viser à", "en": "to aim to", "ex": "Cette directive vise à harmoniser les normes techniques.", "pos": "verb"},
+  {"id": "v417", "level": "B2", "fr": "contribuer à", "en": "to contribute to", "ex": "Ces investissements contribuent à la transition énergétique.", "pos": "verb"},
+  {"id": "v418", "level": "B2", "fr": "remédier à", "en": "to remedy", "ex": "Il faut remédier rapidement à ce déséquilibre régional.", "pos": "verb"},
+  {"id": "v419", "level": "B2", "fr": "renoncer à", "en": "to give up / waive", "ex": "Le pays a renoncé à son droit de veto.", "pos": "verb"},
+  {"id": "v420", "level": "B2", "fr": "se prononcer sur", "en": "to give a ruling / opinion on", "ex": "Le tribunal se prononcera sur cette affaire en juin.", "pos": "verb"},
+  {"id": "v421", "level": "B2", "fr": "allouer", "en": "to allocate", "ex": "Une enveloppe importante a été allouée à la recherche.", "pos": "verb"},
+  {"id": "v422", "level": "B2", "fr": "inciter à", "en": "to encourage / prompt to", "ex": "Ce crédit d'impôt incite les entreprises à investir.", "pos": "verb"},
+  {"id": "v423", "level": "B2", "fr": "pâtir de", "en": "to suffer from", "ex": "Les régions frontalières pâtissent de ces nouvelles restrictions.", "pos": "verb"},
+  {"id": "v424", "level": "B2", "fr": "bénéficier de", "en": "to benefit from", "ex": "Les PME bénéficient d'un régime simplifié.", "pos": "verb"},
+  {"id": "v425", "level": "B2", "fr": "parvenir à", "en": "to manage to / reach", "ex": "Les négociateurs sont parvenus à un accord au petit matin.", "pos": "verb"},
+  {"id": "v426", "level": "B2", "fr": "se prévaloir de", "en": "to avail oneself of", "ex": "Nul ne peut se prévaloir de sa propre négligence.", "pos": "verb"},
+  {"id": "v427", "level": "B2", "fr": "remettre en cause", "en": "to call into question", "ex": "Cet arrêt remet en cause une jurisprudence ancienne.", "pos": "verb"},
+  {"id": "v428", "level": "B2", "fr": "mettre en place", "en": "to set up / establish", "ex": "Un dispositif de contrôle a été mis en place.", "pos": "verb"},
+  {"id": "v429", "level": "B2", "fr": "mettre l'accent sur", "en": "to emphasise", "ex": "Le rapport met l'accent sur la formation des jeunes.", "pos": "verb"},
+  {"id": "v430", "level": "B2", "fr": "prendre en charge", "en": "to take responsibility for / cover", "ex": "L'Union prend en charge une partie des frais.", "pos": "verb"},
+  {"id": "v431", "level": "B2", "fr": "faire valoir", "en": "to assert / point out", "ex": "L'avocat a fait valoir un vice de procédure.", "pos": "verb"},
+  {"id": "v432", "level": "B2", "fr": "faire état de", "en": "to report / mention", "ex": "La presse a fait état de tensions entre délégations.", "pos": "verb"},
+  {"id": "v433", "level": "B2", "fr": "aller de pair avec", "en": "to go hand in hand with", "ex": "La croissance doit aller de pair avec la protection sociale.", "pos": "verb"},
+  {"id": "v434", "level": "B2", "fr": "peser sur", "en": "to weigh on", "ex": "L'incertitude pèse sur les décisions d'investissement.", "pos": "verb"},
+  {"id": "v435", "level": "B2", "fr": "s'avérer", "en": "to prove to be", "ex": "Cette solution s'est avérée plus coûteuse que prévu.", "pos": "verb"},
+  {"id": "v436", "level": "B2", "fr": "constater", "en": "to note / observe", "ex": "Les experts constatent une amélioration de la qualité de l'air.", "pos": "verb"},
+  {"id": "v437", "level": "B2", "fr": "souligner", "en": "to underline / stress", "ex": "Le rapporteur a souligné l'urgence de la situation.", "pos": "verb"},
+  {"id": "v438", "level": "B2", "fr": "faire preuve de", "en": "to show / demonstrate", "ex": "Les autorités ont fait preuve d'une grande réactivité.", "pos": "verb"},
+  {"id": "v439", "level": "B2", "fr": "accroître", "en": "to increase / enhance", "ex": "Il faut accroître la transparence des procédures budgétaires.", "pos": "verb"},
+  {"id": "v440", "level": "B2", "fr": "restreindre", "en": "to restrict", "ex": "Ces règles restreignent l'accès au marché intérieur.", "pos": "verb"},
+  {"id": "v441", "level": "B2", "fr": "assouplir", "en": "to relax / ease (rules)", "ex": "La Commission envisage d'assouplir certaines obligations déclaratives.", "pos": "verb"},
+  {"id": "v442", "level": "B2", "fr": "durcir", "en": "to tighten / toughen", "ex": "Plusieurs États ont durci leur législation migratoire.", "pos": "verb"},
+  {"id": "v443", "level": "B2", "fr": "renforcer", "en": "to strengthen", "ex": "Il convient de renforcer les contrôles aux frontières extérieures.", "pos": "verb"},
+  {"id": "v444", "level": "B2", "fr": "entraîner", "en": "to lead to / bring about", "ex": "Ce retard entraînera des surcoûts pour tout le programme.", "pos": "verb"},
+  {"id": "v445", "level": "B2", "fr": "susciter", "en": "to arouse / give rise to", "ex": "Cette proposition a suscité de vives réactions.", "pos": "verb"},
+  {"id": "v446", "level": "B2", "fr": "freiner", "en": "to slow down / curb", "ex": "Des formalités excessives freinent l'investissement privé.", "pos": "verb"},
+  {"id": "v447", "level": "B2", "fr": "combler", "en": "to fill / close (a gap)", "ex": "Il faut combler l'écart entre les régions riches et pauvres.", "pos": "verb"},
+  {"id": "v448", "level": "B2", "fr": "octroyer", "en": "to grant", "ex": "La banque a octroyé un prêt à taux réduit.", "pos": "verb"},
+  {"id": "v449", "level": "B2", "fr": "transposer", "en": "to transpose (into national law)", "ex": "Les États doivent transposer la directive avant décembre.", "pos": "verb"},
+  {"id": "v450", "level": "B2", "fr": "la démarche", "en": "the approach / step taken", "ex": "Cette démarche pragmatique a séduit plusieurs délégations.", "pos": "noun", "gender": "f"},
+  {"id": "v451", "level": "B2", "fr": "le constat", "en": "the observation / finding", "ex": "Le constat est sévère mais partagé par tous.", "pos": "noun", "gender": "m"},
+  {"id": "v452", "level": "B2", "fr": "les lignes directrices (f pl)", "en": "the guidelines", "ex": "La Commission a publié de nouvelles lignes directrices.", "pos": "noun"},
+  {"id": "v453", "level": "B2", "fr": "la norme", "en": "the standard / norm", "ex": "Les normes environnementales seront progressivement renforcées.", "pos": "noun", "gender": "f"},
+  {"id": "v454", "level": "B2", "fr": "le critère", "en": "the criterion", "ex": "Les critères de sélection figurent dans l'avis de concours.", "pos": "noun", "gender": "m"},
+  {"id": "v455", "level": "B2", "fr": "l'indicateur (m)", "en": "the indicator", "ex": "Plusieurs indicateurs signalent un ralentissement de l'activité.", "pos": "noun", "gender": "m"},
+  {"id": "v456", "level": "B2", "fr": "le décalage", "en": "the gap / discrepancy", "ex": "On observe un décalage entre les annonces et les actes.", "pos": "noun", "gender": "m"},
+  {"id": "v457", "level": "B2", "fr": "la procédure", "en": "the procedure", "ex": "La procédure de recrutement dure environ neuf mois.", "pos": "noun", "gender": "f"},
+  {"id": "v458", "level": "B2", "fr": "le dispositif", "en": "the scheme / arrangement", "ex": "Ce dispositif d'aide bénéficie surtout aux petites entreprises.", "pos": "noun", "gender": "m"},
+  {"id": "v459", "level": "B2", "fr": "le mécanisme", "en": "the mechanism", "ex": "Un mécanisme de solidarité a été créé entre États membres.", "pos": "noun", "gender": "m"},
+  {"id": "v460", "level": "B2", "fr": "les modalités (f pl)", "en": "the detailed arrangements", "ex": "Les modalités d'application seront précisées ultérieurement.", "pos": "noun"},
+  {"id": "v461", "level": "B2", "fr": "la contrepartie", "en": "the consideration / quid pro quo", "ex": "Les aides sont accordées en contrepartie d'engagements précis.", "pos": "noun", "gender": "f"},
+  {"id": "v462", "level": "B2", "fr": "l'atout (m)", "en": "the asset / advantage", "ex": "Le multilinguisme constitue un atout dans la fonction publique.", "pos": "noun", "gender": "m"},
+  {"id": "v463", "level": "B2", "fr": "l'inconvénient (m)", "en": "the drawback", "ex": "Cette solution présente un inconvénient majeur, à savoir son coût.", "pos": "noun", "gender": "m"},
+  {"id": "v464", "level": "B2", "fr": "la lacune", "en": "the gap / shortcoming", "ex": "L'audit a révélé de sérieuses lacunes dans le contrôle.", "pos": "noun", "gender": "f"},
+  {"id": "v465", "level": "B2", "fr": "la main-d'œuvre", "en": "the workforce / labour", "ex": "Le secteur agricole peine à recruter de la main-d'œuvre.", "pos": "noun", "gender": "f"},
+  {"id": "v466", "level": "B2", "fr": "le taux", "en": "the rate", "ex": "Le taux de chômage est tombé sous les six pour cent.", "pos": "noun", "gender": "m"},
+  {"id": "v467", "level": "B2", "fr": "l'écart (m)", "en": "the gap / difference", "ex": "L'écart salarial entre femmes et hommes se réduit lentement.", "pos": "noun", "gender": "m"},
+  {"id": "v468", "level": "B2", "fr": "la hausse", "en": "the rise / increase", "ex": "Une hausse des prix alimentaires a été enregistrée.", "pos": "noun", "gender": "f"},
+  {"id": "v469", "level": "B2", "fr": "la baisse", "en": "the fall / decline", "ex": "La baisse des investissements inquiète les économistes.", "pos": "noun", "gender": "f"},
+  {"id": "v470", "level": "B2", "fr": "l'excédent (m)", "en": "the surplus", "ex": "Le pays affiche un excédent commercial depuis deux ans.", "pos": "noun", "gender": "m"},
+  {"id": "v471", "level": "B2", "fr": "le déficit", "en": "the deficit", "ex": "Le déficit public devra être ramené sous les trois pour cent.", "pos": "noun", "gender": "m"},
+  {"id": "v472", "level": "B2", "fr": "le contribuable", "en": "the taxpayer", "ex": "Cette fraude coûte cher aux contribuables européens.", "pos": "noun", "gender": "m"},
+  {"id": "v473", "level": "B2", "fr": "l'usager (m)", "en": "the user (of a public service)", "ex": "Les usagers réclament un service plus rapide.", "pos": "noun", "gender": "m"},
+  {"id": "v474", "level": "B2", "fr": "le ressortissant", "en": "the national (of a country)", "ex": "Les ressortissants de pays tiers doivent obtenir un visa.", "pos": "noun", "gender": "m"},
+  {"id": "v475", "level": "B2", "fr": "les flux migratoires (m pl)", "en": "the migration flows", "ex": "Les flux migratoires varient selon la conjoncture économique.", "pos": "noun"},
+  {"id": "v476", "level": "B2", "fr": "l'insertion (f)", "en": "the integration (into work)", "ex": "Ce programme favorise l'insertion professionnelle des jeunes diplômés.", "pos": "noun", "gender": "f"},
+  {"id": "v477", "level": "B2", "fr": "la précarité", "en": "the insecurity / precariousness", "ex": "La précarité de l'emploi touche surtout les jeunes.", "pos": "noun", "gender": "f"},
+  {"id": "v478", "level": "B2", "fr": "l'inégalité (f)", "en": "the inequality", "ex": "Les inégalités territoriales se sont creusées depuis la crise.", "pos": "noun", "gender": "f"},
+  {"id": "v479", "level": "B2", "fr": "le ménage", "en": "the household", "ex": "Les ménages modestes subissent le plus fortement l'inflation.", "pos": "noun", "gender": "m"},
+  {"id": "v480", "level": "B2", "fr": "le pouvoir d'achat", "en": "the purchasing power", "ex": "L'inflation a érodé le pouvoir d'achat des salariés.", "pos": "noun", "gender": "m"},
+  {"id": "v481", "level": "B2", "fr": "la filière", "en": "the sector / supply chain", "ex": "La filière automobile emploie des millions de personnes.", "pos": "noun", "gender": "f"},
+  {"id": "v482", "level": "B2", "fr": "la souveraineté", "en": "the sovereignty", "ex": "Certains États défendent leur souveraineté en matière fiscale.", "pos": "noun", "gender": "f"},
+  {"id": "v483", "level": "B2", "fr": "le porte-parole", "en": "the spokesperson", "ex": "Le porte-parole de la Commission a démenti cette information.", "pos": "noun", "gender": "m"},
+  {"id": "v484", "level": "B2", "fr": "le communiqué de presse", "en": "the press release", "ex": "Un communiqué de presse sera diffusé en fin de journée.", "pos": "noun", "gender": "m"},
+  {"id": "v485", "level": "B2", "fr": "les pourparlers (m pl)", "en": "the talks", "ex": "Les pourparlers ont repris après plusieurs semaines d'interruption.", "pos": "noun"},
+  {"id": "v486", "level": "B2", "fr": "le compromis", "en": "the compromise", "ex": "Un compromis a été trouvé au terme d'une longue nuit.", "pos": "noun", "gender": "m"},
+  {"id": "v487", "level": "B2", "fr": "la revendication", "en": "the demand / claim", "ex": "Les revendications salariales restent au cœur du conflit.", "pos": "noun", "gender": "f"},
+  {"id": "v488", "level": "B2", "fr": "la sanction", "en": "the penalty / sanction", "ex": "Des sanctions financières frappent les États en infraction.", "pos": "noun", "gender": "f"},
+  {"id": "v489", "level": "B2", "fr": "le manquement", "en": "the breach / failure to comply", "ex": "La Cour a constaté un manquement aux obligations du traité.", "pos": "noun", "gender": "m"},
+  {"id": "v490", "level": "B2", "fr": "la juridiction", "en": "the court / jurisdiction", "ex": "Les juridictions nationales appliquent aussi le droit européen.", "pos": "noun", "gender": "f"},
+  {"id": "v491", "level": "B2", "fr": "l'arrêt (m)", "en": "the court ruling", "ex": "L'arrêt de la Cour fera jurisprudence pendant longtemps.", "pos": "noun", "gender": "m"},
+  {"id": "v492", "level": "B2", "fr": "la jurisprudence", "en": "the case law", "ex": "La jurisprudence a précisé la portée de cette notion.", "pos": "noun", "gender": "f"},
+  {"id": "v493", "level": "B2", "fr": "la clause", "en": "the clause", "ex": "Le contrat contient une clause de confidentialité stricte.", "pos": "noun", "gender": "f"},
+  {"id": "v494", "level": "B2", "fr": "la majorité qualifiée", "en": "the qualified majority", "ex": "Le texte a été adopté à la majorité qualifiée.", "pos": "noun", "gender": "f"},
+  {"id": "v495", "level": "B2", "fr": "la transparence", "en": "the transparency", "ex": "La transparence des institutions renforce la confiance des citoyens.", "pos": "noun", "gender": "f"},
+  {"id": "v496", "level": "B2", "fr": "l'opinion publique (f)", "en": "the public opinion", "ex": "L'opinion publique se montre partagée sur cette question.", "pos": "noun", "gender": "f"},
+  {"id": "v497", "level": "B2", "fr": "la désinformation", "en": "the disinformation", "ex": "La lutte contre la désinformation mobilise plusieurs services.", "pos": "noun", "gender": "f"},
+  {"id": "v498", "level": "B2", "fr": "la mise en garde", "en": "the warning", "ex": "La mise en garde des experts est restée sans effet.", "pos": "noun", "gender": "f"},
+  {"id": "v499", "level": "B2", "fr": "le vieillissement", "en": "the ageing", "ex": "Le vieillissement démographique pèse sur les systèmes de retraite.", "pos": "noun", "gender": "m"},
+  {"id": "v500", "level": "B2", "fr": "la transition énergétique", "en": "the energy transition", "ex": "La transition énergétique exige des investissements massifs.", "pos": "noun", "gender": "f"},
+  {"id": "fv501", "level": "A2", "pos": "noun", "gender": "f", "fr": "la commune", "en": "the municipality (local council)", "format": "fr2en", "options": ["the municipality (local council)", "the community of residents", "the community centre", "the county"], "a": 0, "trap": "la communauté — a community of people, not an administrative district", "expl": "In Brussels you register at « la maison communale » of your commune (Ixelles, Schaerbeek). « La communauté » is a group of people, never the town hall."},
+  {"id": "fv502", "level": "A2", "pos": "noun", "gender": "m", "fr": "le quartier", "en": "the neighbourhood", "format": "fr2en", "options": ["the neighbourhood", "the quarter of an hour", "the headquarters", "the floor of a building"], "a": 0, "trap": "le quart — a quarter (fraction or 15 minutes); « quartier » is a part of a city", "expl": "« Le quartier européen » is the EU district of Brussels. For time you say « un quart d'heure », never « un quartier d'heure »."},
+  {"id": "fv503", "level": "A2", "pos": "noun", "gender": "m", "fr": "l'immeuble", "en": "the block of flats (building)", "format": "fr2en", "options": ["the block of flats (building)", "the piece of furniture", "the estate agency", "the plot of land"], "a": 0, "trap": "le meuble — a piece of furniture; the two words differ by two letters", "expl": "« Im-meuble » literally means not movable: the building. « Le meuble » is what you put inside it, hence « un appartement meublé » = a furnished flat."},
+  {"id": "fv504", "level": "A2", "pos": "noun", "gender": "m", "fr": "le courrier", "en": "the post (mail)", "format": "fr2en", "options": ["the post (mail)", "the courier (delivery rider)", "the corridor", "the postcode"], "a": 0, "trap": "le coursier — the courier, the person on the bike; « le courrier » is the mail itself", "expl": "« J'ai relevé le courrier » = I collected the post. The person delivering it is « le facteur » or, for parcels, « le coursier »."},
+  {"id": "fv505", "level": "A2", "pos": "noun", "gender": "m", "fr": "l'ascenseur", "en": "the lift", "format": "fr2en", "options": ["the lift", "the escalator", "the staircase", "the entrance hall"], "a": 0, "trap": "l'escalator / l'escalier roulant — the moving stairs, a different machine", "expl": "« L'ascenseur est en panne » = the lift is out of order. Stairs are « l'escalier »; the moving ones in Bruxelles-Midi are « les escaliers roulants »."},
+  {"id": "fv506", "level": "A2", "pos": "noun", "gender": "f", "fr": "la poubelle", "en": "the bin", "format": "fr2en", "options": ["the bin", "the bin bag", "the recycling centre", "the rubbish collection"], "a": 0, "trap": "le sac-poubelle — the bag that goes in the bin, not the bin itself", "expl": "« Sortir la poubelle » = to take the bin out. In Brussels you actually put out « le sac bleu » (PMC) or « le sac orange » on collection day."},
+  {"id": "fv507", "level": "A2", "pos": "noun", "gender": "m", "fr": "le trajet", "en": "the journey (route travelled)", "format": "fr2en", "options": ["the journey (route travelled)", "the traffic jam", "the ticket", "the platform"], "a": 0, "trap": "le voyage — a trip or holiday; « le trajet » is the everyday route from A to B", "expl": "« Le trajet Ixelles–Schuman prend vingt minutes. » Use « voyage » for a longer trip you plan, « trajet » for your daily commute."},
+  {"id": "fv508", "level": "A2", "pos": "noun", "gender": "m", "fr": "l'abonnement", "en": "the season ticket (subscription)", "format": "fr2en", "options": ["the season ticket (subscription)", "the single ticket", "the discount", "the membership card"], "a": 0, "trap": "le ticket / le billet — a one-off ticket, not a subscription", "expl": "A STIB « abonnement annuel » covers a whole year; a single ride is « un ticket ». The verb is « s'abonner à »."},
+  {"id": "fv509", "level": "A2", "pos": "noun", "gender": "m", "fr": "le guichet", "en": "the counter (service window)", "format": "fr2en", "options": ["the counter (service window)", "the cash machine", "the waiting room", "the reception desk"], "a": 0, "trap": "le distributeur — the cash machine; « le guichet » has a human behind it", "expl": "« Adressez-vous au guichet 4 » sends you to a staffed window at the commune or the station. « Le guichet automatique » is the machine version."},
+  {"id": "fv510", "level": "A2", "pos": "noun", "gender": "m", "fr": "le virement", "en": "the bank transfer", "format": "fr2en", "options": ["the bank transfer", "the change of direction", "the withdrawal", "the overdraft"], "a": 0, "trap": "le retrait — taking cash out; a « virement » moves money account to account", "expl": "« Je paie le loyer par virement. » Cash out of a machine is « un retrait »; a standing order is « un virement permanent »."},
+  {"id": "fv511", "level": "A2", "pos": "noun", "gender": "f", "fr": "la fiche de paie", "en": "the payslip", "format": "fr2en", "options": ["the payslip", "the pay rise", "the employment contract", "the tax return"], "a": 0, "trap": "la déclaration d'impôts — the tax return you file once a year, not the monthly slip", "expl": "« La fiche de paie » (also « la fiche de salaire » in Belgium) shows gross, net and deductions each month. Your yearly tax form is « la déclaration »."},
+  {"id": "fv512", "level": "A2", "pos": "noun", "gender": "f", "fr": "la carte d'identité", "en": "the ID card", "format": "fr2en", "options": ["the ID card", "the business card", "the bank card", "the residence permit"], "a": 0, "trap": "la carte de visite — a business card; « carte d'identité » is the official one", "expl": "Belgian residents carry « la carte d'identité électronique (eID) ». A non-EU resident holds « un titre de séjour » instead."},
+  {"id": "fv513", "level": "A2", "pos": "noun", "gender": "m", "fr": "le rez-de-chaussée", "en": "the ground floor", "format": "fr2en", "options": ["the ground floor", "the first floor", "the basement", "the landing"], "a": 0, "trap": "le premier étage — the floor above; French counts « premier étage » where English says first floor", "expl": "In French buildings « rez-de-chaussée » is street level and the next one up is « le premier étage ». The lift button is marked 0 or RC."},
+  {"id": "fv514", "level": "A2", "pos": "noun", "gender": "f", "fr": "la clé USB", "en": "the USB stick", "format": "fr2en", "options": ["the USB stick", "the password", "the charger", "the hard drive"], "a": 0, "trap": "le mot de passe — the password; both are things you need to open a file, but only one is an object", "expl": "« Tu as la clé USB avec la présentation ? » Note « clé » is also written « clef »; the hard drive is « le disque dur »."},
+  {"id": "fv515", "level": "A2", "pos": "noun", "gender": "m", "fr": "le mot de passe", "en": "the password", "format": "fr2en", "options": ["the password", "the username", "the passcode on a door", "the motto"], "a": 0, "trap": "l'identifiant — the username that goes with it", "expl": "« Saisissez votre identifiant et votre mot de passe. » The login name is « l'identifiant »; a door code is « le digicode »."},
+  {"id": "fv516", "level": "A2", "pos": "noun", "gender": "f", "fr": "la journée", "en": "the day (whole day, its span)", "format": "fr2en", "options": ["the day (whole day, its span)", "the day (a date on the calendar)", "the daily wage", "the morning"], "a": 0, "trap": "le jour — the day as a unit or date; « journée » stresses its duration", "expl": "« Bonne journée ! » wishes you a good day ahead; « trois jours de congé » counts days. Same pair: an/année, matin/matinée, soir/soirée."},
+  {"id": "fv517", "level": "A2", "pos": "noun", "gender": "m", "fr": "le jour férié", "en": "the public holiday", "format": "fr2en", "options": ["the public holiday", "the day off you take yourself", "the weekend", "the working day"], "a": 0, "trap": "le congé — leave you book; « jour férié » is closed for everyone", "expl": "Belgium has ten « jours fériés » (21 juillet is the national one). Taking your own day off is « prendre un jour de congé »."},
+  {"id": "fv518", "level": "A2", "pos": "noun", "gender": "f", "fr": "la météo", "en": "the weather forecast", "format": "fr2en", "options": ["the weather forecast", "the weather right now", "the climate", "the temperature"], "a": 0, "trap": "le temps — the weather as you experience it: « Quel temps fait-il ? »", "expl": "« La météo annonce de la pluie » = the forecast says rain. Ask about today's weather with « Quel temps fait-il ? », not « Quelle météo ? »."},
+  {"id": "fv519", "level": "A2", "pos": "noun", "gender": "m", "fr": "le parapluie", "en": "the umbrella", "format": "fr2en", "options": ["the umbrella", "the parasol (sunshade)", "the raincoat", "the windscreen"], "a": 0, "trap": "le parasol — the one against the sun; para-pluie literally shields from rain", "expl": "Useful in Brussels: « Prends ton parapluie, il y a une drache. » « Une drache » is Belgian for a sudden downpour; in France you'd say « une averse »."},
+  {"id": "fv520", "level": "A2", "pos": "noun", "gender": "f", "fr": "la chambre", "en": "the bedroom", "format": "fr2en", "options": ["the bedroom", "the living room", "the room in general (space in a hall)", "the flat"], "a": 0, "trap": "la salle / la pièce — a room in general; « chambre » is where you sleep", "expl": "An advert saying « appartement 2 chambres » means two bedrooms. Any other room is « une pièce », and a big public one is « une salle »."},
+  {"id": "fv521", "level": "A2", "pos": "noun", "gender": "f", "fr": "la caution", "en": "the deposit (on a rented flat)", "format": "fr2en", "options": ["the deposit (on a rented flat)", "the caution notice", "the guarantor", "the first month's rent"], "a": 0, "trap": "caution in English means care; « la caution » is money blocked as security", "expl": "In Belgium « la caution locative » is usually two months' rent, blocked in a special account. The person who vouches for you is « le garant »."},
+  {"id": "fv522", "level": "A2", "pos": "noun", "gender": "m", "fr": "le bail", "en": "the lease", "format": "fr2en", "options": ["the lease", "the landlord", "the bailiff", "the rent"], "a": 0, "trap": "l'huissier — the bailiff; « bail » only looks English, it means the contract", "expl": "« Un bail de trois ans » is the standard short Belgian lease. Plural is irregular: « des baux »."},
+  {"id": "fv523", "level": "A2", "pos": "noun", "gender": "m", "fr": "le propriétaire", "en": "the landlord (owner)", "format": "fr2en", "options": ["the landlord (owner)", "the tenant", "the estate agent", "the caretaker"], "a": 0, "trap": "le locataire — the tenant, the other side of the contract", "expl": "« Le propriétaire » owns, « le locataire » rents. The agency in between is « l'agence immobilière »."},
+  {"id": "fv524", "level": "A2", "pos": "noun", "gender": "f", "fr": "la fiche", "en": "the form / record card", "format": "fr2en", "options": ["the form / record card", "the fish", "the file drawer", "the invoice"], "a": 0, "trap": "le fichier — a computer file; « la fiche » is a single sheet or record", "expl": "« Remplissez cette fiche d'inscription. » On a computer you open « un fichier »; a whole folder is « un dossier »."},
+  {"id": "fv525", "level": "A2", "pos": "noun", "gender": "f", "fr": "la douleur", "en": "the pain", "format": "fr2en", "options": ["the pain", "the sadness", "the medicine", "the injury"], "a": 0, "trap": "la peine — sorrow or trouble; « douleur » is physical pain", "expl": "« J'ai une douleur au dos » at the doctor's. « Ça me fait de la peine » means it saddens me, not that it hurts."},
+  {"id": "fv526", "level": "B1", "pos": "noun", "gender": "m", "fr": "le solde", "en": "the balance (of an account)", "format": "fr2en", "options": ["the balance (of an account)", "the sales (reduced prices)", "the salary", "the soldier's pay slip"], "a": 0, "trap": "les soldes (m pl) — the January sales; the same word in the plural means something else entirely", "expl": "« Le solde de mon compte » is what is left on it. « Les soldes » are the twice-yearly sales, and « le solde de tout compte » is the final settlement when you leave a job."},
+  {"id": "fv527", "level": "B1", "pos": "noun", "gender": "m", "fr": "les frais", "en": "the costs / fees", "format": "fr2en", "options": ["the costs / fees", "the fresh produce", "the price tag", "the fare"], "a": 0, "trap": "le coût — the cost of one thing; « les frais » are the charges added on top", "expl": "« Les frais de dossier », « les frais bancaires »: always plural. « Le coût » is singular and abstract: « le coût de la vie »."},
+  {"id": "fv528", "level": "B1", "pos": "noun", "gender": "f", "fr": "la dette", "en": "the debt", "format": "fr2en", "options": ["the debt", "the duty", "the deadline", "the loan you granted"], "a": 0, "trap": "le devoir — a duty; and « le prêt » is the loan seen from the lender's side", "expl": "« La dette publique » is public debt. What you owe is « une dette »; what the bank gives you is « un prêt » or « un emprunt »."},
+  {"id": "fv529", "level": "B1", "pos": "noun", "gender": "f", "fr": "l'inflation", "en": "inflation", "format": "fr2en", "options": ["inflation", "the index-linking of wages", "the price freeze", "the exchange rate"], "a": 0, "trap": "l'indexation — the Belgian mechanism that raises wages when prices rise; not the price rise itself", "expl": "« L'inflation » is the general rise in prices; in Belgium it triggers « l'indexation automatique des salaires », which France does not have."},
+  {"id": "fv530", "level": "B1", "pos": "noun", "gender": "f", "fr": "la TVA", "en": "VAT", "format": "fr2en", "options": ["VAT", "income tax", "the technical inspection", "the added value of a project"], "a": 0, "trap": "la valeur ajoutée — added value in the economic sense; TVA is the tax on it", "expl": "« TVA comprise » (TVAC in Belgium) means VAT included. It stands for « taxe sur la valeur ajoutée »; income tax is « l'impôt sur le revenu »."},
+  {"id": "fv531", "level": "B1", "pos": "noun", "gender": "f", "fr": "l'amende", "en": "the fine (penalty payment)", "format": "fr2en", "options": ["the fine (penalty payment)", "the amendment to a text", "the warning", "the sentence handed down by a court"], "a": 0, "trap": "l'amendement — an amendment to a law; « amende » is money you pay for an offence", "expl": "« J'ai eu une amende de stationnement. » Do not confuse it with « un amendement », which a Member of Parliament tables."},
+  {"id": "fv532", "level": "B1", "pos": "noun", "gender": "m", "fr": "l'embouteillage", "en": "the traffic jam", "format": "fr2en", "options": ["the traffic jam", "the bottling plant", "the roadworks", "the diversion"], "a": 0, "trap": "la mise en bouteille — actual bottling; the image behind « embouteillage » is a bottleneck", "expl": "« Il y a un embouteillage sur le Ring. » The everyday synonym is « les bouchons »: « Ça bouchonne à Schuman. »"},
+  {"id": "fv533", "level": "B1", "pos": "noun", "gender": "m", "fr": "le trottoir", "en": "the pavement", "format": "fr2en", "options": ["the pavement", "the cycle lane", "the kerb", "the pedestrian crossing"], "a": 0, "trap": "la piste cyclable — the cycle lane running beside it", "expl": "« Les vélos ne roulent pas sur le trottoir. » The kerb is « le bord du trottoir » and a crossing is « le passage pour piétons »."},
+  {"id": "fv534", "level": "B1", "pos": "noun", "gender": "m", "fr": "le stationnement", "en": "parking (the act of parking)", "format": "fr2en", "options": ["parking (the act of parking)", "the station", "the standstill", "the car park building"], "a": 0, "trap": "la station — a metro or taxi station; « stationnement » is about leaving a car", "expl": "« Stationnement interdit » means no parking. The place itself is « un parking »; « la station » is where the metro stops."},
+  {"id": "fv535", "level": "B1", "pos": "noun", "gender": "f", "fr": "l'attestation", "en": "the official certificate (letter of proof)", "format": "fr2en", "options": ["the official certificate (letter of proof)", "the sworn statement of a witness", "the registration form", "the receipt"], "a": 0, "trap": "le témoignage — a witness statement; « attestation » is a document an authority issues to prove a fact", "expl": "« Une attestation de domicile » from your commune proves where you live. « Le certificat » is closer to a qualification: « certificat médical »."},
+  {"id": "fv536", "level": "B1", "pos": "noun", "gender": "m", "fr": "le brouillon", "en": "the rough draft", "format": "fr2en", "options": ["the rough draft", "the final version", "the summary", "the outline of headings"], "a": 0, "trap": "le plan — the outline; a « brouillon » is already written, just not clean", "expl": "« C'est encore un brouillon, ne le diffuse pas. » A working document circulated officially is « un projet de texte », not « un brouillon »."},
+  {"id": "fv537", "level": "B2", "pos": "noun", "gender": "m", "fr": "le justificatif", "en": "the supporting document (proof)", "format": "fr2en", "options": ["the supporting document (proof)", "the justification of a decision", "the invoice", "the excuse given"], "a": 0, "trap": "la justification — the reasoning behind a decision; « le justificatif » is the paper you attach", "expl": "« Joignez les justificatifs de frais » = attach the receipts. The argument itself is « la justification » or « la motivation »."},
+  {"id": "fv538", "level": "B2", "pos": "noun", "gender": "m", "fr": "le procès-verbal", "en": "the minutes of a meeting", "format": "fr2en", "options": ["the minutes of a meeting", "the verbal warning", "the trial record read aloud", "the agenda"], "a": 0, "trap": "the word looks like a spoken procedure, but a « PV » is written; it also means a police ticket", "expl": "« Le PV de la réunion sera diffusé demain. » Note the second sense: « dresser un procès-verbal » is to write someone a fine."},
+  {"id": "fv539", "level": "B2", "pos": "noun", "gender": "f", "fr": "la mise à jour", "en": "the update", "format": "fr2en", "options": ["the update", "the launch", "the daily schedule", "the implementation"], "a": 0, "trap": "la mise en œuvre — implementation; the « mise en… » family all look alike", "expl": "« La mise à jour du tableau de bord » = updating the dashboard. Compare « mise en œuvre » (implementation), « mise en place » (setting up), « mise en garde » (warning)."},
+  {"id": "fv540", "level": "B2", "pos": "noun", "gender": "m", "fr": "le destinataire", "en": "the addressee (recipient)", "format": "fr2en", "options": ["the addressee (recipient)", "the sender", "the person copied in", "the destination"], "a": 0, "trap": "l'expéditeur — the sender; the two are printed on the same envelope", "expl": "« Le destinataire n'a pas répondu. » On an email « en copie » is cc; the destination of a journey is « la destination », not « le destinataire »."},
+  {"id": "fv541", "level": "B2", "pos": "noun", "gender": "f", "fr": "la cotisation", "en": "the contribution (social security or membership)", "format": "fr2en", "options": ["the contribution (social security or membership)", "the quotation for a job", "the share of a company", "the subscription to a magazine"], "a": 0, "trap": "le devis — a quotation; « cotisation » is the sum you pay in regularly", "expl": "« Les cotisations sociales » are deducted from gross pay. A union or club fee is also « une cotisation »; the verb is « cotiser »."},
+  {"id": "fv542", "level": "B2", "pos": "noun", "gender": "m", "fr": "le barème", "en": "the scale (of rates or grades)", "format": "fr2en", "options": ["the scale (of rates or grades)", "the barrier", "the benchmark case", "the ceiling amount"], "a": 0, "trap": "le plafond — the maximum amount; a « barème » is the whole table of steps below it", "expl": "« Le barème salarial des AD5 » sets pay by step. « Le plafond » is only the top figure, « l'échelon » one step on the scale."},
+  {"id": "fv543", "level": "B2", "pos": "noun", "gender": "f", "fr": "la mutation", "en": "the transfer to another post", "format": "fr2en", "options": ["the transfer to another post", "the mutual insurance fund", "the change of contract type", "the promotion"], "a": 0, "trap": "la mutuelle — the Belgian health insurance fund, which sounds related but is not", "expl": "« Il a demandé sa mutation à Luxembourg. » Moving up a grade is « une promotion »; your health fund is « la mutuelle »."},
+  {"id": "fv544", "level": "B2", "pos": "noun", "gender": "m", "fr": "le prestataire", "en": "the service provider (contractor)", "format": "fr2en", "options": ["the service provider (contractor)", "the beneficiary of a service", "the prestige consultant", "the temporary agency worker"], "a": 0, "trap": "le bénéficiaire — the one who receives the service, the opposite end of the contract", "expl": "« Le prestataire externe assure la maintenance. » Someone working under him is « le sous-traitant »; the receiver is « le bénéficiaire »."},
+  {"id": "fv545", "level": "B2", "pos": "noun", "gender": "m", "fr": "le livrable", "en": "the deliverable", "format": "fr2en", "options": ["the deliverable", "the delivery van", "the milestone date", "the handbook"], "a": 0, "trap": "la livraison — the act of delivering; « le livrable » is the product itself", "expl": "« Le premier livrable est attendu en mars. » Project French pairs it with « le jalon » (milestone) and « l'échéance » (deadline)."},
+  {"id": "fv546", "level": "B2", "pos": "noun", "gender": "m", "fr": "le plafond", "en": "the cap (upper limit)", "format": "fr2en", "options": ["the cap (upper limit)", "the floor (lower limit)", "the average", "the flat rate"], "a": 0, "trap": "le plancher — the floor, the minimum; both are literally parts of a room", "expl": "« Le plafond de dépenses est fixé à 5 millions. » Its opposite is « le plancher »; a fixed unit price is « le forfait »."},
+  {"id": "fv547", "level": "B2", "pos": "noun", "gender": "m", "fr": "le jalon", "en": "the milestone (project checkpoint)", "format": "fr2en", "options": ["the milestone (project checkpoint)", "the final deadline", "the anniversary", "the stage of a race"], "a": 0, "trap": "l'échéance — the due date; a « jalon » marks progress, an « échéance » is when something falls due", "expl": "« Poser des jalons » is to set checkpoints along the way. The idiom « poser des jalons » also means to prepare the ground."},
+  {"id": "fv548", "level": "C1", "pos": "noun", "gender": "m", "fr": "le considérant", "en": "the recital (of a legal act)", "format": "fr2en", "options": ["the recital (of a legal act)", "the operative article", "the explanatory memorandum", "the dissenting opinion"], "a": 0, "trap": "l'exposé des motifs — the memorandum attached to a proposal; the « considérants » are inside the act itself", "expl": "EU acts open with numbered « considérants » setting out the reasons, then « le dispositif » with the binding articles."},
+  {"id": "fv549", "level": "C1", "pos": "noun", "gender": "m", "fr": "le décaissement", "en": "the disbursement (payment out of funds)", "format": "fr2en", "options": ["the disbursement (payment out of funds)", "the commitment of funds", "the cashing of a cheque", "the write-off"], "a": 0, "trap": "l'engagement — committing the money on paper; « décaissement » is when it actually leaves the account", "expl": "EU budgeting distinguishes « engagements » (commitments) from « paiements/décaissements » (money actually paid out)."},
+  {"id": "fv550", "level": "C1", "pos": "noun", "gender": "m", "fr": "le détachement", "en": "the secondment", "format": "fr2en", "options": ["the secondment", "the detachment (emotional distance)", "the resignation", "the dismissal"], "a": 0, "trap": "the everyday sense of « détachement » is aloofness; in HR French it is a posting to another body", "expl": "« Un expert national détaché (END) » is seconded from a national administration to the Commission for a few years."},
+  {"id": "fv551", "level": "A2", "pos": "noun", "gender": "m", "fr": "le locataire", "en": "the tenant", "format": "en2fr", "options": ["le locataire", "le propriétaire", "le gardien", "le voisin"], "a": 0, "trap": "le propriétaire — the landlord, the other party on the same lease", "expl": "« Le locataire paie le loyer au propriétaire. » Both are masculine in form but used for women too: « la locataire »."},
+  {"id": "fv552", "level": "A2", "pos": "noun", "gender": "f", "fr": "la maison communale", "en": "the town hall (in Belgium)", "format": "en2fr", "options": ["la maison communale", "la mairie", "la préfecture", "la maison de quartier"], "a": 0, "trap": "la mairie — the standard word in France; Belgium says « maison communale »", "expl": "You register your address at « la maison communale » of your commune. In France the same building is « la mairie »; « la maison de quartier » is a community centre."},
+  {"id": "fv553", "level": "A2", "pos": "noun", "gender": "m", "fr": "le distributeur", "en": "the cash machine", "format": "en2fr", "options": ["le distributeur", "le guichet", "le compteur", "le terminal"], "a": 0, "trap": "le guichet — a counter with a person behind it", "expl": "« Je retire de l'argent au distributeur. » Belgians also say « le bancontact » for the machine, after the payment network."},
+  {"id": "fv554", "level": "A2", "pos": "noun", "gender": "m", "fr": "le colis", "en": "the parcel", "format": "en2fr", "options": ["le colis", "le courrier", "le carton", "le timbre"], "a": 0, "trap": "le courrier — the letters and mail generally, not a package", "expl": "« Un colis est arrivé pour vous. » bpost leaves « un avis de passage » if you were out; the letters are « le courrier »."},
+  {"id": "fv555", "level": "A2", "pos": "noun", "gender": "m", "fr": "le portefeuille", "en": "the wallet", "format": "en2fr", "options": ["le portefeuille", "le porte-monnaie", "le porte-clés", "le sac à main"], "a": 0, "trap": "le porte-monnaie — the little purse for coins only", "expl": "« Portefeuille » holds notes and cards; « porte-monnaie » holds coins. In politics « un portefeuille ministériel » is a minister's brief."},
+  {"id": "fv556", "level": "A2", "pos": "noun", "gender": "f", "fr": "la mutuelle", "en": "the health insurance fund (Belgium)", "format": "en2fr", "options": ["la mutuelle", "la sécurité sociale", "la caisse d'épargne", "la couverture"], "a": 0, "trap": "la sécurité sociale — the French system; in Belgium you join a « mutuelle » (mutualité)", "expl": "Everyone in Belgium joins « une mutuelle » (Mutualité chrétienne, Solidaris…) which reimburses the doctor's fee. « La caisse d'épargne » is a savings bank."},
+  {"id": "fv557", "level": "A2", "pos": "noun", "gender": "m", "fr": "l'escalier", "en": "the stairs", "format": "en2fr", "options": ["l'escalier", "l'ascenseur", "l'étage", "le couloir"], "a": 0, "trap": "l'ascenseur — the lift; both take you up but only one has steps", "expl": "French uses the singular: « Je monte l'escalier. » An escalator is « un escalier roulant » or « un escalator »."},
+  {"id": "fv558", "level": "A2", "pos": "noun", "gender": "m", "fr": "le digicode", "en": "the door entry code", "format": "en2fr", "options": ["le digicode", "le code postal", "le mot de passe", "le badge"], "a": 0, "trap": "le mot de passe — the password for an account, not for a street door", "expl": "« Le digicode de l'immeuble, c'est 12A34. » A card you swipe is « un badge »; your postcode is « le code postal » (1050 for Ixelles)."},
+  {"id": "fv559", "level": "B1", "pos": "noun", "gender": "m", "fr": "le titre de séjour", "en": "the residence permit", "format": "en2fr", "options": ["le titre de séjour", "le permis de conduire", "le passeport", "le titre de transport"], "a": 0, "trap": "le titre de transport — a travel ticket; « titre » alone means an official document of entitlement", "expl": "Non-EU residents apply for « un titre de séjour » at the commune. EU citizens get « une carte E » or « annexe 8 » instead."},
+  {"id": "fv560", "level": "B1", "pos": "noun", "gender": "f", "fr": "la date limite", "en": "the deadline (last possible date)", "format": "en2fr", "options": ["la date limite", "l'échéance", "la durée", "la période"], "a": 0, "trap": "l'échéance — the date a payment or obligation falls due, not the last date to act", "expl": "« La date limite de candidature est le 15 mars. » « L'échéance » is when something matures: « l'échéance du prêt »."},
+  {"id": "fv561", "level": "B1", "pos": "noun", "gender": "m", "fr": "le suivi", "en": "the follow-up (ongoing monitoring)", "format": "en2fr", "options": ["le suivi", "le contrôle", "le rappel", "le compte rendu"], "a": 0, "trap": "le contrôle — a check or inspection at one moment; « suivi » runs over time", "expl": "« Assurer le suivi du dossier » = to keep the file moving. « Le contrôle » implies verifying compliance; « le rappel » is a reminder."},
+  {"id": "fv562", "level": "B1", "pos": "noun", "gender": "m", "fr": "le rappel", "en": "the reminder (chasing letter)", "format": "en2fr", "options": ["le rappel", "le relevé", "le recours", "le renvoi"], "a": 0, "trap": "le relevé — a statement listing transactions, which also arrives by post", "expl": "« J'ai reçu un rappel pour la facture d'électricité. » « Un rappel » also means a booster jab and, at a concert, an encore."},
+  {"id": "fv563", "level": "B1", "pos": "noun", "gender": "f", "fr": "la note de service", "en": "the internal memo", "format": "en2fr", "options": ["la note de service", "la note de frais", "la circulaire", "la fiche de poste"], "a": 0, "trap": "la note de frais — an expense claim, a completely different piece of paper", "expl": "« Une note de service » announces internal rules to staff. « Une circulaire » goes wider, often to the public; « une note de frais » gets you money back."},
+  {"id": "fv564", "level": "B1", "pos": "noun", "gender": "m", "fr": "le groupe de travail", "en": "the working group", "format": "en2fr", "options": ["le groupe de travail", "le poste de travail", "le comité", "le chantier"], "a": 0, "trap": "le poste de travail — a workstation, the desk itself", "expl": "« Un groupe de travail sur la mobilité » meets to prepare a text. « Un comité » is more formal and standing; « un chantier » is a building site or, figuratively, a big project."},
+  {"id": "fv565", "level": "B1", "pos": "noun", "gender": "m", "fr": "le questionnaire", "en": "the questionnaire", "format": "en2fr", "options": ["le questionnaire", "le sondage", "le formulaire", "le bulletin"], "a": 0, "trap": "le sondage — an opinion poll: the survey exercise, not the sheet of questions", "expl": "« Remplir un questionnaire » = fill in the questions. « Un sondage » is the survey and its results; « un formulaire » is an administrative form."},
+  {"id": "fv566", "level": "B1", "pos": "noun", "gender": "m", "fr": "le créneau", "en": "the time slot", "format": "en2fr", "options": ["le créneau", "le délai", "l'horaire", "le calendrier"], "a": 0, "trap": "le délai — the period of time allowed, not a slot in a diary", "expl": "« Je vous propose un créneau jeudi à 14h. » « Un créneau » is also a market niche, and « faire un créneau » means to parallel-park."},
+  {"id": "fv567", "level": "B1", "pos": "noun", "gender": "f", "fr": "la liste d'attente", "en": "the waiting list", "format": "en2fr", "options": ["la liste d'attente", "la salle d'attente", "la file", "la liste de diffusion"], "a": 0, "trap": "la salle d'attente — the waiting room, where you sit rather than queue on paper", "expl": "« Je suis sur liste d'attente pour la crèche. » A physical queue is « la file (d'attente) »; a mailing list is « une liste de diffusion »."},
+  {"id": "fv568", "level": "B1", "pos": "noun", "gender": "m", "fr": "le rond-point", "en": "the roundabout", "format": "en2fr", "options": ["le rond-point", "le carrefour", "le virage", "le croisement"], "a": 0, "trap": "le carrefour — a crossroads with no island to drive around", "expl": "« Au rond-point, prenez la deuxième sortie. » Belgium says « le rond-point » too; « le virage » is a bend in the road."},
+  {"id": "fv569", "level": "B1", "pos": "noun", "gender": "m", "fr": "le feu", "en": "the traffic light", "format": "en2fr", "options": ["le feu", "le phare", "le clignotant", "le lampadaire"], "a": 0, "trap": "le phare — a headlight or a lighthouse, not the light you stop at", "expl": "« Tournez à gauche au feu. » Also « brûler un feu rouge » = to jump a red light. « Le feu » on its own otherwise means fire."},
+  {"id": "fv570", "level": "B1", "pos": "noun", "gender": "m", "fr": "le contrôleur", "en": "the ticket inspector", "format": "en2fr", "options": ["le contrôleur", "le conducteur", "le surveillant", "le receveur"], "a": 0, "trap": "le conducteur — the driver of the tram or bus", "expl": "« Le contrôleur demande les titres de transport. » On the STIB an unpaid fare costs « une amende » of over a hundred euros."},
+  {"id": "fv571", "level": "B1", "pos": "noun", "gender": "m", "fr": "le retard", "en": "the lateness (delay in arriving)", "format": "en2fr", "options": ["le retard", "le délai", "le report", "le décalage"], "a": 0, "trap": "le délai — the time allowed to do something, not the fact of being late", "expl": "« Le train a vingt minutes de retard. » But « dans un délai de vingt minutes » means within twenty minutes: « délai » never means delay."},
+  {"id": "fv572", "level": "B1", "pos": "noun", "gender": "f", "fr": "la lettre de motivation", "en": "the cover letter", "format": "en2fr", "options": ["la lettre de motivation", "la lettre de recommandation", "la lettre de démission", "la lettre recommandée"], "a": 0, "trap": "la lettre recommandée — a registered letter; one letter apart from a letter of recommendation", "expl": "You send « un CV et une lettre de motivation ». « Une lettre recommandée » is sent by registered post, often for a notice period."},
+  {"id": "fv573", "level": "B1", "pos": "noun", "gender": "f", "fr": "la période d'essai", "en": "the probation period (new job)", "format": "en2fr", "options": ["la période d'essai", "la période de préavis", "la mise à l'épreuve", "la formation initiale"], "a": 0, "trap": "la mise à l'épreuve — probation in the criminal-law sense, for an offender", "expl": "« Trois mois de période d'essai » start a contract. Note Belgium largely abolished it in 2014 for standard contracts."},
+  {"id": "fv574", "level": "B1", "pos": "noun", "gender": "m", "fr": "le préavis", "en": "the notice period", "format": "en2fr", "options": ["le préavis", "le délai de paiement", "le congé", "le renvoi"], "a": 0, "trap": "le congé — leave you take; « préavis » is the warning time before a contract ends", "expl": "« Je dois trois mois de préavis. » It applies to jobs and to leases: « donner son préavis » = to give notice."},
+  {"id": "fv575", "level": "B1", "pos": "noun", "gender": "f", "fr": "la visioconférence", "en": "the video call / video conference", "format": "en2fr", "options": ["la visioconférence", "la conférence de presse", "la vidéo", "la téléconférence"], "a": 0, "trap": "la téléconférence — an audio conference call with no picture", "expl": "« On fait la réunion en visio » is the everyday short form. « La téléconférence » is voice only; a press conference is « une conférence de presse »."},
+  {"id": "fv576", "level": "B1", "pos": "noun", "gender": "f", "fr": "la boîte de réception", "en": "the inbox", "format": "en2fr", "options": ["la boîte de réception", "la boîte aux lettres", "la corbeille", "la messagerie"], "a": 0, "trap": "la boîte aux lettres — the physical letterbox on the street door", "expl": "« J'ai 200 messages dans ma boîte de réception. » « La corbeille » is the bin/trash folder and « la messagerie » the mail system as a whole."},
+  {"id": "fv577", "level": "B1", "pos": "noun", "gender": "m", "fr": "le tableur", "en": "the spreadsheet program", "format": "en2fr", "options": ["le tableur", "le tableau", "le classeur", "le graphique"], "a": 0, "trap": "le tableau — a table of figures (or a painting or a whiteboard), not the software", "expl": "« Excel est un tableur. » One Excel file is « un classeur », each grid inside it « une feuille de calcul » or « un tableau »."},
+  {"id": "fv578", "level": "B1", "pos": "noun", "gender": "f", "fr": "la sauvegarde", "en": "the backup", "format": "en2fr", "options": ["la sauvegarde", "la sécurité", "la protection", "la restauration"], "a": 0, "trap": "la restauration — restoring the data afterwards, the opposite operation", "expl": "« Faire une sauvegarde » = to back up. In law the same word means safeguard: « une clause de sauvegarde »."},
+  {"id": "fv579", "level": "B2", "pos": "noun", "gender": "m", "fr": "le soumissionnaire", "en": "the tenderer (bidder)", "format": "en2fr", "options": ["le soumissionnaire", "l'adjudicataire", "le prestataire", "le donneur d'ordre"], "a": 0, "trap": "l'adjudicataire — the bidder who actually won the contract", "expl": "Every « soumissionnaire » submits « une offre »; only one becomes « l'adjudicataire ». The buyer is « le pouvoir adjudicateur »."},
+  {"id": "fv580", "level": "B2", "pos": "noun", "gender": "m", "fr": "le sous-traitant", "en": "the subcontractor", "format": "en2fr", "options": ["le sous-traitant", "le fournisseur", "l'intermédiaire", "le sous-directeur"], "a": 0, "trap": "le fournisseur — a supplier who sells you goods directly, not one working under another contractor", "expl": "« Recourir à la sous-traitance » = to subcontract. The main contractor is « le contractant principal »."},
+  {"id": "fv581", "level": "B2", "pos": "noun", "gender": "m", "fr": "l'appel à propositions", "en": "the call for proposals (grants)", "format": "en2fr", "options": ["l'appel à propositions", "l'appel d'offres", "l'appel à candidatures", "l'appel de fonds"], "a": 0, "trap": "l'appel d'offres — the call for tenders, used for buying services, not for awarding grants", "expl": "Horizon Europe publishes « des appels à propositions » for funding; procurement uses « un appel d'offres ». Recruiting uses « un appel à candidatures »."},
+  {"id": "fv582", "level": "B2", "pos": "noun", "gender": "m", "fr": "le tableau de bord", "en": "the dashboard (set of indicators)", "format": "en2fr", "options": ["le tableau de bord", "le tableau récapitulatif", "le bilan", "le rapport d'activité"], "a": 0, "trap": "le tableau récapitulatif — a summary table; a dashboard tracks indicators live", "expl": "« Le tableau de bord de la performance » follows key indicators. It is also literally the dashboard of a car."},
+  {"id": "fv583", "level": "B2", "pos": "noun", "gender": "f", "fr": "la liste de réserve", "en": "the reserve list (of successful candidates)", "format": "en2fr", "options": ["la liste de réserve", "la liste d'aptitude", "la liste noire", "la liste électorale"], "a": 0, "trap": "la liste d'aptitude — the French national civil-service term; EPSO says « liste de réserve »", "expl": "Passing an EPSO concours puts you on « la liste de réserve » (also « la liste des lauréats »), from which services recruit."},
+  {"id": "fv584", "level": "B2", "pos": "noun", "gender": "m", "fr": "le jury", "en": "the selection board", "format": "en2fr", "options": ["le jury", "le juré", "le comité", "le tribunal"], "a": 0, "trap": "le juré — one individual member of a jury, not the body itself", "expl": "« Le jury du concours » interviews candidates. In court the same word is used, with each member « un juré »."},
+  {"id": "fv585", "level": "B2", "pos": "noun", "gender": "m", "fr": "le précompte", "en": "the withholding tax (Belgium)", "format": "en2fr", "options": ["le précompte", "l'acompte", "le versement", "le décompte"], "a": 0, "trap": "l'acompte — a down payment you make in advance, not tax withheld at source", "expl": "Belgian payslips show « le précompte professionnel » deducted at source; property owners pay « le précompte immobilier ». France says « prélèvement à la source »."},
+  {"id": "fv586", "level": "B2", "pos": "noun", "gender": "m", "fr": "le goulet d'étranglement", "en": "the bottleneck", "format": "en2fr", "options": ["le goulet d'étranglement", "le frein", "le verrou", "le point de départ"], "a": 0, "trap": "le frein — a brake, used figuratively for anything that slows things down, but not a narrow point", "expl": "« Le goulet d'étranglement se situe au stade de la traduction. » Also written « goulot »; « un frein » is any obstacle, « un verrou » a blocking lock."},
+  {"id": "fv587", "level": "B2", "pos": "noun", "gender": "m", "fr": "l'arbitrage", "en": "the trade-off (choice between priorities)", "format": "en2fr", "options": ["l'arbitrage", "le compromis", "l'équilibre", "le partage"], "a": 0, "trap": "le compromis — a deal both sides accept; « arbitrage » is a decision imposed between competing claims", "expl": "« Il faut faire des arbitrages budgétaires. » The word also means arbitration in law and refereeing in sport."},
+  {"id": "fv588", "level": "B2", "pos": "noun", "gender": "m", "fr": "le déploiement", "en": "the roll-out", "format": "en2fr", "options": ["le déploiement", "le développement", "l'aboutissement", "l'étalement"], "a": 0, "trap": "le développement — developing the thing; « déploiement » is putting the finished thing into service everywhere", "expl": "« Le déploiement du nouveau logiciel commence en septembre. » Spreading a cost over time is « l'étalement »."},
+  {"id": "fv589", "level": "B2", "pos": "noun", "gender": "f", "fr": "la clause de sauvegarde", "en": "the safeguard clause", "format": "en2fr", "options": ["la clause de sauvegarde", "la clause de style", "la clause résolutoire", "la clause suspensive"], "a": 0, "trap": "la clause de style — boilerplate wording nobody expects to be applied", "expl": "A « clause de sauvegarde » lets a party suspend obligations if serious harm occurs. « Clause suspensive » makes a contract conditional; « clause résolutoire » ends it automatically."},
+  {"id": "fv590", "level": "B2", "pos": "noun", "gender": "m", "fr": "le lanceur d'alerte", "en": "the whistleblower", "format": "en2fr", "options": ["le lanceur d'alerte", "le dénonciateur", "le porte-parole", "le témoin"], "a": 0, "trap": "le dénonciateur — an informer, with a strongly negative ring; « lanceur d'alerte » is the protected legal status", "expl": "The EU directive protects « les lanceurs d'alerte » who report breaches of Union law. Calling someone « un dénonciateur » is an insult."},
+  {"id": "fv591", "level": "B2", "pos": "noun", "gender": "m", "fr": "l'arriéré", "en": "the backlog (of unfinished work or unpaid sums)", "format": "en2fr", "options": ["l'arriéré", "le reliquat", "le report", "le solde"], "a": 0, "trap": "le reliquat — the small remainder left over, not a pile of overdue work", "expl": "« Résorber l'arriéré judiciaire » = to clear the court backlog. « Un arriéré de loyer » is unpaid rent; as an adjective « arriéré » means outdated."},
+  {"id": "fv592", "level": "B2", "pos": "noun", "gender": "m", "fr": "l'effectif", "en": "the headcount (staff numbers)", "format": "en2fr", "options": ["l'effectif", "le personnel", "l'organigramme", "le recrutement"], "a": 0, "trap": "le personnel — the staff as people; « l'effectif » is how many of them there are", "expl": "« L'effectif de l'unité est de douze personnes. » As an adjective, « effectif » means actual or real: « la mise en œuvre effective »."},
+  {"id": "fv593", "level": "B2", "pos": "noun", "gender": "f", "fr": "l'évaluation", "en": "the appraisal (formal assessment)", "format": "en2fr", "options": ["l'évaluation", "l'estimation", "l'appréciation", "la notation"], "a": 0, "trap": "l'estimation — a rough calculation of value or quantity, not a judgement of performance", "expl": "« L'évaluation annuelle du personnel » is the appraisal exercise; « une estimation » puts a figure on something: « une estimation des coûts »."},
+  {"id": "fv594", "level": "B2", "pos": "noun", "gender": "f", "fr": "l'audience", "en": "the court hearing", "format": "en2fr", "options": ["l'audience", "l'audition", "la séance", "l'écoute"], "a": 0, "trap": "l'audition — the hearing of one person (a witness, a commissioner-designate), or a music audition", "expl": "« L'audience est publique » at the tribunal. A parliamentary hearing of a nominee is « une audition »; « l'audience » also means audience figures in the media."},
+  {"id": "fv595", "level": "B2", "pos": "noun", "gender": "m", "fr": "le plaignant", "en": "the complainant (claimant)", "format": "en2fr", "options": ["le plaignant", "le prévenu", "le témoin", "le juré"], "a": 0, "trap": "le prévenu — the accused, the person on the other side of the case", "expl": "« Le plaignant a déposé plainte au commissariat. » The verb is « se plaindre » or « porter plainte »."},
+  {"id": "fv596", "level": "B2", "pos": "noun", "gender": "m", "fr": "le chiffre d'affaires", "en": "the turnover (revenue)", "format": "en2fr", "options": ["le chiffre d'affaires", "le bénéfice", "le revenu", "le budget"], "a": 0, "trap": "le bénéfice — the profit that is left after costs, not the total money coming in", "expl": "« Un chiffre d'affaires de 3 millions » says nothing about profit. Note the s on « affaires » even in the singular."},
+  {"id": "fv597", "level": "B2", "pos": "noun", "gender": "m", "fr": "l'actionnaire", "en": "the shareholder", "format": "en2fr", "options": ["l'actionnaire", "l'associé", "le partenaire", "le bailleur de fonds"], "a": 0, "trap": "l'associé — a partner in a firm, who may hold no shares at all", "expl": "« Une action » is a share, so « un actionnaire » holds shares. Stakeholders more broadly are « les parties prenantes »."},
+  {"id": "fv598", "level": "B2", "pos": "noun", "gender": "f", "fr": "la filiale", "en": "the subsidiary company", "format": "en2fr", "options": ["la filiale", "la succursale", "la filière", "l'agence"], "a": 0, "trap": "la filière — a whole industry chain or a study stream; a lookalike with no company sense", "expl": "« Une filiale » is a separate company owned by the parent; « une succursale » is only a branch with no legal identity of its own."},
+  {"id": "fv599", "level": "B2", "pos": "noun", "gender": "m", "fr": "le certificat médical", "en": "the sick note", "format": "en2fr", "options": ["le certificat médical", "le carnet de santé", "le bulletin de soins", "le congé de maladie"], "a": 0, "trap": "le congé de maladie — the sick leave itself, not the paper proving it", "expl": "In Belgium you send « un certificat médical » to the employer and « une attestation de soins » to the mutuelle."},
+  {"id": "fv600", "level": "B2", "pos": "noun", "gender": "f", "fr": "l'ordonnance", "en": "the doctor's prescription", "format": "en2fr", "options": ["l'ordonnance", "la prescription", "la posologie", "la notice"], "a": 0, "trap": "la prescription — in French this normally means time-barring in law; the paper from the doctor is « une ordonnance »", "expl": "« Ce médicament est délivré sur ordonnance. » « La posologie » is the dosage and « la notice » the leaflet in the box. In law « une ordonnance » is also a government order."},
+  {"id": "fv601", "level": "C1", "pos": "noun", "gender": "m", "fr": "l'alinéa", "en": "the subparagraph (indented paragraph of an act)", "format": "en2fr", "options": ["l'alinéa", "le paragraphe", "le considérant", "le chapitre"], "a": 0, "trap": "le paragraphe — the numbered paragraph one level up in the same article", "expl": "Citations run « article 6, paragraphe 1, alinéa 2 ». An « alinéa » is one indented block of text inside a paragraph."},
+  {"id": "fv602", "level": "C1", "pos": "noun", "gender": "m", "fr": "l'exposé des motifs", "en": "the explanatory memorandum", "format": "en2fr", "options": ["l'exposé des motifs", "le préambule", "le rapport explicatif", "le mémorandum"], "a": 0, "trap": "le préambule — the opening declaration inside the act; the memorandum sits outside it", "expl": "A Commission proposal opens with « un exposé des motifs » explaining why. Once adopted, the reasons live in « les considérants »."},
+  {"id": "fv603", "level": "C1", "pos": "noun", "gender": "m", "fr": "le trilogue", "en": "the trilogue (informal three-way EU negotiation)", "format": "en2fr", "options": ["le trilogue", "le conclave", "le comité de conciliation", "le dialogue social"], "a": 0, "trap": "le comité de conciliation — the formal third-reading body; a trilogue is informal and can happen at any reading", "expl": "« Un trilogue » brings Parliament, Council and Commission together to agree a text early. « Le dialogue social » is talks with unions and employers."},
+  {"id": "fv604", "level": "C1", "pos": "noun", "gender": "f", "fr": "la prescription", "en": "the time-barring (statute of limitations)", "format": "en2fr", "options": ["la prescription", "la péremption", "la caducité", "la déchéance"], "a": 0, "trap": "in everyday French « une prescription » is what the doctor writes, so the legal sense catches learners out", "expl": "« L'action est prescrite » = the claim is time-barred. « La péremption » is a product's expiry, « la caducité » a text lapsing, « la déchéance » loss of a right."},
+  {"id": "fv605", "level": "C1", "pos": "noun", "gender": "f", "fr": "l'impasse", "en": "the deadlock", "format": "en2fr", "options": ["l'impasse", "la rupture", "la suspension", "la panne"], "a": 0, "trap": "la rupture — a breaking off of talks; an impasse means they continue but go nowhere", "expl": "« Les négociations sont dans l'impasse. » Literally a dead-end street; « faire l'impasse sur » means to skip something deliberately."},
+  {"id": "fv606", "level": "A2", "pos": "noun", "gender": "f", "fr": "les charges", "en": "the service charges (on top of rent)", "format": "cloze", "q": "Le loyer est de 900 euros par mois, ___ non comprises.", "options": ["les charges", "les factures", "les taxes", "les courses"], "a": 0, "trap": "les factures — the bills themselves; « les charges » is the monthly sum for heating, water and common areas", "expl": "Ads say « 900 € + charges » or « charges comprises ». « Les taxes » are what the commune levies, « les courses » the shopping."},
+  {"id": "fv607", "level": "A2", "pos": "noun", "gender": "m", "fr": "le compteur", "en": "the meter (electricity, water)", "format": "cloze", "q": "Le technicien passe demain pour relever ___ d'électricité.", "options": ["le compteur", "le comptoir", "le compte", "le compte rendu"], "a": 0, "trap": "le comptoir — a counter you lean on; one letter away from « compteur »", "expl": "« Relever le compteur » = to read the meter. « Le compte » is a bank account, « le comptoir » the bar or counter."},
+  {"id": "fv608", "level": "A2", "pos": "noun", "gender": "f", "fr": "la sonnette", "en": "the doorbell", "format": "cloze", "q": "Il n'y a pas de nom sur ___ , je ne sais pas sur quel bouton appuyer.", "options": ["la sonnette", "la serrure", "la poignée", "la boîte aux lettres"], "a": 0, "trap": "la serrure — the lock; both are on the front door but only one rings", "expl": "« Sonner à la porte » is the verb. « La poignée » is the handle and « la serrure » takes the key."},
+  {"id": "fv609", "level": "A2", "pos": "noun", "gender": "m", "fr": "le chauffage", "en": "the heating", "format": "cloze", "q": "Il fait froid dans le salon, je vais allumer ___ .", "options": ["le chauffage", "le ventilateur", "le congélateur", "le lave-vaisselle"], "a": 0, "trap": "le ventilateur — a fan, which does the opposite", "expl": "« Le chauffage central » runs on gas in most Brussels flats; « les charges » often include it. The verb « chauffer » means to heat."},
+  {"id": "fv610", "level": "A2", "pos": "noun", "gender": "m", "fr": "le GSM", "en": "the mobile phone (Belgian French)", "format": "cloze", "q": "Tu peux m'envoyer un SMS ? J'ai ___ sur moi toute la journée.", "options": ["le GSM", "le fixe", "le répondeur", "le chargeur"], "a": 0, "trap": "le fixe — the landline, the phone you cannot carry", "expl": "Belgians say « mon GSM » where the French say « mon portable » or « mon mobile ». « Le répondeur » is the answering machine."},
+  {"id": "fv611", "level": "A2", "pos": "noun", "gender": "f", "fr": "la drache", "en": "the downpour (Belgian French)", "format": "cloze", "q": "Regarde par la fenêtre, c'est ___ : attends cinq minutes avant de sortir.", "options": ["une drache", "une brise", "une éclaircie", "une sécheresse"], "a": 0, "trap": "une éclaircie — a bright spell, the opposite of what soaks you", "expl": "« Une drache » is Belgian for a sudden heavy shower; France says « une averse ». The verb exists too: « il drache »."},
+  {"id": "fv612", "level": "A2", "pos": "noun", "gender": "f", "fr": "la crèche", "en": "the nursery (daycare)", "format": "cloze", "q": "Nous cherchons une place en ___ pour notre fils de dix mois.", "options": ["crèche", "maternité", "pension", "colonie"], "a": 0, "trap": "la maternité — the maternity ward where the baby was born, not where it is looked after later", "expl": "In Brussels you register at « la crèche » very early. From two and a half, children go to « l'école maternelle »."},
+  {"id": "fv613", "level": "A2", "pos": "noun", "gender": "m", "fr": "le facteur", "en": "the postman", "format": "cloze", "q": "___ est passé ce matin mais il n'y avait personne à la maison.", "options": ["Le facteur", "Le coursier", "Le gardien", "Le locataire"], "a": 0, "trap": "« le facteur » also means a factor in the sense of an element — context tells you which", "expl": "« Le facteur » delivers letters for bpost; « le coursier » brings parcels by bike. In « un facteur de risque », the same word means factor."},
+  {"id": "fv614", "level": "A2", "pos": "noun", "gender": "f", "fr": "la pièce", "en": "the room (of a flat)", "format": "cloze", "q": "L'appartement fait 70 m² et compte trois ___ en tout.", "options": ["pièces", "chambres", "portes", "salles"], "a": 0, "trap": "les chambres — bedrooms only; Belgian adverts count « chambres », French ones count « pièces »", "expl": "« Un trois-pièces » counts all rooms except kitchen and bathroom. « La pièce » also means a coin, a part, and a play in the theatre."},
+  {"id": "fv615", "level": "B1", "pos": "noun", "gender": "m", "fr": "le relevé", "en": "the statement (list of transactions)", "format": "cloze", "q": "La banque m'envoie ___ de compte à la fin de chaque mois.", "options": ["le relevé", "le rappel", "le reçu", "le virement"], "a": 0, "trap": "le reçu — a receipt for one payment; « le relevé » lists them all", "expl": "« Un relevé de compte », « un relevé de notes »: it is any itemised statement. From « relever » = to note down or to read off."},
+  {"id": "fv616", "level": "B1", "pos": "noun", "gender": "m", "fr": "le devis", "en": "the written quotation (estimate)", "format": "cloze", "q": "Avant de commencer les travaux, demandez ___ écrit à l'entrepreneur.", "options": ["un devis", "un reçu", "un acompte", "un bon de commande"], "a": 0, "trap": "un bon de commande — the order form you sign afterwards, once you accept the price", "expl": "« Établir un devis » = to draw up a quote. It is free and not binding until signed; the deposit that follows is « un acompte »."},
+  {"id": "fv617", "level": "B1", "pos": "noun", "gender": "m", "fr": "l'acompte", "en": "the deposit paid up front", "format": "cloze", "q": "J'ai versé ___ de 20 % à la signature, le reste à la livraison.", "options": ["un acompte", "un solde", "un rabais", "un supplément"], "a": 0, "trap": "le solde — the remaining balance, exactly the part you have not paid yet", "expl": "« Verser un acompte » commits both sides. « Des arrhes » can be forfeited instead; « le solde » is what is still owed."},
+  {"id": "fv618", "level": "B1", "pos": "noun", "gender": "m", "fr": "le remboursement", "en": "the refund / reimbursement", "format": "cloze", "q": "J'attends encore ___ de mes frais médicaux par la mutuelle.", "options": ["le remboursement", "le versement", "le prélèvement", "le classement"], "a": 0, "trap": "le versement — a payment made, without the idea of giving money back", "expl": "« Se faire rembourser » is the everyday verb. « Le prélèvement » is money taken out of your account, the opposite direction."},
+  {"id": "fv619", "level": "B1", "pos": "noun", "gender": "f", "fr": "les allocations familiales", "en": "the child benefit", "format": "cloze", "q": "Les parents reçoivent ___ familiales tous les mois jusqu'aux 18 ans de l'enfant.", "options": ["les allocations", "les indemnités", "les cotisations", "les subventions"], "a": 0, "trap": "les cotisations — contributions you pay in, not money you receive", "expl": "In Belgium child benefit is « les allocations familiales », paid by a « caisse d'allocations ». « Une subvention » goes to an organisation, not a household."},
+  {"id": "fv620", "level": "B1", "pos": "noun", "gender": "f", "fr": "la prime", "en": "the bonus", "format": "cloze", "q": "En décembre, le personnel touche ___ de fin d'année.", "options": ["une prime", "une allocation", "une avance", "une retenue"], "a": 0, "trap": "une retenue — a deduction from pay, the opposite of a bonus", "expl": "« La prime de fin d'année » is the Belgian thirteenth month. « Une prime » is also an insurance premium: « la prime d'assurance »."},
+  {"id": "fv621", "level": "B1", "pos": "noun", "gender": "f", "fr": "la démission", "en": "the resignation", "format": "cloze", "q": "Il a donné ___ après six ans dans le même service.", "options": ["sa démission", "sa retraite", "sa mutation", "sa candidature"], "a": 0, "trap": "la retraite — retirement; you also leave the job, but not by handing in a letter", "expl": "« Démissionner » is to resign; being let go is « être licencié ». « Une mutation » keeps you in the same organisation."},
+  {"id": "fv622", "level": "B1", "pos": "noun", "gender": "f", "fr": "la convocation", "en": "the summons / notice to attend", "format": "cloze", "q": "J'ai reçu ___ pour l'épreuve écrite du concours EPSO.", "options": ["une convocation", "une invitation", "une inscription", "une attestation"], "a": 0, "trap": "une invitation — you may decline an invitation; a « convocation » requires you to turn up", "expl": "« Convoquer quelqu'un » = to call someone in. You get « une convocation » to an exam, a hearing or a medical check."},
+  {"id": "fv623", "level": "B1", "pos": "noun", "gender": "m", "fr": "l'itinéraire", "en": "the route", "format": "cloze", "q": "À cause des travaux, le GPS propose ___ complètement différent.", "options": ["un itinéraire", "un détour", "un carrefour", "un embouteillage"], "a": 0, "trap": "un détour — a deviation from the normal route, not the planned route itself", "expl": "« L'itinéraire bis » is the alternative route on signs. « Le trajet » is the journey you make along it."},
+  {"id": "fv624", "level": "B1", "pos": "noun", "gender": "f", "fr": "la correspondance", "en": "the connection (change of train or metro)", "format": "cloze", "q": "Pour l'aéroport, prenez ___ à Bruxelles-Nord et suivez les panneaux.", "options": ["la correspondance", "la direction", "la sortie", "la voie"], "a": 0, "trap": "« la correspondance » also means letters exchanged by post, which is what learners think of first", "expl": "« Assurer la correspondance » = to connect. In a station « la sortie » is the way out and « la voie » the platform track."},
+  {"id": "fv625", "level": "B1", "pos": "noun", "gender": "f", "fr": "la voie", "en": "the track / platform at a station", "format": "cloze", "q": "Le train pour Liège part de ___ 12 dans cinq minutes.", "options": ["la voie", "la ligne", "la porte", "la sortie"], "a": 0, "trap": "la ligne — the route number of a service, not the physical track it leaves from", "expl": "Belgian stations announce « voie 12 » (Flemish « spoor »). « La voie » also means a way or channel: « par voie électronique »."},
+  {"id": "fv626", "level": "B1", "pos": "noun", "gender": "f", "fr": "la panne", "en": "the breakdown (out of order)", "format": "cloze", "q": "L'ascenseur est en ___ depuis lundi, le syndic a prévenu la société d'entretien.", "options": ["panne", "grève", "pause", "réparation"], "a": 0, "trap": "« en grève » is possible French but applies to people on strike, not to machines", "expl": "« Tomber en panne » = to break down; « une panne de courant » is a power cut. « En réparation » says it is being fixed, not that it failed."},
+  {"id": "fv627", "level": "B1", "pos": "noun", "gender": "m", "fr": "le chantier", "en": "the building site / major project", "format": "cloze", "q": "Les travaux dureront six mois : c'est ___ le plus important de la commune.", "options": ["le chantier", "le devis", "le permis", "le budget"], "a": 0, "trap": "le permis — the authorisation to start work, not the work itself", "expl": "Figuratively « un grand chantier » is a big reform: « le chantier de la réforme des pensions ». « En chantier » = under construction."},
+  {"id": "fv628", "level": "B1", "pos": "noun", "gender": "m", "fr": "le permis d'urbanisme", "en": "the planning permission (Belgium)", "format": "cloze", "q": "Pour transformer le grenier en chambre, il faut ___ d'urbanisme délivré par la commune.", "options": ["un permis", "un certificat", "un avis", "un accord"], "a": 0, "trap": "un certificat — a document attesting a fact; a « permis » grants you the right to act", "expl": "Belgium says « permis d'urbanisme » (« permis de construire » in France). The commune decides, sometimes after « une enquête publique »."},
+  {"id": "fv629", "level": "B1", "pos": "noun", "gender": "f", "fr": "la livraison", "en": "the delivery", "format": "cloze", "q": "___ est prévue entre 9h et 12h : il faut être à la maison.", "options": ["La livraison", "La commande", "La facture", "La reprise"], "a": 0, "trap": "la commande — the order you placed, which happens weeks before it arrives", "expl": "« Livrer » is to deliver, « le livreur » the delivery driver. « La reprise » is taking the old item away or, elsewhere, an economic recovery."},
+  {"id": "fv630", "level": "B1", "pos": "noun", "gender": "m", "fr": "le syndic", "en": "the managing agent of a block of flats", "format": "cloze", "q": "___ de l'immeuble convoque l'assemblée générale des copropriétaires en mars.", "options": ["Le syndic", "Le syndicat", "Le locataire", "Le gardien"], "a": 0, "trap": "le syndicat — a trade union; two letters longer and a completely different job", "expl": "« Le syndic » manages the building for the owners. « Le syndicat » defends workers; « le gardien » (concierge) cleans and keeps an eye on things."},
+  {"id": "fv631", "level": "B1", "pos": "noun", "gender": "f", "fr": "la consigne", "en": "the instruction (order to follow)", "format": "cloze", "q": "Le chef de service a donné ___ de ne rien communiquer à la presse.", "options": ["la consigne", "la commande", "la permission", "la conscience"], "a": 0, "trap": "« la consigne » also means the left-luggage office and the deposit on a bottle — three unrelated senses", "expl": "« Respecter les consignes de sécurité » = to follow safety instructions. « Une commande » is an order for goods, not an order to someone."},
+  {"id": "fv632", "level": "B1", "pos": "noun", "gender": "f", "fr": "l'augmentation", "en": "the pay rise", "format": "cloze", "q": "J'ai demandé ___ à mon chef lors de l'entretien annuel.", "options": ["une augmentation", "une réduction", "une retenue", "une avance"], "a": 0, "trap": "une avance — money paid early, which you still have to earn back", "expl": "« Une augmentation (de salaire) » is permanent. In Belgium pay also rises automatically through « l'indexation »."},
+  {"id": "fv633", "level": "B1", "pos": "noun", "gender": "m", "fr": "le calendrier", "en": "the timetable / schedule", "format": "cloze", "q": "___ des travaux prévoit une livraison du bâtiment en mai.", "options": ["Le calendrier", "L'agenda", "L'horaire", "Le compteur"], "a": 0, "trap": "l'agenda — in French this is your diary or appointment book, not a schedule of works", "expl": "« Le calendrier » is the sequence of dates for a project. English agenda = « l'ordre du jour »; French « agenda » = diary."},
+  {"id": "fv634", "level": "B2", "pos": "noun", "gender": "m", "fr": "le sinistre", "en": "the insurance claim event (loss, damage)", "format": "cloze", "q": "Après le dégât des eaux, j'ai déclaré ___ à mon assurance dans les huit jours.", "options": ["le sinistre", "le préjudice", "le litige", "le témoignage"], "a": 0, "trap": "le préjudice — the harm suffered, which you quantify; « le sinistre » is the incident itself", "expl": "« Déclarer un sinistre » starts the claim. As an adjective « sinistre » means grim, and « un sinistré » is a disaster victim."},
+  {"id": "fv635", "level": "B2", "pos": "noun", "gender": "m", "fr": "le préjudice", "en": "the harm / damage suffered", "format": "cloze", "q": "L'entreprise demande réparation du ___ subi à cause du retard.", "options": ["préjudice", "bénéfice", "inconvénient", "avantage"], "a": 0, "trap": "l'inconvénient — a drawback or nuisance, far too weak for a claim in damages", "expl": "« Porter préjudice à quelqu'un » = to harm someone. « Sans préjudice de » means without prejudice to, a standard legal formula."},
+  {"id": "fv636", "level": "B2", "pos": "noun", "gender": "m", "fr": "l'échéancier", "en": "the payment schedule", "format": "cloze", "q": "Le comptable a proposé ___ de paiement en six mensualités.", "options": ["un échéancier", "un calendrier", "un relevé", "un décompte"], "a": 0, "trap": "un calendrier — any schedule of dates; « échéancier » is specifically for sums falling due", "expl": "Built from « échéance » (due date). « Étaler la dette » over instalments is « échelonner le paiement »."},
+  {"id": "fv637", "level": "B2", "pos": "noun", "gender": "m", "fr": "le décompte", "en": "the detailed breakdown (final count)", "format": "cloze", "q": "___ final des heures supplémentaires sera établi en décembre.", "options": ["Le décompte", "Le classement", "Le brouillon", "Le sondage"], "a": 0, "trap": "le compte rendu — a report of what was said; « décompte » counts figures item by item", "expl": "« Le décompte des voix » is the vote count. The verb « décompter » means to deduct or to count off."},
+  {"id": "fv638", "level": "B2", "pos": "noun", "gender": "f", "fr": "la mise en demeure", "en": "the formal notice to comply", "format": "cloze", "q": "Faute de paiement, l'avocat a envoyé ___ par lettre recommandée.", "options": ["une mise en demeure", "une mise à jour", "une mise au point", "une mise en page"], "a": 0, "trap": "une mise au point — a clarification; the whole « mise en… » family looks alike and means very different things", "expl": "« Mettre en demeure » = to give formal notice before legal action. In EU law the Commission opens infringement proceedings with « une lettre de mise en demeure »."},
+  {"id": "fv639", "level": "B2", "pos": "noun", "gender": "f", "fr": "l'instance", "en": "the level of jurisdiction (court instance)", "format": "cloze", "q": "L'affaire a été jugée en première ___ , puis portée en appel.", "options": ["instance", "séance", "audience", "chambre"], "a": 0, "trap": "l'audience — the hearing itself, one session inside a case", "expl": "« Le Tribunal de première instance »; the EU's General Court was once « le Tribunal de première instance ». « Une instance » is also a body: « les instances européennes »."},
+  {"id": "fv640", "level": "B2", "pos": "noun", "gender": "f", "fr": "la transposition", "en": "the transposition (of a directive into national law)", "format": "cloze", "q": "___ de la directive dans le droit belge doit être achevée avant juin.", "options": ["La transposition", "La traduction", "La transmission", "La transformation"], "a": 0, "trap": "la traduction — translating the words; transposition means enacting national rules that achieve the result", "expl": "Directives are transposed, regulations apply directly. Late transposition triggers « une procédure d'infraction »."},
+  {"id": "fv641", "level": "B2", "pos": "noun", "gender": "m", "fr": "le rapporteur", "en": "the rapporteur (MEP steering a file)", "format": "cloze", "q": "___ présentera son projet de rapport en commission avant le vote.", "options": ["Le rapporteur", "Le président", "Le greffier", "Le porte-parole"], "a": 0, "trap": "le porte-parole — a spokesperson who speaks for a body; the rapporteur writes and defends a file", "expl": "Each political group also appoints « un rapporteur fictif » (shadow rapporteur) to follow the same file."},
+  {"id": "fv642", "level": "B2", "pos": "noun", "gender": "m", "fr": "le quorum", "en": "the quorum", "format": "cloze", "q": "La séance ne peut pas commencer : ___ n'est pas atteint.", "options": ["le quorum", "le seuil", "le plafond", "le consensus"], "a": 0, "trap": "le seuil — a threshold in general; the quorum is specifically the number of members needed to sit", "expl": "« Atteindre le quorum » = to be quorate. A majority is « la majorité »; the maximum allowed is « le plafond »."},
+  {"id": "fv643", "level": "B2", "pos": "noun", "gender": "f", "fr": "la présidence", "en": "the presidency (of the Council)", "format": "cloze", "q": "La Belgique a assuré ___ tournante du Conseil au premier semestre 2024.", "options": ["la présidence", "la direction", "la gestion", "la surveillance"], "a": 0, "trap": "la direction — running an organisation day to day; the Council presidency rotates every six months", "expl": "« Assurer la présidence » = to hold the chair. The person chairing a meeting is « le président de séance »."},
+  {"id": "fv644", "level": "B2", "pos": "noun", "gender": "f", "fr": "la gestion", "en": "the management (running of something)", "format": "cloze", "q": "Elle s'occupe de ___ quotidienne du service et des congés de l'équipe.", "options": ["la gestion", "la rédaction", "la traduction", "la formation"], "a": 0, "trap": "la direction — leadership and strategy; « gestion » is the practical running of resources", "expl": "« La gestion des ressources humaines », « la gestion de projet ». The verb « gérer » is used for anything you handle."},
+  {"id": "fv645", "level": "B2", "pos": "noun", "gender": "m", "fr": "le dépassement", "en": "the overrun (going over a limit)", "format": "cloze", "q": "Tout ___ de budget devra être justifié auprès de la hiérarchie.", "options": ["dépassement", "déplacement", "versement", "classement"], "a": 0, "trap": "le déplacement — a work trip; the two nouns look alike but only one means exceeding", "expl": "« Dépasser » = to exceed or to overtake. « Un dépassement de délai » is missing a deadline."},
+  {"id": "fv646", "level": "B2", "pos": "noun", "gender": "m", "fr": "l'ordre de mission", "en": "the travel authorisation (mission order)", "format": "cloze", "q": "Sans ___ de mission signé, les frais de déplacement ne sont pas remboursés.", "options": ["ordre", "état", "rapport", "accord"], "a": 0, "trap": "l'état de frais — the expense statement you file afterwards, once the trip is done", "expl": "« Partir en mission » = to travel on duty. You need « un ordre de mission » before, and file « un état de frais » after."},
+  {"id": "fv647", "level": "B2", "pos": "noun", "gender": "f", "fr": "l'indemnité", "en": "the allowance / compensation payment", "format": "cloze", "q": "Les fonctionnaires affectés à l'étranger perçoivent ___ d'expatriation.", "options": ["une indemnité", "une amende", "une cotisation", "une retenue"], "a": 0, "trap": "une amende — a fine you pay out; « indemnité » is money paid to you to make up for something", "expl": "« L'indemnité de licenciement », « l'indemnité kilométrique ». The verb « indemniser » means to compensate someone."},
+  {"id": "fv648", "level": "B2", "pos": "noun", "gender": "m", "fr": "le procès", "en": "the trial (court case)", "format": "cloze", "q": "L'affaire ira jusqu'au ___ si aucun accord amiable n'est trouvé.", "options": ["procès", "processus", "procédé", "protocole"], "a": 0, "trap": "le processus — a process; « procès » alone always means a trial, never a procedure", "expl": "« Faire un procès à quelqu'un » = to sue. Note « le procès-verbal » is a written record, not a spoken trial."},
+  {"id": "fv649", "level": "B2", "pos": "noun", "gender": "m", "fr": "le processus", "en": "the process (sequence of stages)", "format": "cloze", "q": "Nous avons revu tout ___ de sélection des candidats.", "options": ["le processus", "le procès", "le procédé", "le progrès"], "a": 0, "trap": "le procédé — a technical method or a way of doing one thing, not a whole sequence", "expl": "The final s is pronounced: « proces-sus ». « Un procédé de fabrication » is a manufacturing method; « le progrès » is progress."},
+  {"id": "fv650", "level": "B2", "pos": "noun", "gender": "m", "fr": "le débouché", "en": "the career opening / market outlet", "format": "cloze", "q": "Cette formation en droit européen offre de bons ___ à Bruxelles.", "options": ["débouchés", "résultats", "revenus", "avantages"], "a": 0, "trap": "les résultats — the results you obtain; « débouchés » are the doors the qualification opens", "expl": "« Déboucher sur » means to lead to. In trade, « un débouché » is an outlet market for goods."},
+  {"id": "fv651", "level": "B1", "pos": "noun", "gender": "m", "fr": "le malentendu", "en": "the misunderstanding", "format": "cloze", "q": "Il y a eu ___ sur la date : chacun avait compris autre chose.", "options": ["un malentendu", "un désaccord", "un reproche", "un mécontentement"], "a": 0, "trap": "un désaccord — a genuine disagreement; a « malentendu » is nobody disagreeing, just mishearing", "expl": "« Dissiper un malentendu » = to clear up a misunderstanding. « Mal entendu » literally: badly heard."},
+  {"id": "fv652", "level": "B2", "pos": "noun", "gender": "m", "fr": "le champ d'application", "en": "the scope (of a legal text)", "format": "cloze", "q": "___ d'application du règlement couvre aussi les petites entreprises.", "options": ["Le champ", "Le cadre", "Le périmètre", "Le domaine"], "a": 0, "trap": "le cadre — the framework a text sets up; the scope is who and what it applies to", "expl": "Standard wording: « Le présent règlement s'applique à… ». « Relever du champ d'application » = to fall within the scope."},
+  {"id": "fv653", "level": "B2", "pos": "noun", "gender": "m", "fr": "le vivier", "en": "the pool (of talent or candidates)", "format": "cloze", "q": "Le concours alimente ___ de candidats dans lequel les agences recrutent.", "options": ["un vivier", "un fichier", "un panel", "un réservoir"], "a": 0, "trap": "un panel — a selected sample of people consulted, not a stock to recruit from", "expl": "Literally a fish tank. « Un vivier de talents » is a talent pool; « un fichier » is a database or a computer file."},
+  {"id": "fv654", "level": "B2", "pos": "noun", "gender": "f", "fr": "la relève", "en": "the taking over (succession of people)", "format": "cloze", "q": "Le chef d'unité part à la retraite : il faut assurer ___ .", "options": ["la relève", "la succession", "la reprise", "la remise"], "a": 0, "trap": "la succession — inheritance in the legal sense, or a formal chain of office holders", "expl": "« Prendre la relève de quelqu'un » = to take over from someone. « La relève de la garde » is the changing of the guard."},
+  {"id": "fv655", "level": "B2", "pos": "noun", "gender": "m", "fr": "le pilotage", "en": "the steering (of a project)", "format": "cloze", "q": "___ du projet est assuré par un comité qui se réunit tous les mois.", "options": ["Le pilotage", "Le classement", "Le stockage", "Le tri"], "a": 0, "trap": "le suivi — following progress; « pilotage » means actually steering the decisions", "expl": "« Un comité de pilotage » is a steering committee, often shortened to « le COPIL »."},
+  {"id": "fv656", "level": "B2", "pos": "noun", "gender": "m", "fr": "le cloisonnement", "en": "the working in silos", "format": "cloze", "q": "___ entre les services ralentit la circulation de l'information.", "options": ["Le cloisonnement", "Le rapprochement", "Le partage", "Le classement"], "a": 0, "trap": "le rapprochement — bringing services closer together, the opposite problem", "expl": "From « la cloison », a partition wall. « Décloisonner » is to break down the silos."},
+  {"id": "fv657", "level": "C1", "pos": "noun", "gender": "m", "fr": "le contentieux", "en": "the litigation (disputed cases)", "format": "cloze", "q": "Ce dossier relève du ___ administratif et sera traité par le service juridique.", "options": ["contentieux", "classement", "recensement", "compromis"], "a": 0, "trap": "le litige — one individual dispute; « le contentieux » is the whole body of disputed business", "expl": "« Le contentieux de l'Union » covers all cases before the Court. As an adjective: « une question contentieuse »."},
+  {"id": "fv658", "level": "C1", "pos": "noun", "gender": "f", "fr": "l'astreinte", "en": "the periodic penalty payment", "format": "cloze", "q": "La Cour a assorti son arrêt d'___ de 10 000 euros par jour de retard.", "options": ["une astreinte", "une amende", "une sanction", "une indemnité"], "a": 0, "trap": "une amende — a single fixed fine; « l'astreinte » accumulates for every day of non-compliance", "expl": "Article 260 TFEU lets the Court impose « une somme forfaitaire » and/or « une astreinte ». In HR French « être d'astreinte » means being on call."},
+  {"id": "fv659", "level": "C1", "pos": "noun", "gender": "m", "fr": "l'aléa", "en": "the unpredictable hazard", "format": "cloze", "q": "Le calendrier des travaux tient compte des ___ climatiques.", "options": ["aléas", "atouts", "enjeux", "écueils"], "a": 0, "trap": "les écueils — pitfalls you can foresee and avoid; « les aléas » are pure chance", "expl": "« Les aléas de la vie » are life's ups and downs. The adjective « aléatoire » means random."},
+  {"id": "fv660", "level": "C1", "pos": "noun", "gender": "m", "fr": "l'acte délégué", "en": "the delegated act", "format": "cloze", "q": "La Commission peut adopter des ___ délégués pour compléter les éléments non essentiels du texte.", "options": ["actes", "avis", "arrêts", "accords"], "a": 0, "trap": "les actes d'exécution — implementing acts, adopted under a different procedure with comitology committees", "expl": "Article 290 TFEU: « actes délégués » supplement or amend non-essential parts; Article 291 gives « actes d'exécution » for uniform implementation."},
+  {"id": "fv661", "level": "A2", "pos": "noun", "gender": "f", "fr": "la lessive", "en": "the laundry (washing clothes)", "format": "collocation", "q": "Comment dit-on « to do the laundry » ?", "options": ["faire la lessive", "faire la vaisselle", "faire le ménage", "faire les courses"], "a": 0, "trap": "faire la vaisselle — doing the washing-up, the other chore built on « faire »", "expl": "« La lessive » is both the wash and the washing powder. All four are real « faire » expressions: vaisselle = dishes, ménage = housework, courses = shopping."},
+  {"id": "fv662", "level": "A2", "pos": "noun", "gender": "m", "fr": "le bruit", "en": "the noise", "format": "collocation", "q": "Vos voisins sont bruyants après minuit. Que dites-vous ?", "options": ["Ils font du bruit", "Ils font la fête", "Ils font du sport", "Ils font le ménage"], "a": 0, "trap": "faire la fête — to party, often the cause of the noise but not the word for the noise itself", "expl": "« Faire du bruit » is the fixed phrase; « du bruit » is uncountable here. To complain: « Il y a du tapage nocturne. »"},
+  {"id": "fv663", "level": "A2", "pos": "noun", "gender": "f", "fr": "l'heure", "en": "the time (o'clock)", "format": "collocation", "q": "Comment dit-on « to be on time » ?", "options": ["être à l'heure", "avoir l'heure", "donner l'heure", "faire l'heure"], "a": 0, "trap": "avoir l'heure — to know what time it is: « Vous avez l'heure ? » asks someone for the time", "expl": "« À l'heure » = punctual, « en retard » = late, « en avance » = early. « De bonne heure » means early in the day."},
+  {"id": "fv664", "level": "A2", "pos": "noun", "gender": "f", "fr": "la place", "en": "the room / space, or a seat", "format": "collocation", "q": "Le tram est bondé. Comment dit-on « there is no room left » ?", "options": ["Il n'y a plus de place", "Il n'y a plus de pièce", "Il n'y a plus de salle", "Il n'y a plus de chambre"], "a": 0, "trap": "la pièce — a room in a flat; French does not use it for space in general", "expl": "« La place » covers space, a seat and a square (la Place Flagey). « Prendre de la place » = to take up room."},
+  {"id": "fv665", "level": "A2", "pos": "noun", "gender": "m", "fr": "le compte", "en": "the bank account", "format": "collocation", "q": "Comment dit-on « to open a bank account » ?", "options": ["ouvrir un compte", "ouvrir un comptoir", "ouvrir un compteur", "ouvrir un décompte"], "a": 0, "trap": "le compteur — the electricity meter, a near-identical word", "expl": "« Un compte à vue » is a current account in Belgium (« compte courant » in France); savings go on « un compte d'épargne »."},
+  {"id": "fv666", "level": "A2", "pos": "noun", "gender": "f", "fr": "la monnaie", "en": "the change (coins)", "format": "collocation", "q": "Vous payez un billet de 20 € au guichet. Comment demandez-vous les pièces qu'on vous rend ?", "options": ["Vous pouvez me rendre la monnaie ?", "Vous pouvez me rendre l'argent ?", "Vous pouvez me rendre le change ?", "Vous pouvez me rendre le solde ?"], "a": 0, "trap": "l'argent — money in general; asking for « l'argent » back sounds like cancelling the payment", "expl": "« Rendre la monnaie » = to give change. « La monnaie » is also a currency (« la monnaie unique »); « le change » is only currency exchange."},
+  {"id": "fv667", "level": "B1", "pos": "noun", "gender": "f", "fr": "l'attention", "en": "the attention", "format": "collocation", "q": "Comment dit-on « to pay attention / be careful » ?", "options": ["faire attention", "faire face", "faire semblant", "faire le point"], "a": 0, "trap": "English 'pay attention' tempts « payer attention », which does not exist in French", "expl": "All four are real: « faire face » = to cope, « faire semblant » = to pretend, « faire le point » = to take stock. Attention takes « faire »."},
+  {"id": "fv668", "level": "B1", "pos": "noun", "gender": "m", "fr": "le point", "en": "the point / stage reached", "format": "collocation", "q": "Comment dit-on « to take stock of where we are » ?", "options": ["faire le point", "faire le tour", "faire le nécessaire", "faire la part des choses"], "a": 0, "trap": "faire le tour — to go round something, e.g. « faire le tour de la question » = to cover it exhaustively", "expl": "« Faisons le point sur le dossier » opens many meetings. « Faire le nécessaire » = to do what is needed; « faire la part des choses » = to put things in perspective."},
+  {"id": "fv669", "level": "B1", "pos": "noun", "gender": "f", "fr": "la connaissance", "en": "the knowledge / acquaintance", "format": "collocation", "q": "Comment dit-on « to meet someone for the first time » ?", "options": ["faire la connaissance de quelqu'un", "prendre connaissance d'un document", "avoir connaissance d'un fait", "perdre connaissance"], "a": 0, "trap": "prendre connaissance de — to read and take note of a document, very common in administrative French", "expl": "All four exist: « avoir connaissance de » = to be aware of, « perdre connaissance » = to faint. Only the first is about meeting a person."},
+  {"id": "fv670", "level": "B1", "pos": "noun", "gender": "f", "fr": "la file", "en": "the queue (Belgian French)", "format": "collocation", "q": "En Belgique, comment dit-on couramment « to queue » ?", "options": ["faire la file", "faire la queue", "faire la ligne", "faire le rang"], "a": 0, "trap": "faire la queue — the standard French expression, understood everywhere but not the Belgian one", "expl": "Belgians say « faire la file » (from Dutch « in de rij staan »); the French say « faire la queue ». On the roads « les files » also means the tailbacks."},
+  {"id": "fv671", "level": "B1", "pos": "noun", "gender": "m", "fr": "le mal", "en": "the difficulty / the pain", "format": "collocation", "q": "Comment dit-on « I find it hard to sleep » ?", "options": ["J'ai du mal à dormir", "J'ai mal en dormant", "Je me fais mal à dormir", "Ça me fait mal de dormir"], "a": 0, "trap": "avoir mal — to be in physical pain; « avoir du mal à » means to find something difficult", "expl": "« J'ai mal au dos » = my back hurts. « J'ai du mal à comprendre » = I struggle to understand. « Se faire mal » = to hurt oneself."},
+  {"id": "fv672", "level": "B1", "pos": "noun", "gender": "f", "fr": "la peine", "en": "the trouble / the effort (also a sentence in law)", "format": "collocation", "q": "Comment dit-on « don't bother, it's not worth it » ?", "options": ["Ce n'est pas la peine", "Ça ne fait rien", "Ce n'est pas grave", "Ça n'a pas d'importance"], "a": 0, "trap": "the other three all mean « it doesn't matter », which is a different reply", "expl": "« Ça vaut la peine » = it's worth it. « La peine » also means sorrow (« faire de la peine ») and a sentence (« une peine de prison »)."},
+  {"id": "fv673", "level": "B1", "pos": "noun", "gender": "f", "fr": "la parole", "en": "the floor (right to speak)", "format": "collocation", "q": "En réunion, comment dit-on « to take the floor » ?", "options": ["prendre la parole", "donner la parole", "couper la parole", "tenir parole"], "a": 0, "trap": "donner la parole à quelqu'un — to invite someone else to speak; the chair does that, not the speaker", "expl": "« Couper la parole » = to interrupt, « tenir parole » = to keep one's word. « La parole » is speech; « le mot » is the word itself."},
+  {"id": "fv674", "level": "B1", "pos": "noun", "gender": "m", "fr": "le courant", "en": "the current (also: being informed)", "format": "collocation", "q": "Comment dit-on « I know about it / I'm aware » ?", "options": ["Je suis au courant", "Je tiens au courant", "Je coupe le courant", "Je vais à contre-courant"], "a": 0, "trap": "tenir quelqu'un au courant — to keep someone else informed; « je te tiens au courant » = I'll let you know", "expl": "« Mettre quelqu'un au courant » = to brief someone. « Le courant » is also electricity: « une coupure de courant »."},
+  {"id": "fv675", "level": "B1", "pos": "noun", "gender": "m", "fr": "le tort", "en": "the fault / being wrong", "format": "collocation", "q": "Comment dit-on « you are wrong » ?", "options": ["tu as tort", "tu as raison", "tu as du mal", "tu as le droit"], "a": 0, "trap": "avoir raison — to be right, the exact opposite, built the same way with « avoir »", "expl": "French uses « avoir », not « être »: « J'ai tort. » « À tort » = wrongly; « faire du tort à quelqu'un » = to harm someone."},
+  {"id": "fv676", "level": "B1", "pos": "noun", "gender": "m", "fr": "l'effort", "en": "the effort", "format": "collocation", "q": "Comment dit-on « to make an effort » ?", "options": ["faire un effort", "faire de son mieux", "faire un geste", "faire des progrès"], "a": 0, "trap": "faire de son mieux — to do one's best, a different promise from simply making an effort", "expl": "Never « prendre » or « donner » un effort. « Faire un geste » is to make a gesture of goodwill, often a discount."},
+  {"id": "fv677", "level": "B1", "pos": "noun", "gender": "f", "fr": "la visite", "en": "the visit", "format": "collocation", "q": "Comment dit-on « to visit my aunt » ?", "options": ["rendre visite à ma tante", "visiter ma tante", "faire une visite de ma tante", "aller en visite ma tante"], "a": 0, "trap": "« visiter » is only for places: « visiter Bruges ». Using it for a person is a classic English-speaker error", "expl": "People take « rendre visite à »; places take « visiter ». A doctor's check-up is « une visite médicale »."},
+  {"id": "fv678", "level": "B1", "pos": "noun", "gender": "m", "fr": "le coup de fil", "en": "the phone call", "format": "collocation", "q": "Comment dit-on « to give someone a ring » ?", "options": ["passer un coup de fil", "donner un coup de main", "jeter un coup d'œil", "tenir le coup"], "a": 0, "trap": "donner un coup de main — to lend a hand; the « coup de… » family all look alike", "expl": "« Passer un coup de fil » (or « un coup de téléphone »). « Jeter un coup d'œil » = to have a quick look, « tenir le coup » = to hold out."},
+  {"id": "fv679", "level": "B1", "pos": "noun", "gender": "m", "fr": "le sens", "en": "the meaning / the sense", "format": "collocation", "q": "Comment dit-on « that doesn't make sense » en français standard ?", "options": ["Ça n'a pas de sens", "Ça ne fait pas de sens", "Ça ne prend pas de sens", "Ça ne donne pas de sens"], "a": 0, "trap": "« ça ne fait pas de sens » is a word-for-word calque of 'make sense'; it is heard in Canada but avoided in Belgium and France", "expl": "« Avoir du sens » is the verb to use. « Le sens » also means direction: « sens unique » = one-way street, « dans le sens des aiguilles d'une montre » = clockwise."},
+  {"id": "fv680", "level": "B2", "pos": "noun", "gender": "f", "fr": "la responsabilité", "en": "the responsibility", "format": "collocation", "q": "Comment dit-on « to accept responsibility for a mistake » ?", "options": ["assumer ses responsabilités", "décliner toute responsabilité", "engager sa responsabilité", "dégager sa responsabilité"], "a": 0, "trap": "engager sa responsabilité — to make oneself legally liable, which is what you risk, not what you accept", "expl": "« Décliner toute responsabilité » = to disclaim liability, the wording on notices. « Assumer » means to take on and own."},
+  {"id": "fv681", "level": "B2", "pos": "noun", "gender": "m", "fr": "le doute", "en": "the doubt", "format": "collocation", "q": "Laquelle de ces expressions signifie « probably » et non « certainly » ?", "options": ["sans doute", "sans aucun doute", "à n'en pas douter", "sans le moindre doute"], "a": 0, "trap": "sans aucun doute — adding « aucun » flips the meaning from probably to definitely", "expl": "« Il viendra sans doute » = he'll probably come. To insist, say « sans aucun doute » or « à coup sûr »."},
+  {"id": "fv682", "level": "B2", "pos": "noun", "gender": "m", "fr": "le recul", "en": "the perspective / stepping back", "format": "collocation", "q": "Comment dit-on « to step back and get some perspective » ?", "options": ["prendre du recul", "prendre de la hauteur", "prendre de l'avance", "prendre du retard"], "a": 0, "trap": "prendre de la hauteur — to rise above the detail, close but suggesting a loftier view rather than distance in time", "expl": "« Avec le recul » = with hindsight. « Prendre de l'avance » = to get ahead of schedule."},
+  {"id": "fv683", "level": "B2", "pos": "noun", "gender": "m", "fr": "le tri", "en": "the sorting out", "format": "collocation", "q": "Comment dit-on « to sort through and keep only what matters » ?", "options": ["faire le tri", "faire le ménage", "faire le plein", "faire le point"], "a": 0, "trap": "faire le ménage — used figuratively for a purge of people, not a sorting of documents", "expl": "« Faire le tri dans ses mails ». In Brussels « le tri des déchets » is waste sorting: blue bag for PMC, yellow for paper."},
+  {"id": "fv684", "level": "B2", "pos": "noun", "gender": "f", "fr": "la lumière", "en": "the light", "format": "collocation", "q": "Comment dit-on « to get to the bottom of the affair » ?", "options": ["faire la lumière sur l'affaire", "mettre en lumière l'affaire", "faire le jour sur l'affaire", "éclaircir la lumière de l'affaire"], "a": 0, "trap": "mettre en lumière — to highlight something already known, not to uncover the truth", "expl": "« Faire toute la lumière sur » is the phrase used after an incident. « Mettre au jour » (not « à jour ») means to unearth."},
+  {"id": "fv685", "level": "B2", "pos": "noun", "gender": "m", "fr": "le terrain", "en": "the ground", "format": "collocation", "q": "Comment dit-on « to lose ground » ?", "options": ["perdre du terrain", "perdre pied", "perdre la face", "perdre le fil"], "a": 0, "trap": "perdre pied — to lose one's footing, i.e. to be out of one's depth, not simply to fall behind", "expl": "« Gagner du terrain » is the opposite. « Sur le terrain » = in the field: « les agents de terrain »."},
+  {"id": "fv686", "level": "B2", "pos": "noun", "gender": "m", "fr": "le cap", "en": "the course (direction kept)", "format": "collocation", "q": "Comment dit-on « to stay on course » ?", "options": ["garder le cap", "garder le contact", "garder le silence", "garder son calme"], "a": 0, "trap": "garder son calme — to keep calm; the « garder » family looks alike but only one is about direction", "expl": "« Franchir le cap des 10 000 » = to pass the 10 000 mark. « Mettre le cap sur » = to head for."},
+  {"id": "fv687", "level": "B2", "pos": "noun", "gender": "m", "fr": "le poids", "en": "the weight", "format": "collocation", "q": "Laquelle de ces expressions signifie « to carry weight in a discussion » ?", "options": ["avoir du poids", "prendre du poids", "perdre du poids", "peser le pour et le contre"], "a": 0, "trap": "prendre du poids — to put on weight physically, which is what most learners reach for first", "expl": "« Son avis a du poids. » You can also « donner du poids à un argument ». « Peser le pour et le contre » = to weigh up the pros and cons."},
+  {"id": "fv688", "level": "B2", "pos": "noun", "gender": "m", "fr": "le pas", "en": "the step", "format": "collocation", "q": "Comment dit-on « to take the plunge » (finally decide to act) ?", "options": ["franchir le pas", "faire le premier pas", "céder le pas", "marcher au pas"], "a": 0, "trap": "faire le premier pas — to make the first move towards someone, usually to patch things up", "expl": "« Franchir le pas » is committing after hesitation. « Céder le pas à » = to give way to; « marcher au pas » = to toe the line."},
+  {"id": "fv689", "level": "B2", "pos": "noun", "gender": "m", "fr": "l'ordre", "en": "the order (discipline, instruction)", "format": "collocation", "q": "Comment dit-on « to call someone to order » in a meeting ?", "options": ["rappeler quelqu'un à l'ordre", "donner un ordre à quelqu'un", "remettre de l'ordre", "mettre en ordre"], "a": 0, "trap": "donner un ordre — to issue an instruction, not to reprimand someone for their behaviour", "expl": "« Le président rappelle l'orateur à l'ordre. » « Mettre de l'ordre dans ses dossiers » = to tidy up your files."},
+  {"id": "fv690", "level": "B2", "pos": "noun", "gender": "f", "fr": "la pression", "en": "the pressure", "format": "collocation", "q": "Comment dit-on « to give in to pressure » ?", "options": ["céder à la pression", "exercer une pression", "subir une pression", "résister à la pression"], "a": 0, "trap": "subir une pression — to be under pressure; giving in is the further step of « céder »", "expl": "« Faire pression sur quelqu'un » = to lobby or lean on someone. « Une pression » in a Belgian café is also a draught beer."},
+  {"id": "fv691", "level": "B2", "pos": "noun", "gender": "f", "fr": "la suite", "en": "the follow-up / what comes next", "format": "collocation", "q": "Comment dit-on « to act on a request » (give it a follow-up) ?", "options": ["donner suite à une demande", "faire suite à une demande", "prendre la suite d'une demande", "donner la suite d'une demande"], "a": 0, "trap": "faire suite à — « further to », used to refer back to an earlier letter: « Faisant suite à votre courrier… »", "expl": "« Sans suite » means no action taken: « la plainte a été classée sans suite ». « Prendre la suite de quelqu'un » = to succeed them."},
+  {"id": "fv692", "level": "B2", "pos": "noun", "gender": "f", "fr": "la marche", "en": "the running / operation (of a machine or process)", "format": "collocation", "q": "Comment dit-on « to backtrack on a decision » ?", "options": ["faire marche arrière", "mettre en marche", "être en marche", "fermer la marche"], "a": 0, "trap": "mettre en marche — to switch a machine on, the literal sense of the same noun", "expl": "« La bonne marche du service » = the smooth running of the department. « Faire marche arrière » works for cars and for policies."},
+  {"id": "fv693", "level": "B2", "pos": "noun", "gender": "m", "fr": "l'exercice", "en": "the financial year", "format": "collocation", "q": "Comment dit-on « the financial year » en langage budgétaire ?", "options": ["l'exercice budgétaire", "le cycle budgétaire", "le calendrier annuel", "le semestre comptable"], "a": 0, "trap": "le cycle budgétaire — the annual process of preparing and adopting the budget, not the period the accounts cover", "expl": "« L'exercice 2026 » is the 2026 financial year, which need not match « l'année civile » (calendar year). The everyday sense of « exercice » (an exercise) is unrelated."},
+  {"id": "fv694", "level": "B2", "pos": "noun", "gender": "m", "fr": "l'agrément", "en": "the official approval (accreditation)", "format": "collocation", "q": "Comment dit-on « to obtain official accreditation to operate » ?", "options": ["obtenir un agrément", "obtenir un accord", "obtenir un avis", "obtenir une dérogation"], "a": 0, "trap": "un accord — an agreement between parties; « agrément » is granted by an authority", "expl": "« Un organisme agréé » is an approved body. Confusingly « l'agrément » also means pleasantness: « un voyage d'agrément » = a pleasure trip."},
+  {"id": "fv695", "level": "B2", "pos": "noun", "gender": "f", "fr": "l'entrée en vigueur", "en": "the entry into force", "format": "collocation", "q": "Comment dit-on « the entry into force of the regulation » ?", "options": ["l'entrée en vigueur du règlement", "l'entrée en fonction du règlement", "l'entrée en matière du règlement", "l'entrée en scène du règlement"], "a": 0, "trap": "l'entrée en fonction — taking up duties, used of people appointed to a post", "expl": "Texts « entrent en vigueur » on a date, then « s'appliquent » possibly later. « L'entrée en matière » is the opening section of a speech."},
+  {"id": "fv696", "level": "B2", "pos": "noun", "gender": "f", "fr": "la note de synthèse", "en": "the summary paper (drafted from a file)", "format": "collocation", "q": "À l'épreuve écrite, on demande souvent de rédiger ___ à partir d'un dossier.", "options": ["une note de synthèse", "une note de service", "une note de frais", "une note de bas de page"], "a": 0, "trap": "la note de service — an internal instruction to staff, not a summary of documents", "expl": "The EPSO written test asks for « une note de synthèse »: condensing a file into a structured summary for a superior."},
+  {"id": "fv697", "level": "C1", "pos": "noun", "gender": "m", "fr": "le renvoi préjudiciel", "en": "the reference for a preliminary ruling", "format": "collocation", "q": "Comment appelle-t-on la question qu'un juge national pose à la Cour de justice ?", "options": ["un renvoi préjudiciel", "un recours en annulation", "un recours en manquement", "un pourvoi"], "a": 0, "trap": "le recours en manquement — infringement proceedings brought by the Commission against a Member State", "expl": "Article 267 TFEU. « Le pourvoi » is an appeal on a point of law to the Court against a General Court judgment."},
+  {"id": "fv698", "level": "C1", "pos": "noun", "gender": "f", "fr": "la saisine", "en": "the referral of a matter to a court or body", "format": "collocation", "q": "Comment dit-on « the referral of the matter to the tribunal » ?", "options": ["la saisine du tribunal", "la citation à comparaître", "la mise en état de l'affaire", "l'instruction de l'affaire"], "a": 0, "trap": "la citation à comparaître — the summons served on a party to appear", "expl": "« Saisir une juridiction » = to bring a matter before it. « L'instruction » is the pre-trial investigation phase."},
+  {"id": "fv699", "level": "C1", "pos": "noun", "gender": "m", "fr": "le grief", "en": "the grievance / complaint raised", "format": "collocation", "q": "Comment dit-on « to set out one's grievances » dans une procédure ?", "options": ["exposer ses griefs", "exposer ses moyens", "exposer ses conclusions", "exposer ses motifs"], "a": 0, "trap": "les moyens — the legal pleas relied on, which is the technical term for the arguments themselves", "expl": "« Les griefs » are the complaints made against a party or decision. « Les conclusions » are the formal submissions filed."},
+  {"id": "fv700", "level": "C1", "pos": "noun", "gender": "m", "fr": "le vice de procédure", "en": "the procedural defect", "format": "collocation", "q": "Comment dit-on « a procedural defect » comme motif d'annulation ?", "options": ["un vice de procédure", "un défaut de motivation", "un excès de pouvoir", "un détournement de pouvoir"], "a": 0, "trap": "le défaut de motivation — failure to state reasons, a separate ground of annulment", "expl": "Article 263 TFEU lists « incompétence, violation des formes substantielles, violation des traités, détournement de pouvoir »."},
+  {"id": "fv701", "level": "A2", "pos": "verb", "fr": "rendre", "en": "to give back (return something)", "format": "fr2en", "options": ["to give back (return something)", "to render an opinion in writing", "to go somewhere", "to hand something in for marking"], "a": 0, "trap": "« se rendre à » means to go to a place — the same verb with a pronoun changes meaning completely", "expl": "« Je dois rendre les livres. » Handing work in is « remettre »; « rendre » also makes adjectives: « ça me rend fou » = it drives me mad."},
+  {"id": "fv702", "level": "A2", "pos": "verb", "fr": "entendre", "en": "to hear", "format": "fr2en", "options": ["to hear", "to listen carefully", "to intend", "to understand"], "a": 0, "trap": "English 'intend' looks identical but is « avoir l'intention de »; and « écouter » is the deliberate listening", "expl": "« J'entends du bruit » happens to you; « j'écoute la radio » is a choice. « S'entendre avec quelqu'un » = to get on with someone."},
+  {"id": "fv703", "level": "A2", "pos": "verb", "fr": "rater", "en": "to miss (a train) / to mess up", "format": "fr2en", "options": ["to miss (a train) / to mess up", "to scratch", "to be short of something", "to postpone"], "a": 0, "trap": "« manquer » also translates to miss, but « manquer de » means to lack, and « tu me manques » means I miss you", "expl": "« J'ai raté mon tram » = I missed my tram. « Rater un examen » = to fail it; the polite word is « échouer »."},
+  {"id": "fv704", "level": "A2", "pos": "verb", "fr": "se tromper", "en": "to be mistaken (make a mistake)", "format": "fr2en", "options": ["to be mistaken (make a mistake)", "to deceive someone", "to be unfaithful", "to be disappointed"], "a": 0, "trap": "« tromper quelqu'un » without the pronoun means to deceive or cheat on them", "expl": "« Je me suis trompé de bus » = I took the wrong bus. Note the construction « se tromper de + noun » with no article."},
+  {"id": "fv705", "level": "A2", "pos": "verb", "fr": "rappeler", "en": "to call back / to remind", "format": "fr2en", "options": ["to call back / to remind", "to remember something yourself", "to appeal against a decision", "to repeat"], "a": 0, "trap": "« se rappeler » with the pronoun means to remember, not to remind", "expl": "« Je vous rappelle demain » = I'll ring you back. « Je vous rappelle que la réunion est à 9h » = may I remind you. « Je me rappelle son nom » = I remember it."},
+  {"id": "fv706", "level": "A2", "pos": "verb", "fr": "déranger", "en": "to disturb (bother someone)", "format": "fr2en", "options": ["to disturb (bother someone)", "to tidy up", "to rearrange the furniture", "to derange someone mentally"], "a": 0, "trap": "« ranger » means to tidy up: adding « dé- » does not give 'untidy' but 'disturb'", "expl": "« Je ne vous dérange pas ? » is the polite opener at someone's door. « Ça vous dérange si… ? » = do you mind if…?"},
+  {"id": "fv707", "level": "A2", "pos": "verb", "fr": "retirer", "en": "to withdraw (take out)", "format": "fr2en", "options": ["to withdraw (take out)", "to draw a picture", "to retire from work", "to pull something back and forth"], "a": 0, "trap": "'to retire' is « prendre sa retraite » — « retirer » is about taking something out", "expl": "« Retirer de l'argent au distributeur »; « retirer un colis » = to collect a parcel; « retirer sa candidature » = to withdraw an application."},
+  {"id": "fv708", "level": "A2", "pos": "verb", "fr": "éteindre", "en": "to switch off", "format": "fr2en", "options": ["to switch off", "to switch on", "to unplug", "to dim"], "a": 0, "trap": "« allumer » is the opposite and looks nothing like it, so the pair has to be learnt together", "expl": "« Éteins la lumière en partant. » Irregular: « j'éteins, nous éteignons, éteint ». Unplugging is « débrancher »."},
+  {"id": "fv709", "level": "A2", "pos": "verb", "fr": "ranger", "en": "to tidy away (put in order)", "format": "fr2en", "options": ["to tidy away (put in order)", "to clean with water", "to arrange a meeting", "to rank people in order of merit"], "a": 0, "trap": "« classer » is to file or rank documents; « nettoyer » is to clean with a cloth", "expl": "« Range ta chambre » = tidy your room. « Ranger ses affaires » = to put your things away; the noun is « le rangement »."},
+  {"id": "fv710", "level": "A2", "pos": "verb", "fr": "apporter", "en": "to bring (something)", "format": "fr2en", "options": ["to bring (something)", "to bring (a person)", "to take something away", "to carry something around"], "a": 0, "trap": "« amener » is for people, « apporter » for things — French keeps them apart where English says 'bring'", "expl": "« Apporte le dossier », « amène ton frère ». Away from the speaker: « emporter » (things), « emmener » (people)."},
+  {"id": "fv711", "level": "B1", "pos": "verb", "fr": "assister à", "en": "to attend (be present at)", "format": "fr2en", "options": ["to attend (be present at)", "to help someone", "to watch from a distance", "to take part actively"], "a": 0, "trap": "the classic false friend: 'to assist' is « aider »; « assister à » only means to be present", "expl": "« J'ai assisté à la réunion » = I attended it. « Assister quelqu'un » (without à) does mean to assist, but it is formal and rarer."},
+  {"id": "fv712", "level": "B1", "pos": "verb", "fr": "prévenir", "en": "to let someone know in advance", "format": "fr2en", "options": ["to let someone know in advance", "to prevent something happening", "to foresee", "to take precautions"], "a": 0, "trap": "'to prevent' is « empêcher »; « prévenir » is mostly about warning people beforehand", "expl": "« Préviens-moi si tu es en retard. » The proverb « mieux vaut prévenir que guérir » does use the medical sense, prevention."},
+  {"id": "fv713", "level": "B1", "pos": "verb", "fr": "décevoir", "en": "to disappoint", "format": "fr2en", "options": ["to disappoint", "to deceive someone", "to receive", "to let someone down by not turning up"], "a": 0, "trap": "'to deceive' is « tromper » — « décevoir » is only about falling short of hopes", "expl": "« Les résultats m'ont déçu. » Conjugated like « recevoir »: « je déçois, nous décevons, déçu »."},
+  {"id": "fv714", "level": "B1", "pos": "verb", "fr": "gêner", "en": "to bother / to get in the way of", "format": "fr2en", "options": ["to bother / to get in the way of", "to generate", "to embarrass on purpose", "to complain"], "a": 0, "trap": "« déranger » interrupts someone; « gêner » is more physical discomfort or awkwardness", "expl": "« La lumière me gêne. » « Être gêné » = to feel awkward or, of money, to be short. « Sans gêne » describes someone with no manners."},
+  {"id": "fv715", "level": "B1", "pos": "verb", "fr": "reprendre", "en": "to resume (start again)", "format": "fr2en", "options": ["to resume (start again)", "to reprimand", "to take back what you said", "to understand again"], "a": 0, "trap": "« reprendre quelqu'un » can mean to correct them, so context decides which sense applies", "expl": "« Les travaux reprennent lundi. » Also « reprendre une entreprise » = to take a business over, and « reprenez du café » = have some more coffee."},
+  {"id": "fv716", "level": "B1", "pos": "verb", "fr": "joindre", "en": "to get hold of someone / to attach", "format": "fr2en", "options": ["to get hold of someone / to attach", "to join a club", "to add up figures", "to meet someone somewhere"], "a": 0, "trap": "joining an organisation is « adhérer à » or « s'inscrire à », never « joindre »", "expl": "« Je n'arrive pas à le joindre » = I can't reach him. « Veuillez trouver ci-joint » = please find attached; hence « la pièce jointe »."},
+  {"id": "fv717", "level": "B1", "pos": "verb", "fr": "verser", "en": "to pay in (transfer money)", "format": "fr2en", "options": ["to pay in (transfer money)", "to take money out", "to pour a drink only", "to spend"], "a": 0, "trap": "« retirer » is taking money out; « verser » always moves money towards someone", "expl": "« Le salaire est versé le 25 du mois. » Its literal sense is to pour, which is why it works for money flowing in."},
+  {"id": "fv718", "level": "B1", "pos": "verb", "fr": "régler", "en": "to settle (a bill or a matter)", "format": "fr2en", "options": ["to settle (a bill or a matter)", "to rule over something", "to make a rule", "to complain formally"], "a": 0, "trap": "« un règlement » is a regulation, so learners expect « régler » to mean to regulate; it usually means to pay or to sort out", "expl": "« Vous réglez par carte ? » = are you paying by card? Also « régler un problème » and « régler la température » (to adjust)."},
+  {"id": "fv719", "level": "B1", "pos": "verb", "fr": "transmettre", "en": "to pass on (forward)", "format": "fr2en", "options": ["to pass on (forward)", "to broadcast live", "to translate", "to submit for approval"], "a": 0, "trap": "« soumettre » means to submit something for a decision; « transmettre » just passes it along", "expl": "« Je transmets votre demande au service compétent. » Conjugated like « mettre »: « je transmets, transmis »."},
+  {"id": "fv720", "level": "B1", "pos": "verb", "fr": "réclamer", "en": "to demand (claim what is due)", "format": "fr2en", "options": ["to demand (claim what is due)", "to advertise", "to complain about noise", "to reclaim land"], "a": 0, "trap": "« la réclame » is old-fashioned French for advertising, which misleads readers of « réclamer »", "expl": "« Réclamer le remboursement » = to claim the refund back. A formal complaint is « une réclamation »."},
+  {"id": "fv721", "level": "B1", "pos": "verb", "fr": "blesser", "en": "to injure (physically or emotionally)", "format": "fr2en", "options": ["to injure (physically or emotionally)", "to bless", "to bruise slightly", "to insult deliberately"], "a": 0, "trap": "'to bless' is « bénir » — « blesser » is the opposite kind of act", "expl": "« Trois personnes ont été blessées dans l'accident. » Figuratively: « ses paroles m'ont blessé »."},
+  {"id": "fv722", "level": "B1", "pos": "verb", "fr": "rejoindre", "en": "to join someone (catch up with)", "format": "fr2en", "options": ["to join someone (catch up with)", "to join an association", "to rejoin two pieces", "to agree with someone"], "a": 0, "trap": "« adhérer à » is joining a body; « rejoindre » is going to where someone is", "expl": "« Je vous rejoins au café. » It can also mean to concur: « je rejoins votre analyse » = I share your view."},
+  {"id": "fv723", "level": "B1", "pos": "verb", "fr": "déposer", "en": "to file / to drop off", "format": "fr2en", "options": ["to file / to drop off", "to remove from office only", "to store long term", "to take away"], "a": 0, "trap": "« déposer » shares a root with « le dépôt », but its everyday sense is putting something down or handing it in", "expl": "« Déposer une plainte », « déposer un dossier », « je te dépose à la gare ». In politics « déposer un amendement » = to table one."},
+  {"id": "fv724", "level": "B2", "pos": "verb", "fr": "prétendre", "en": "to claim (assert without proof)", "format": "fr2en", "options": ["to claim (assert without proof)", "to pretend / play a role", "to intend to do something", "to apply for a post"], "a": 0, "trap": "'to pretend' is « faire semblant » — a classic false friend", "expl": "« Il prétend n'avoir rien reçu » = he claims he received nothing. « Prétendre à un poste » does mean to lay claim to it."},
+  {"id": "fv725", "level": "B2", "pos": "verb", "fr": "ignorer", "en": "to be unaware of (not know)", "format": "fr2en", "options": ["to be unaware of (not know)", "to snub someone deliberately", "to forget", "to refuse to answer"], "a": 0, "trap": "English 'ignore' implies knowing and choosing not to react; French « ignorer » usually means simply not knowing", "expl": "« J'ignorais qu'il était belge » = I didn't know. To ignore someone deliberately: « faire comme si de rien n'était » or « ne pas tenir compte de »."},
+  {"id": "fv726", "level": "B2", "pos": "verb", "fr": "réaliser", "en": "to carry out (complete a project)", "format": "fr2en", "options": ["to carry out (complete a project)", "to realise that something is true", "to be realistic", "to sell an asset"], "a": 0, "trap": "the sense 'to realise = to become aware' is an anglicism; careful French uses « se rendre compte »", "expl": "« Réaliser une étude » = to carry out a study. « Je me rends compte que… » is the safe way to say I realise."},
+  {"id": "fv727", "level": "B2", "pos": "verb", "fr": "achever", "en": "to complete (bring to an end)", "format": "fr2en", "options": ["to complete (bring to an end)", "to achieve a goal", "to succeed after effort", "to reach a target figure"], "a": 0, "trap": "'to achieve' is « atteindre » or « parvenir à » — « achever » is about finishing", "expl": "« Les travaux seront achevés en juin. » Also, grimly, « achever un animal blessé » = to finish it off."},
+  {"id": "fv728", "level": "B2", "pos": "verb", "fr": "se rendre à", "en": "to go to (make one's way to)", "format": "fr2en", "options": ["to go to (make one's way to)", "to give something back", "to surrender to the enemy", "to be useful to someone"], "a": 0, "trap": "« se rendre » alone does mean to surrender; with « à + place » it is the formal way to say to go", "expl": "« Les participants sont priés de se rendre en salle B. » Also « se rendre compte de » = to realise."},
+  {"id": "fv729", "level": "B2", "pos": "verb", "fr": "convoquer", "en": "to summon (call to a meeting)", "format": "fr2en", "options": ["to summon (call to a meeting)", "to invite informally", "to gather documents", "to hold a vote"], "a": 0, "trap": "« inviter » leaves you a choice; « convoquer » does not", "expl": "« Le directeur m'a convoqué » sounds serious. « Convoquer une réunion » = to call a meeting; the noun is « une convocation »."},
+  {"id": "fv730", "level": "B2", "pos": "verb", "fr": "saisir", "en": "to refer a matter to a body / to seize / to key in", "format": "fr2en", "options": ["to refer a matter to a body / to seize / to key in", "to understand an idea only", "to sign a document", "to summarise"], "a": 0, "trap": "« saisir » does also mean to grasp an idea, but in administrative French it means to bring a matter before an authority", "expl": "« Saisir le tribunal », « saisir des données », « les douanes ont saisi la marchandise ». The noun « la saisine » covers the first sense."},
+  {"id": "fv731", "level": "B2", "pos": "verb", "fr": "soulever", "en": "to raise (an issue or an objection)", "format": "fr2en", "options": ["to raise (an issue or an objection)", "to relieve someone of a burden", "to lift a ban", "to underline"], "a": 0, "trap": "« soulager » means to relieve; « souligner » means to underline — three lookalikes", "expl": "« Soulever une question » = to raise a question. Physically it means to lift: « soulever un carton »."},
+  {"id": "fv732", "level": "B2", "pos": "verb", "fr": "envisager", "en": "to consider (contemplate doing)", "format": "fr2en", "options": ["to consider (contemplate doing)", "to look someone in the face", "to imagine something impossible", "to decide firmly"], "a": 0, "trap": "« considérer » in French means to regard something as being so, not to think about doing it", "expl": "« Nous envisageons de recruter » = we are thinking of recruiting. « Considérer que » = to take the view that."},
+  {"id": "fv733", "level": "B2", "pos": "verb", "fr": "solliciter", "en": "to request formally (apply for)", "format": "fr2en", "options": ["to request formally (apply for)", "to worry someone", "to encourage", "to solicit business door to door"], "a": 0, "trap": "« susciter » (to give rise to) is one letter away and very common in the same registers", "expl": "« Je sollicite un entretien » opens a formal letter. « Être très sollicité » = to be much in demand."},
+  {"id": "fv734", "level": "B2", "pos": "verb", "fr": "adhérer à", "en": "to join (become a member of)", "format": "fr2en", "options": ["to join (become a member of)", "to stick physically only", "to agree silently", "to sign a contract"], "a": 0, "trap": "« rejoindre » means to go and meet someone; joining an organisation takes « adhérer à »", "expl": "« Adhérer à un syndicat », « l'adhésion de la Croatie à l'UE ». It also means to endorse: « j'adhère à cette idée »."},
+  {"id": "fv735", "level": "B2", "pos": "verb", "fr": "encaisser", "en": "to cash in (receive payment)", "format": "fr2en", "options": ["to cash in (receive payment)", "to pay out", "to put in a box", "to deposit a cheque for someone else"], "a": 0, "trap": "« décaisser » with the opposite prefix means to pay out", "expl": "« La facture a été encaissée hier. » Colloquially « encaisser » also means to take a blow: « il encaisse bien les critiques »."},
+  {"id": "fv736", "level": "B2", "pos": "verb", "fr": "s'abstenir", "en": "to abstain (refrain from voting or acting)", "format": "fr2en", "options": ["to abstain (refrain from voting or acting)", "to vote against", "to be absent from a meeting", "to withdraw a proposal"], "a": 0, "trap": "abstaining is not the same as being absent — you are present and choose not to vote", "expl": "« Trois États membres se sont abstenus. » Also « s'abstenir de tout commentaire » = to refrain from comment; noun « l'abstention »."},
+  {"id": "fv737", "level": "C1", "pos": "verb", "fr": "infirmer", "en": "to overturn / to disprove", "format": "fr2en", "options": ["to overturn / to disprove", "to confirm", "to weaken someone's health", "to declare someone unfit"], "a": 0, "trap": "« confirmer » is the exact opposite and the two appear side by side in judgments", "expl": "« La cour d'appel a infirmé le jugement. » Of evidence: « les faits infirment cette thèse » = the facts disprove it."},
+  {"id": "fv738", "level": "C1", "pos": "verb", "fr": "entacher", "en": "to taint (vitiate a decision)", "format": "fr2en", "options": ["to taint (vitiate a decision)", "to stain a garment", "to attach a document", "to attack a decision in court"], "a": 0, "trap": "« attacher » looks close but means to fasten; « entacher » is about flaws in an act", "expl": "« Une décision entachée d'illégalité » is unlawful and can be annulled. From « une tache », a stain."},
+  {"id": "fv739", "level": "C1", "pos": "verb", "fr": "surseoir", "en": "to stay / to defer (a decision)", "format": "fr2en", "options": ["to stay / to defer (a decision)", "to oversee", "to supervise proceedings", "to bring proceedings forward"], "a": 0, "trap": "it looks like 'oversee', but « surseoir à statuer » means to hold off deciding", "expl": "« La juridiction a sursis à statuer » pending a preliminary ruling. Irregular: « je sursois, il sursoit, sursis »."},
+  {"id": "fv740", "level": "C1", "pos": "verb", "fr": "se désister", "en": "to withdraw (drop a claim or candidacy)", "format": "fr2en", "options": ["to withdraw (drop a claim or candidacy)", "to resist", "to insist", "to stand down in favour of a colleague only"], "a": 0, "trap": "the sound suggests 'desist' in the sense of stopping an activity; in law it is dropping your own action", "expl": "« Le requérant s'est désisté de son recours. » In elections a candidate « se désiste en faveur de » another."},
+  {"id": "fv741", "level": "A2", "pos": "verb", "fr": "se dépêcher", "en": "to hurry", "format": "en2fr", "options": ["se dépêcher", "se déplacer", "se débrouiller", "se détendre"], "a": 0, "trap": "se débrouiller — to manage or cope on your own; another common « se dé… » verb", "expl": "« Dépêche-toi ! » = hurry up. « Se détendre » is to relax, the opposite mood."},
+  {"id": "fv742", "level": "A2", "pos": "verb", "fr": "emmener", "en": "to take (a person) somewhere", "format": "en2fr", "options": ["emmener", "emporter", "amener", "apporter"], "a": 0, "trap": "emporter — same idea but for objects: « emporter son parapluie »", "expl": "Two axes: em-/ap- (away from / towards the speaker) and -mener/-porter (people / things). « J'emmène les enfants à l'école. »"},
+  {"id": "fv743", "level": "A2", "pos": "verb", "fr": "remplir", "en": "to fill in (a form)", "format": "en2fr", "options": ["remplir", "répondre", "remettre", "rappeler"], "a": 0, "trap": "remettre — to hand the form in once it is filled", "expl": "« Remplissez le formulaire en majuscules. » It also means to fill up: « remplir un verre », and « remplir une mission » = to fulfil a task."},
+  {"id": "fv744", "level": "A2", "pos": "verb", "fr": "prêter", "en": "to lend", "format": "en2fr", "options": ["prêter", "emprunter", "rendre", "louer"], "a": 0, "trap": "emprunter — to borrow, the same transaction seen from the other side", "expl": "« Je te prête 20 euros » (I give), « j'emprunte 20 euros » (I take). « Prêter attention » = to pay attention."},
+  {"id": "fv745", "level": "A2", "pos": "verb", "fr": "dépenser", "en": "to spend (money)", "format": "en2fr", "options": ["dépenser", "passer", "économiser", "payer"], "a": 0, "trap": "passer — used for spending time, never money: « passer une heure »", "expl": "« J'ai dépensé 50 euros ce week-end. » Time is « passer du temps »; the noun « la dépense » is expenditure."},
+  {"id": "fv746", "level": "A2", "pos": "verb", "fr": "économiser", "en": "to save (money)", "format": "en2fr", "options": ["économiser", "sauver", "sauvegarder", "gagner"], "a": 0, "trap": "sauver — to save a life or rescue; « sauvegarder » is to back up a file", "expl": "« J'économise pour un voyage. » French splits the English 'save' three ways: money (économiser/épargner), lives (sauver), files (sauvegarder)."},
+  {"id": "fv747", "level": "A2", "pos": "verb", "fr": "conduire", "en": "to drive", "format": "en2fr", "options": ["conduire", "rouler", "mener", "emmener"], "a": 0, "trap": "rouler — what the car itself does: « la voiture roule vite »; the person « conduit »", "expl": "« Je conduis depuis dix ans. » « Conduire » also means to lead: « cette rue conduit à la place »; the licence is « le permis de conduire »."},
+  {"id": "fv748", "level": "A2", "pos": "verb", "fr": "se garer", "en": "to park", "format": "en2fr", "options": ["se garer", "garder", "gérer", "garantir"], "a": 0, "trap": "garder — to keep or to look after; only one letter apart from « garer »", "expl": "« Je me gare devant l'immeuble. » Also « stationner » on signs: « stationnement interdit »."},
+  {"id": "fv749", "level": "A2", "pos": "verb", "fr": "se réveiller", "en": "to wake up", "format": "en2fr", "options": ["se réveiller", "se lever", "se coucher", "se reposer"], "a": 0, "trap": "se lever — to get up out of bed, which happens after waking", "expl": "« Je me réveille à 6h mais je me lève à 6h30. » « Le réveil » is both the waking and the alarm clock."},
+  {"id": "fv750", "level": "A2", "pos": "verb", "fr": "allumer", "en": "to switch on", "format": "en2fr", "options": ["allumer", "brancher", "démarrer", "ouvrir"], "a": 0, "trap": "brancher — to plug in, which you do before switching on", "expl": "« Allume la lumière / la télé. » A car or an engine « démarre »; a computer « s'allume » then « démarre »."},
+  {"id": "fv751", "level": "A2", "pos": "verb", "fr": "nettoyer", "en": "to clean", "format": "en2fr", "options": ["nettoyer", "ranger", "laver", "essuyer"], "a": 0, "trap": "ranger — to tidy things away, which is not the same as cleaning them", "expl": "« Nettoyer la cuisine » removes the dirt; « ranger » puts things back. « Laver » uses water, « essuyer » wipes dry."},
+  {"id": "fv752", "level": "A2", "pos": "verb", "fr": "emporter", "en": "to take away (an object)", "format": "en2fr", "options": ["emporter", "apporter", "emmener", "enlever"], "a": 0, "trap": "apporter — to bring something towards the speaker, the opposite direction", "expl": "« À emporter » on a sign means takeaway. « Enlever » is to remove something from where it sits."},
+  {"id": "fv753", "level": "B1", "pos": "verb", "fr": "remettre", "en": "to hand in (submit in person)", "format": "en2fr", "options": ["remettre", "rendre", "transmettre", "déposer"], "a": 0, "trap": "rendre — to give back something that was already yours to return", "expl": "« Remettre son rapport au chef » = to hand it over. « Remettre » also means to postpone: « remettre à demain », and « remettre en cause » = to call into question."},
+  {"id": "fv754", "level": "B1", "pos": "verb", "fr": "réserver", "en": "to book", "format": "en2fr", "options": ["réserver", "commander", "retenir", "garder"], "a": 0, "trap": "retenir — also used for booking (« retenir une chambre ») but its main sense is to hold back or remember", "expl": "« J'ai réservé une table / un billet. » « Commander » is to order goods; « une réservation » is the booking."},
+  {"id": "fv755", "level": "B1", "pos": "verb", "fr": "recruter", "en": "to recruit", "format": "en2fr", "options": ["recruter", "embaucher", "engager", "nommer"], "a": 0, "trap": "nommer — to appoint someone to a named post, a later step in the process", "expl": "« Le service recrute deux juristes. » « Embaucher » and « engager » are the everyday words for hiring; « nommer » is formal appointment."},
+  {"id": "fv756", "level": "B1", "pos": "verb", "fr": "former", "en": "to train (teach skills)", "format": "en2fr", "options": ["former", "formuler", "informer", "entraîner"], "a": 0, "trap": "entraîner — to train in the sporting sense, and also to bring about", "expl": "« Former les nouveaux collègues » = to train them. « La formation » is training; « formuler » is to word something."},
+  {"id": "fv757", "level": "B1", "pos": "verb", "fr": "vérifier", "en": "to check (make sure)", "format": "en2fr", "options": ["vérifier", "contrôler", "surveiller", "constater"], "a": 0, "trap": "contrôler — implies an inspection with authority, as a « contrôleur » does on the tram", "expl": "« Vérifie les chiffres avant d'envoyer. » « Constater » is to note a fact as it is; « surveiller » is to keep watch over."},
+  {"id": "fv758", "level": "B1", "pos": "verb", "fr": "trier", "en": "to sort (separate into categories)", "format": "en2fr", "options": ["trier", "classer", "ranger", "choisir"], "a": 0, "trap": "classer — to file documents in order, not to separate them into types", "expl": "« Trier les déchets » is compulsory in Brussels. « Classer un dossier » can also mean to close a case: « classer sans suite »."},
+  {"id": "fv759", "level": "B1", "pos": "verb", "fr": "imprimer", "en": "to print", "format": "en2fr", "options": ["imprimer", "exprimer", "empreindre", "éditer"], "a": 0, "trap": "éditer — to publish or to edit; in computing it means to open for editing, not to print", "expl": "« Imprimer en recto verso » = to print double-sided. « L'imprimante » is the printer, « l'imprimerie » the print works."},
+  {"id": "fv760", "level": "B1", "pos": "verb", "fr": "télécharger", "en": "to download", "format": "en2fr", "options": ["télécharger", "charger", "décharger", "transférer"], "a": 0, "trap": "charger — to load, which is what learners guess from the English", "expl": "French uses one verb both ways: « télécharger un fichier » (download) and « télécharger vers le serveur » or « téléverser » (upload)."},
+  {"id": "fv761", "level": "B1", "pos": "verb", "fr": "enregistrer", "en": "to save (a file) / to record", "format": "en2fr", "options": ["enregistrer", "sauvegarder", "inscrire", "noter"], "a": 0, "trap": "sauvegarder — to back up a copy elsewhere, not the ordinary Save command", "expl": "The menu says « Enregistrer sous… » = Save as. « Enregistrer » also means to check in luggage and to record sound."},
+  {"id": "fv762", "level": "B1", "pos": "verb", "fr": "supprimer", "en": "to delete", "format": "en2fr", "options": ["supprimer", "effacer", "annuler", "retirer"], "a": 0, "trap": "effacer — to erase or rub out; used for a blackboard or a mark, less for files", "expl": "« Supprimer un fichier / un poste » removes it entirely. « Annuler » cancels an action or an event."},
+  {"id": "fv763", "level": "B1", "pos": "verb", "fr": "réussir", "en": "to succeed / to pass (an exam)", "format": "en2fr", "options": ["réussir", "aboutir", "parvenir", "obtenir"], "a": 0, "trap": "aboutir — to lead to a result in the end; « réussir » is about succeeding", "expl": "« J'ai réussi le concours. » Note « réussir à faire quelque chose » with « à », and its opposite « échouer à »."},
+  {"id": "fv764", "level": "B1", "pos": "verb", "fr": "abandonner", "en": "to give up (drop out)", "format": "en2fr", "options": ["abandonner", "renoncer", "quitter", "laisser"], "a": 0, "trap": "renoncer à — to renounce a right or plan deliberately; « abandonner » suggests dropping out part-way", "expl": "« Il a abandonné ses études. » « Quitter » needs an object: « quitter son emploi »."},
+  {"id": "fv765", "level": "B1", "pos": "verb", "fr": "se renseigner", "en": "to find out (make enquiries)", "format": "en2fr", "options": ["se renseigner", "renseigner", "s'informer", "interroger"], "a": 0, "trap": "renseigner (without the pronoun) means to inform someone else: « il m'a renseigné »", "expl": "« Je vais me renseigner auprès de la commune. » « S'informer » is close but suggests keeping up with news."},
+  {"id": "fv766", "level": "B1", "pos": "verb", "fr": "emménager", "en": "to move in", "format": "en2fr", "options": ["emménager", "déménager", "aménager", "ménager"], "a": 0, "trap": "déménager — to move out or move house; one prefix apart and the opposite direction", "expl": "« On emménage le 1er septembre. » « Aménager » is to fit out a space; « un appartement aménagé » is fitted out, « meublé » furnished."},
+  {"id": "fv767", "level": "B1", "pos": "verb", "fr": "louer", "en": "to rent (either direction)", "format": "en2fr", "options": ["louer", "emprunter", "prêter", "occuper"], "a": 0, "trap": "the same verb serves for renting and letting — « je loue un appartement » can mean either, context decides", "expl": "Clarify with « louer à » (from) and « louer à quelqu'un » (to). « Louer » also means to praise: « louer les efforts de l'équipe »."},
+  {"id": "fv768", "level": "B2", "pos": "verb", "fr": "différer", "en": "to defer (put off to a later date)", "format": "en2fr", "options": ["différer", "déférer", "diffuser", "discerner"], "a": 0, "trap": "déférer — to refer a case to a court, a near-homophone in the same registers", "expl": "« La décision est différée au mois prochain. » « Différer » also means to differ: « nos avis diffèrent »."},
+  {"id": "fv769", "level": "B2", "pos": "verb", "fr": "résumer", "en": "to summarise", "format": "en2fr", "options": ["résumer", "reprendre", "recommencer", "réactiver"], "a": 0, "trap": "'to resume' is « reprendre » — « résumer » never means to start again", "expl": "« Résumez le dossier en une page. » The noun « un résumé » is a summary; a CV is « un curriculum vitae », not « un résumé » as in the US."},
+  {"id": "fv770", "level": "B2", "pos": "verb", "fr": "diffuser", "en": "to circulate (send out widely)", "format": "en2fr", "options": ["diffuser", "publier", "transmettre", "distribuer"], "a": 0, "trap": "publier — to publish officially, which makes a text public; « diffuser » can stay internal", "expl": "« Le compte rendu sera diffusé à tous les participants. » Radio and TV also « diffusent » programmes."},
+  {"id": "fv771", "level": "B2", "pos": "verb", "fr": "actualiser", "en": "to update (bring up to date)", "format": "en2fr", "options": ["actualiser", "réaliser", "activer", "actionner"], "a": 0, "trap": "réaliser — to carry out; the shared « -aliser » ending misleads", "expl": "« Actualiser les données » = « mettre à jour les données ». In a browser, refreshing the page is « actualiser »."},
+  {"id": "fv772", "level": "B2", "pos": "verb", "fr": "appliquer", "en": "to apply (a rule to a case)", "format": "en2fr", "options": ["appliquer", "postuler", "solliciter", "adapter"], "a": 0, "trap": "'to apply for a job' is « postuler » or « poser sa candidature », never « appliquer »", "expl": "« Appliquer le règlement » = to apply the rules. « S'appliquer à » = to apply to: « cette règle s'applique aux nouveaux contrats »."},
+  {"id": "fv773", "level": "B2", "pos": "verb", "fr": "se conformer à", "en": "to comply with", "format": "en2fr", "options": ["se conformer à", "se référer à", "s'adapter à", "se soumettre à"], "a": 0, "trap": "se référer à — to refer to a text, not to obey it", "expl": "« Se conformer aux consignes de sécurité. » The adverb phrase « conformément à » (in accordance with) comes from the same root."},
+  {"id": "fv774", "level": "B2", "pos": "verb", "fr": "enfreindre", "en": "to breach (break a rule)", "format": "en2fr", "options": ["enfreindre", "contraindre", "restreindre", "atteindre"], "a": 0, "trap": "contraindre — to compel someone; the whole -eindre family looks alike", "expl": "« Enfreindre la loi » = to break the law; the noun is « une infraction ». Conjugated like « craindre »: « j'enfreins, enfreint »."},
+  {"id": "fv775", "level": "B2", "pos": "verb", "fr": "surveiller", "en": "to monitor (keep watch over)", "format": "en2fr", "options": ["surveiller", "veiller", "superviser", "constater"], "a": 0, "trap": "veiller à — to make sure that something happens; without « à » it means to stay awake or sit up with someone", "expl": "« Surveiller l'évolution des prix. » « Veiller à ce que tout soit prêt » = to see to it that everything is ready."},
+  {"id": "fv776", "level": "B2", "pos": "verb", "fr": "évaluer", "en": "to assess", "format": "en2fr", "options": ["évaluer", "valoriser", "estimer", "éveiller"], "a": 0, "trap": "valoriser — to enhance the value of something, not to judge it", "expl": "« Évaluer les risques » = to assess the risks. « Estimer » puts a figure on it or means to take the view that."},
+  {"id": "fv777", "level": "B2", "pos": "verb", "fr": "chiffrer", "en": "to quantify (put figures on)", "format": "en2fr", "options": ["chiffrer", "déchiffrer", "compter", "calculer"], "a": 0, "trap": "déchiffrer — to decipher or make sense of something written", "expl": "« Chiffrer le coût de la mesure » = to cost it. « Les chiffres » are the figures; « un chiffrage » is a costing."},
+  {"id": "fv778", "level": "B2", "pos": "verb", "fr": "financer", "en": "to fund", "format": "en2fr", "options": ["financer", "subventionner", "verser", "investir"], "a": 0, "trap": "subventionner — to subsidise, i.e. to fund with public money as a grant", "expl": "« Le projet est financé par le FEDER. » The noun « le financement » covers all sources; « une subvention » is one kind of grant."},
+  {"id": "fv779", "level": "B2", "pos": "verb", "fr": "attribuer", "en": "to award (allocate to someone)", "format": "en2fr", "options": ["attribuer", "adjuger", "répartir", "affecter"], "a": 0, "trap": "adjuger — to knock down to the highest bidder at auction, or to award a public contract formally", "expl": "« Le marché a été attribué au consortium X. » « Affecter » assigns a person to a post or funds to a purpose."},
+  {"id": "fv780", "level": "B2", "pos": "verb", "fr": "présider", "en": "to chair (a meeting)", "format": "en2fr", "options": ["présider", "animer", "diriger", "prévoir"], "a": 0, "trap": "animer — to facilitate or lead a discussion, without the formal authority of the chair", "expl": "« C'est le directeur qui préside la séance. » « Présider à » (with à) means to govern or guide: « les principes qui président à cette réforme »."},
+  {"id": "fv781", "level": "B2", "pos": "verb", "fr": "signaler", "en": "to report (draw attention to)", "format": "en2fr", "options": ["signaler", "souligner", "désigner", "signer"], "a": 0, "trap": "souligner — to stress or underline a point already known, not to report a problem", "expl": "« Signaler un incident au service technique. » « Se signaler par » = to stand out for. Road signs are « la signalisation »."},
+  {"id": "fv782", "level": "C1", "pos": "verb", "fr": "édicter", "en": "to lay down (enact rules)", "format": "en2fr", "options": ["édicter", "éditer", "dicter", "adopter"], "a": 0, "trap": "éditer — to publish or, in computing, to open a file for editing", "expl": "« Les règles édictées par le règlement » = the rules laid down by it. « Adopter » is the act of voting a text through; « édicter » stresses laying down binding norms."},
+  {"id": "fv783", "level": "C1", "pos": "verb", "fr": "proroger", "en": "to extend (a deadline or mandate)", "format": "en2fr", "options": ["proroger", "abroger", "déroger", "interroger"], "a": 0, "trap": "abroger — to repeal, i.e. to abolish the text rather than prolong it", "expl": "« Proroger le mandat de six mois. » The noun is « la prorogation »; do not confuse with « la prolongation » of a contract or a football match."},
+  {"id": "fv784", "level": "C1", "pos": "verb", "fr": "avaliser", "en": "to endorse (give formal backing to)", "format": "en2fr", "options": ["avaliser", "valider", "banaliser", "analyser"], "a": 0, "trap": "valider — to validate or confirm something is correct; « avaliser » is putting political weight behind it", "expl": "« Le Conseil européen a avalisé l'accord. » From « un aval », a guarantee: « donner son aval » = to give one's backing."},
+  {"id": "fv785", "level": "C1", "pos": "verb", "fr": "déroger à", "en": "to derogate from (depart from a rule)", "format": "en2fr", "options": ["déroger à", "se soustraire à", "renoncer à", "s'opposer à"], "a": 0, "trap": "se soustraire à — to evade an obligation, which is unlawful; a derogation is authorised by the rule itself", "expl": "« Déroger au principe de non-discrimination » requires a legal basis. The noun is « une dérogation »; « par dérogation à l'article 5 » is standard wording."},
+  {"id": "fv786", "level": "A2", "pos": "verb", "fr": "savoir", "en": "to know how to (a learned skill)", "format": "cloze", "q": "Je ne ___ pas nager : je n'ai jamais appris.", "options": ["sais", "connais", "peux", "veux"], "a": 0, "trap": "« pouvoir » is possible here but means you are prevented right now, not that you never learnt", "expl": "« Savoir + infinitif » = to know how to. Belgian French also uses « savoir » for « pouvoir »: « Je ne sais pas venir demain » means I can't come."},
+  {"id": "fv787", "level": "A2", "pos": "verb", "fr": "connaître", "en": "to know (be acquainted with)", "format": "cloze", "q": "Tu ___ un bon médecin dans le quartier ?", "options": ["connais", "sais", "trouves", "prends"], "a": 0, "trap": "« savoir » takes facts and clauses; people and places take « connaître »", "expl": "« Je connais Bruxelles / ce dentiste », but « je sais qu'il est bon ». « Connaître » can never be followed by « que »."},
+  {"id": "fv788", "level": "A2", "pos": "verb", "fr": "devoir", "en": "to have to (must)", "format": "cloze", "q": "Je ___ passer à la commune avant vendredi pour ma carte d'identité.", "options": ["dois", "peux", "veux", "vais"], "a": 0, "trap": "« je vais passer » is perfectly grammatical but says only that you intend to, not that you must", "expl": "« Devoir » expresses obligation; in the conditional « je devrais » it softens to should. Its noun « le devoir » means duty or homework."},
+  {"id": "fv789", "level": "A2", "pos": "verb", "fr": "falloir", "en": "to be necessary (one must)", "format": "cloze", "q": "Pour ouvrir un compte, il ___ apporter une pièce d'identité.", "options": ["faut", "doit", "peut", "veut"], "a": 0, "trap": "« il doit apporter » is grammatical but means a particular he must bring it", "expl": "« Falloir » only exists with « il »: « il faut, il fallait, il faudra ». Use « il faut que + subjonctif » for a named person."},
+  {"id": "fv790", "level": "A2", "pos": "verb", "fr": "mettre", "en": "to take (an amount of time)", "format": "cloze", "q": "Combien de temps ___ -tu pour venir au bureau le matin ?", "options": ["mets", "prends", "passes", "fais"], "a": 0, "trap": "« prendre » is used with an impersonal subject: « ça prend vingt minutes », but a person « met » du temps", "expl": "« Je mets vingt minutes en tram. » « Passer du temps à faire quelque chose » = to spend time doing it."},
+  {"id": "fv791", "level": "A2", "pos": "verb", "fr": "tomber", "en": "to fall", "format": "cloze", "q": "Mon GSM est ___ dans l'eau et il ne s'allume plus.", "options": ["tombé", "monté", "resté", "parti"], "a": 0, "trap": "all four take « être » in the perfect, so the auxiliary gives nothing away — only the meaning does", "expl": "« Tomber » is one of the « être » verbs. Note « tomber sur quelqu'un » = to bump into someone, « tomber malade » = to fall ill."},
+  {"id": "fv792", "level": "A2", "pos": "verb", "fr": "garder", "en": "to look after (children) / to keep", "format": "cloze", "q": "Tu peux ___ les enfants samedi soir ?", "options": ["garder", "tenir", "laisser", "porter"], "a": 0, "trap": "« surveiller » watches over them; « garder » is the ordinary word for babysitting", "expl": "« Faire garder ses enfants » = to have them looked after. « Garder » also means to keep: « garde la monnaie »."},
+  {"id": "fv793", "level": "A2", "pos": "verb", "fr": "sonner", "en": "to ring (the bell)", "format": "cloze", "q": "Quelqu'un a ___ à la porte pendant que j'étais sous la douche.", "options": ["sonné", "frappé", "appelé", "poussé"], "a": 0, "trap": "« frapper » is to knock — a different sound at the same door", "expl": "« On sonne ! » = someone's at the door. « Sonner » also describes a phone or an alarm going off."},
+  {"id": "fv794", "level": "A2", "pos": "verb", "fr": "appuyer", "en": "to press (a button)", "format": "cloze", "q": "Pour ouvrir la porte du tram, ___ sur le bouton vert.", "options": ["appuyez", "poussez", "tirez", "tournez"], "a": 0, "trap": "« pousser » is to push a door open; note that Belgians do say « pousser sur le bouton », where the French say « appuyer sur »", "expl": "« Appuyer sur » always takes « sur ». Figuratively « appuyer une candidature » = to back an application."},
+  {"id": "fv795", "level": "A2", "pos": "verb", "fr": "coûter", "en": "to cost", "format": "cloze", "q": "Un abonnement mensuel STIB ___ environ 49 euros.", "options": ["coûte", "vaut", "paie", "gagne"], "a": 0, "trap": "« valoir » means to be worth: « ça vaut le prix » judges value, « ça coûte » states the price", "expl": "« Combien ça coûte ? » asks the price. « Ça coûte cher » = it's expensive; « ça n'en vaut pas la peine » = it's not worth it."},
+  {"id": "fv796", "level": "A2", "pos": "verb", "fr": "plaire", "en": "to please (to be liked by)", "format": "cloze", "q": "Ce quartier me ___ beaucoup : il est calme et bien desservi.", "options": ["plaît", "manque", "convient", "intéresse"], "a": 0, "trap": "« me manque » means I miss it, which reverses who is doing what", "expl": "French turns it round: « ce quartier me plaît » = I like this neighbourhood. Same pattern as « il me manque » = I miss him."},
+  {"id": "fv797", "level": "A2", "pos": "verb", "fr": "choisir", "en": "to choose", "format": "cloze", "q": "Il faut ___ entre les deux formations avant la fin du mois.", "options": ["choisir", "décider", "préférer", "accepter"], "a": 0, "trap": "« décider » needs « de + infinitif » or « que »; « choisir entre » is the natural pairing here", "expl": "« Choisir entre A et B », « choisir de faire quelque chose ». The noun « le choix » is masculine."},
+  {"id": "fv798", "level": "B1", "pos": "verb", "fr": "se passer", "en": "to happen", "format": "cloze", "q": "Qu'est-ce qui ___ ? Il y a beaucoup de bruit dans la rue.", "options": ["se passe", "se trouve", "se pose", "se plaint"], "a": 0, "trap": "« se passer de » with « de » means to do without: « je me passe de voiture »", "expl": "« Qu'est-ce qui se passe ? » = what's going on? For an event happening as planned, use « avoir lieu » or « se dérouler »."},
+  {"id": "fv799", "level": "B1", "pos": "verb", "fr": "toucher", "en": "to receive (money, benefits)", "format": "cloze", "q": "Après un licenciement, on ___ des allocations de chômage pendant un certain temps.", "options": ["touche", "paie", "verse", "retire"], "a": 0, "trap": "« verser » is what the institution does; the individual « touche » the money", "expl": "« Toucher son salaire / une prime. » The physical sense (to touch) is the same verb: « ne touchez pas »."},
+  {"id": "fv800", "level": "B1", "pos": "verb", "fr": "résilier", "en": "to terminate (a contract or subscription)", "format": "cloze", "q": "Je voudrais ___ mon abonnement Proximus à la fin du mois.", "options": ["résilier", "annuler", "suspendre", "reporter"], "a": 0, "trap": "« annuler » cancels something that has not started yet; « résilier » ends a running contract", "expl": "« Résilier un bail » requires notice. The noun is « la résiliation »; « la résignation » is something else entirely."},
+  {"id": "fv801", "level": "B1", "pos": "verb", "fr": "prolonger", "en": "to extend (in time)", "format": "cloze", "q": "Nous avons décidé de ___ le contrat de six mois supplémentaires.", "options": ["prolonger", "allonger", "reporter", "avancer"], "a": 0, "trap": "« allonger » is about physical length; time is « prolonger »", "expl": "« Prolonger un séjour / un contrat. » « Reporter » moves an event to a later date instead of making it last longer."},
+  {"id": "fv802", "level": "B1", "pos": "verb", "fr": "suivre", "en": "to follow", "format": "cloze", "q": "___ bien les consignes indiquées sur le formulaire.", "options": ["Suivez", "Poursuivez", "Surveillez", "Servez"], "a": 0, "trap": "« poursuivre » means to carry on with something already started, or to sue someone", "expl": "« Suivre une formation » = to take a course; « suivre un dossier » = to follow a file. Irregular: « je suis », identical to « je suis » from être."},
+  {"id": "fv803", "level": "B1", "pos": "verb", "fr": "poursuivre", "en": "to sue / to carry on with", "format": "cloze", "q": "L'entreprise a décidé de ___ son fournisseur en justice.", "options": ["poursuivre", "suivre", "continuer", "engager"], "a": 0, "trap": "English 'pursue' suggests chasing; « poursuivre quelqu'un en justice » is to take legal action", "expl": "« Poursuivre les travaux » = to carry on with the works. « Des poursuites judiciaires » are legal proceedings."},
+  {"id": "fv804", "level": "B1", "pos": "verb", "fr": "manquer", "en": "to be missing / to lack", "format": "cloze", "q": "Il ___ deux documents dans le dossier que vous avez déposé.", "options": ["manque", "rate", "perd", "oublie"], "a": 0, "trap": "« rater » is to miss a train or fail a test, not to be absent from a set", "expl": "« Il manque une signature. » Reversed with people: « tu me manques » = I miss you. « Manquer de » = to be short of."},
+  {"id": "fv805", "level": "B1", "pos": "verb", "fr": "valoir", "en": "to be worth / to be valid", "format": "cloze", "q": "Cette attestation ne ___ que six mois à partir de sa délivrance.", "options": ["vaut", "dure", "tient", "sert"], "a": 0, "trap": "« durer » says how long something lasts; « valoir » says how long it counts as valid", "expl": "« Ça vaut la peine », « il vaut mieux partir tôt » (it's better to). Irregular: « je vaux, il vaut, nous valons »."},
+  {"id": "fv806", "level": "B1", "pos": "verb", "fr": "servir", "en": "to be used for", "format": "cloze", "q": "À quoi ___ ce formulaire exactement ?", "options": ["sert", "mène", "tient", "revient"], "a": 0, "trap": "« se servir de » with the pronoun means to use something: « je me sers de mon GSM »", "expl": "« Ça sert à quoi ? » = what's it for? « Ça ne sert à rien » = it's pointless."},
+  {"id": "fv807", "level": "B1", "pos": "verb", "fr": "obliger", "en": "to require (compel)", "format": "cloze", "q": "La loi ___ les employeurs à déclarer tout accident de travail.", "options": ["oblige", "autorise", "empêche", "dispense"], "a": 0, "trap": "« dispenser de » means to exempt — the exact opposite obligation", "expl": "« Obliger quelqu'un à faire » but « être obligé de faire ». « Je suis obligé » can also mean I have no choice."},
+  {"id": "fv808", "level": "B1", "pos": "verb", "fr": "laisser", "en": "to leave (something somewhere) / to let", "format": "cloze", "q": "Il a ___ la porte ouverte en partant.", "options": ["laissé", "gardé", "mis", "tenu"], "a": 0, "trap": "« garder la porte ouverte » would mean holding it open on purpose", "expl": "« Laisser » = to leave something behind; « quitter » = to leave a place or a person. « Laisser faire » = to let it happen."},
+  {"id": "fv809", "level": "B1", "pos": "verb", "fr": "déclarer", "en": "to declare (report officially)", "format": "cloze", "q": "Il faut ___ ses revenus avant le 30 juin.", "options": ["déclarer", "annoncer", "communiquer", "prévenir"], "a": 0, "trap": "« annoncer » is to announce news; « déclarer » is the administrative act of reporting to an authority", "expl": "« La déclaration d'impôts », « déclarer un sinistre », « déclarer un changement d'adresse à la commune »."},
+  {"id": "fv810", "level": "B1", "pos": "verb", "fr": "rembourser", "en": "to reimburse", "format": "cloze", "q": "La mutuelle ___ une partie des frais de kinésithérapie.", "options": ["rembourse", "paie", "verse", "rend"], "a": 0, "trap": "« payer » is paying in the first place; « rembourser » gives money back to someone who already paid", "expl": "« Se faire rembourser » = to get a refund. In Belgium you send « une attestation de soins » to your mutuelle."},
+  {"id": "fv811", "level": "B1", "pos": "verb", "fr": "classer", "en": "to file / to close (a case)", "format": "cloze", "q": "Le parquet a décidé de ___ l'affaire sans suite.", "options": ["classer", "ranger", "fermer", "abandonner"], "a": 0, "trap": "« ranger » tidies objects away; « classer » orders documents and, in law, shelves a case", "expl": "« Classer sans suite » = to take no further action. « Classer un dossier » otherwise just means to file it."},
+  {"id": "fv812", "level": "B1", "pos": "verb", "fr": "s'occuper de", "en": "to deal with (take care of)", "format": "cloze", "q": "Qui ___ du dossier Erasmus pendant les vacances ?", "options": ["s'occupe", "se souvient", "se sert", "se plaint"], "a": 0, "trap": "« se charger de » is a close synonym, but « s'occuper de » also covers looking after people", "expl": "« Je m'en occupe » = I'll deal with it. Without the pronoun, « occuper » means to occupy a space or a post."},
+  {"id": "fv813", "level": "B1", "pos": "verb", "fr": "renouveler", "en": "to renew", "format": "cloze", "q": "Je dois ___ ma carte d'identité : elle expire en mai.", "options": ["renouveler", "prolonger", "rappeler", "remplir"], "a": 0, "trap": "« prolonger » extends the same document's validity; « renouveler » issues a new one", "expl": "« Renouveler un abonnement / un contrat. » Double l in the present: « je renouvelle, nous renouvelons »."},
+  {"id": "fv814", "level": "B1", "pos": "verb", "fr": "remplacer", "en": "to replace / to stand in for", "format": "cloze", "q": "Qui ___ Marie pendant son congé de maternité ?", "options": ["remplace", "reprend", "retrouve", "reporte"], "a": 0, "trap": "« reprendre » means to take over a task or a business, not to cover for a person temporarily", "expl": "« Assurer le remplacement » = to cover. « Un remplaçant » is a stand-in; « le suppléant » is the official substitute."},
+  {"id": "fv815", "level": "B2", "pos": "verb", "fr": "percevoir", "en": "to collect (a tax) / to perceive", "format": "cloze", "q": "L'État ___ une taxe sur chaque transaction immobilière.", "options": ["perçoit", "aperçoit", "reçoit", "conçoit"], "a": 0, "trap": "« apercevoir » means to catch sight of, and « s'apercevoir de » to notice", "expl": "« Percevoir l'impôt » = to levy it; « percevoir une allocation » = to receive one. Also mental: « percevoir un changement »."},
+  {"id": "fv816", "level": "B2", "pos": "verb", "fr": "souscrire", "en": "to take out (a policy) / to endorse", "format": "cloze", "q": "Le locataire doit ___ une assurance incendie avant d'emménager.", "options": ["souscrire", "décrire", "prescrire", "inscrire"], "a": 0, "trap": "« s'inscrire » is to sign up for a course or a list; policies are « souscrites »", "expl": "« Souscrire à une idée » = to endorse it. In Belgium fire insurance is normally required by the lease."},
+  {"id": "fv817", "level": "B2", "pos": "verb", "fr": "entamer", "en": "to open (start a process)", "format": "cloze", "q": "Le service a ___ une procédure disciplinaire à son encontre.", "options": ["entamé", "achevé", "suspendu", "clôturé"], "a": 0, "trap": "« achever » ends the same process — the two verbs top and tail a procedure", "expl": "« Entamer des négociations / une discussion. » Literally it means to cut into something: « entamer un pain »."},
+  {"id": "fv818", "level": "B2", "pos": "verb", "fr": "engager", "en": "to commit (bind) / to hire", "format": "cloze", "q": "Cette déclaration ___ la responsabilité de l'institution.", "options": ["engage", "dégage", "décline", "partage"], "a": 0, "trap": "« dégager sa responsabilité » is the opposite: to disclaim liability", "expl": "« Engager des poursuites », « engager du personnel », « s'engager à faire » = to undertake to do."},
+  {"id": "fv819", "level": "B2", "pos": "verb", "fr": "écarter", "en": "to rule out (set aside)", "format": "cloze", "q": "Le jury a ___ trois candidatures pour dossier incomplet.", "options": ["écarté", "retenu", "examiné", "classé"], "a": 0, "trap": "« retenir » means to select — exactly the opposite decision", "expl": "« Écarter une hypothèse » = to rule it out. Literally to move apart: « écarter les bras »."},
+  {"id": "fv820", "level": "B2", "pos": "verb", "fr": "retenir", "en": "to select (shortlist) / to hold back", "format": "cloze", "q": "Sur cinquante dossiers, le jury n'a ___ que trois candidats.", "options": ["retenu", "écarté", "refusé", "convoqué"], "a": 0, "trap": "the everyday sense of « retenir » is to hold back or to remember, which hides the selection sense", "expl": "« Votre candidature n'a pas été retenue » is the standard rejection wording. Also « retenir une chambre » = to book one."},
+  {"id": "fv821", "level": "B2", "pos": "verb", "fr": "arrêter", "en": "to determine formally (settle a text)", "format": "cloze", "q": "Le Conseil a ___ sa position commune lors de la session de juin.", "options": ["arrêté", "stoppé", "freiné", "interrompu"], "a": 0, "trap": "the everyday meaning of « arrêter » is to stop, which is almost the opposite of settling a decision", "expl": "« Arrêter les modalités / le budget » = to fix them definitively. Hence « un arrêté ministériel », a ministerial order."},
+  {"id": "fv822", "level": "B2", "pos": "verb", "fr": "notifier", "en": "to notify (serve official notice)", "format": "cloze", "q": "La décision de refus a été ___ au requérant par lettre recommandée.", "options": ["notifiée", "remarquée", "annoncée", "publiée"], "a": 0, "trap": "« publier » makes a text public for everyone; notification is addressed to one identified person", "expl": "Time limits usually run « à compter de la notification ». The noun is « la notification »."},
+  {"id": "fv823", "level": "B2", "pos": "verb", "fr": "motiver", "en": "to state the reasons for (a decision)", "format": "cloze", "q": "L'administration doit ___ toute décision de refus.", "options": ["motiver", "stimuler", "animer", "provoquer"], "a": 0, "trap": "the everyday sense of motivating people hides the legal duty to give reasons", "expl": "« Une décision non motivée » can be annulled for « défaut de motivation ». Article 296 TFEU requires acts to state reasons."},
+  {"id": "fv824", "level": "B2", "pos": "verb", "fr": "reconduire", "en": "to renew automatically (roll over)", "format": "cloze", "q": "Le contrat est ___ tacitement chaque année, sauf préavis.", "options": ["reconduit", "reconstruit", "reconnu", "rapporté"], "a": 0, "trap": "« reconduire quelqu'un » also means to escort them back, e.g. « reconduire à la frontière »", "expl": "« La tacite reconduction » is automatic renewal — check it before signing a Belgian phone or gym contract."},
+  {"id": "fv825", "level": "B2", "pos": "verb", "fr": "ajourner", "en": "to adjourn (put off to another day)", "format": "cloze", "q": "Faute de quorum, la séance a été ___ à la semaine suivante.", "options": ["ajournée", "annulée", "avancée", "ouverte"], "a": 0, "trap": "« annuler » cancels the meeting altogether; adjourning keeps it alive for another date", "expl": "Built on « jour ». A candidate can also « être ajourné » — deferred to a later exam session."},
+  {"id": "fv826", "level": "B2", "pos": "verb", "fr": "suspendre", "en": "to suspend (halt temporarily)", "format": "cloze", "q": "Le tribunal a ___ l'exécution de la décision en attendant l'arrêt au fond.", "options": ["suspendu", "supprimé", "soutenu", "surveillé"], "a": 0, "trap": "« supprimer » removes something permanently; suspension is temporary", "expl": "« Le sursis à exécution » is the noun for this. « Suspendre la séance » = to break off a meeting for a while."},
+  {"id": "fv827", "level": "B2", "pos": "verb", "fr": "dénoncer", "en": "to terminate (a treaty or agreement)", "format": "cloze", "q": "L'État a ___ l'accord bilatéral avec effet au 1er janvier 2027.", "options": ["dénoncé", "annoncé", "prononcé", "approuvé"], "a": 0, "trap": "in everyday French « dénoncer quelqu'un » is to report or denounce someone — a very different act", "expl": "« Dénoncer un traité » is the technical term for withdrawing from it. « La dénonciation » covers both senses, so context matters."},
+  {"id": "fv828", "level": "B2", "pos": "verb", "fr": "invoquer", "en": "to rely on (cite as a ground)", "format": "cloze", "q": "Le requérant ___ une violation des droits de la défense.", "options": ["invoque", "provoque", "évoque", "convoque"], "a": 0, "trap": "« évoquer » is to mention something in passing; « invoquer » relies on it as an argument", "expl": "« Invoquer un moyen / un article » = to plead it. « Le moyen invoqué » is the plea relied on."},
+  {"id": "fv829", "level": "B2", "pos": "verb", "fr": "contester", "en": "to challenge (dispute formally)", "format": "cloze", "q": "Vous pouvez ___ l'amende dans les quinze jours de sa notification.", "options": ["contester", "protester", "réclamer", "refuser"], "a": 0, "trap": "« protester » cannot take a direct object — you protest « contre » something", "expl": "« Contester une décision » = to challenge it. « Une décision contestée » is one under dispute; « incontestable » means beyond doubt."},
+  {"id": "fv830", "level": "B2", "pos": "verb", "fr": "cumuler", "en": "to combine (hold two things at once)", "format": "cloze", "q": "On ne peut pas ___ ces deux allocations : il faut choisir.", "options": ["cumuler", "calculer", "compenser", "comparer"], "a": 0, "trap": "« accumuler » is piling up over time; « cumuler » is holding two entitlements or posts simultaneously", "expl": "« Le cumul des mandats » is a political issue in France. « Cumuler un emploi et une pension » is often restricted."},
+  {"id": "fv831", "level": "B2", "pos": "verb", "fr": "imputer", "en": "to charge (to a budget line) / to attribute", "format": "cloze", "q": "Ces frais seront ___ sur le budget de l'exercice suivant.", "options": ["imputés", "importés", "imposés", "ajoutés"], "a": 0, "trap": "« imposer » means to impose or to tax; « imputer » assigns a cost to a line or blame to a person", "expl": "« Imputer une dépense sur une ligne budgétaire. » Also « imputer une faute à quelqu'un » = to lay the blame on them."},
+  {"id": "fv832", "level": "B2", "pos": "verb", "fr": "répercuter", "en": "to pass on (a cost)", "format": "cloze", "q": "La hausse du prix du gaz sera ___ sur les charges locatives.", "options": ["répercutée", "reportée", "réduite", "remboursée"], "a": 0, "trap": "« reporter » postpones the cost; « répercuter » passes it down to someone else", "expl": "« Les répercussions » are the knock-on effects. « Répercuter l'information » = to relay it down the line."},
+  {"id": "fv833", "level": "B2", "pos": "verb", "fr": "externaliser", "en": "to outsource", "format": "cloze", "q": "L'agence a décidé d'___ la maintenance informatique.", "options": ["externaliser", "internaliser", "exporter", "extérioriser"], "a": 0, "trap": "« internaliser » is bringing the work back in-house, the opposite move", "expl": "« L'externalisation » = outsourcing; the English word is also used. « Extérioriser » is to express feelings outwardly."},
+  {"id": "fv834", "level": "B2", "pos": "verb", "fr": "encadrer", "en": "to regulate (set limits for) / to supervise staff", "format": "cloze", "q": "Un règlement européen ___ strictement l'usage des données personnelles.", "options": ["encadre", "entoure", "encourage", "enferme"], "a": 0, "trap": "« encourager » would say the opposite: promoting rather than limiting the practice", "expl": "« Un usage encadré » is a regulated one. In HR, « encadrer une équipe » = to manage it; « l'encadrement » is middle management."},
+  {"id": "fv835", "level": "B2", "pos": "verb", "fr": "échelonner", "en": "to stagger (spread out in stages)", "format": "cloze", "q": "Le remboursement peut être ___ sur douze mois.", "options": ["échelonné", "échangé", "échu", "engagé"], "a": 0, "trap": "« échu » means fallen due — the payment date has arrived, not been spread out", "expl": "From « un échelon », a rung or step. « Étaler » is a close synonym: « étaler les paiements »."},
+  {"id": "fv836", "level": "C1", "pos": "verb", "fr": "enjoindre", "en": "to order (direct someone to act)", "format": "cloze", "q": "La Cour a ___ à la Commission de communiquer les documents litigieux.", "options": ["enjoint", "adjoint", "rejoint", "joint"], "a": 0, "trap": "« adjoindre » means to add something or someone alongside", "expl": "« Enjoindre à quelqu'un de faire » takes « à » plus « de ». The noun « une injonction » is an order or direction."},
+  {"id": "fv837", "level": "C1", "pos": "verb", "fr": "consacrer", "en": "to enshrine (a principle)", "format": "cloze", "q": "Ce principe est ___ par l'article 2 du traité sur l'Union européenne.", "options": ["consacré", "conservé", "constaté", "contesté"], "a": 0, "trap": "« constater » is merely to record a fact; consecrating a principle gives it legal force", "expl": "« La jurisprudence a consacré ce droit. » It also means to devote: « consacrer du temps à un dossier »."},
+  {"id": "fv838", "level": "C1", "pos": "verb", "fr": "subordonner", "en": "to make conditional on", "format": "cloze", "q": "L'octroi de l'aide est ___ au respect de l'État de droit.", "options": ["subordonné", "substitué", "souscrit", "supprimé"], "a": 0, "trap": "« substituer » means to replace one thing with another", "expl": "« Subordonner A à B » = to make A conditional on B. In hierarchy, « un subordonné » is a member of staff under someone."},
+  {"id": "fv839", "level": "C1", "pos": "verb", "fr": "réputer", "en": "to deem (treat as being)", "format": "cloze", "q": "Passé ce délai, le silence de l'administration est ___ valoir acceptation.", "options": ["réputé", "reconnu", "résolu", "refusé"], "a": 0, "trap": "« reconnu » states a fact that has been established; « réputé » creates a legal fiction", "expl": "« Est réputé conforme » = shall be deemed to comply. Everyday sense: « un restaurant réputé » is a well-known one."},
+  {"id": "fv840", "level": "C1", "pos": "verb", "fr": "alléguer", "en": "to allege (assert without proof yet)", "format": "cloze", "q": "Les faits ___ par le requérant ne sont pas établis par les pièces du dossier.", "options": ["allégués", "alloués", "allégés", "aliénés"], "a": 0, "trap": "« allouer » means to allocate a sum — a near-homograph in the same documents", "expl": "« Alléguer » puts forward a claim still to be proved. « Les faits allégués » contrast with « les faits établis »."},
+  {"id": "fv841", "level": "A2", "pos": "verb", "fr": "prendre", "en": "to take (in fixed expressions)", "format": "collocation", "q": "Comment dit-on « to make a decision » ?", "options": ["prendre une décision", "prendre rendez-vous", "prendre le métro", "prendre du retard"], "a": 0, "trap": "English says 'make' a decision, which pushes learners towards « faire une décision » — that does not exist", "expl": "All four are real: « prendre rendez-vous » = to make an appointment, « prendre du retard » = to fall behind. Decisions are taken, not made."},
+  {"id": "fv842", "level": "A2", "pos": "verb", "fr": "avoir", "en": "to have (in states: hunger, cold, fear)", "format": "collocation", "q": "Comment dit-on « I'm cold » (parlant de vous-même) ?", "options": ["J'ai froid", "Je suis froid", "Il fait froid", "Je me sens froid"], "a": 0, "trap": "« il fait froid » is correct French but describes the weather, not you", "expl": "French uses « avoir » for states: avoir faim, soif, chaud, peur, raison, sommeil. « Je suis froid » would mean I am a cold person."},
+  {"id": "fv843", "level": "A2", "pos": "verb", "fr": "passer un examen", "en": "to sit an exam", "format": "collocation", "q": "Comment dit-on « to sit an exam » (sans dire si on l'a eu) ?", "options": ["passer un examen", "réussir un examen", "rater un examen", "préparer un examen"], "a": 0, "trap": "« passer un examen » looks like 'to pass' but only means to take it — passing is « réussir »", "expl": "« J'ai passé le concours en mars et je l'ai réussi. » A classic false friend that changes the whole message."},
+  {"id": "fv844", "level": "A2", "pos": "verb", "fr": "faire la vaisselle", "en": "to do the washing-up", "format": "collocation", "q": "Comment dit-on « to do the washing-up » ?", "options": ["faire la vaisselle", "faire la lessive", "faire le ménage", "faire les poussières"], "a": 0, "trap": "faire la lessive — doing the laundry, the other « faire » chore", "expl": "« La vaisselle » is the crockery and the act of washing it. « Le lave-vaisselle » is the dishwasher, « le lave-linge » the washing machine."},
+  {"id": "fv845", "level": "A2", "pos": "verb", "fr": "donner un coup de main", "en": "to give someone a hand", "format": "collocation", "q": "Comment dit-on « to give someone a hand » (aider) ?", "options": ["donner un coup de main", "donner la main", "tendre la main", "prêter main-forte"], "a": 0, "trap": "donner la main — to hold hands, what you do with a child crossing the street", "expl": "« Tu me donnes un coup de main ? » is the everyday request. « Prêter main-forte » is formal and used of reinforcements."},
+  {"id": "fv846", "level": "A2", "pos": "verb", "fr": "poser une question", "en": "to ask a question", "format": "collocation", "q": "Comment dit-on « to ask a question » ?", "options": ["poser une question", "demander une question", "faire une question", "dire une question"], "a": 0, "trap": "« demander » means to ask, so « demander une question » feels right but is wrong — questions are « posées »", "expl": "« Puis-je vous poser une question ? » You « demandez » a thing or an action: « demander un renseignement »."},
+  {"id": "fv847", "level": "B1", "pos": "verb", "fr": "tenir au courant", "en": "to keep someone posted", "format": "collocation", "q": "Comment dit-on « I'll keep you posted » ?", "options": ["Je te tiens au courant", "Je te mets au courant", "Je te garde au courant", "Je te laisse au courant"], "a": 0, "trap": "« mettre quelqu'un au courant » is real but means to brief someone now, not to keep updating them", "expl": "« Tiens-moi au courant ! » ends many emails. « Être au courant » = to be in the know."},
+  {"id": "fv848", "level": "B1", "pos": "verb", "fr": "rendre service", "en": "to do someone a favour", "format": "collocation", "q": "Comment dit-on « to do someone a favour » ?", "options": ["rendre service à quelqu'un", "faire un service à quelqu'un", "donner un service à quelqu'un", "prêter un service à quelqu'un"], "a": 0, "trap": "the English 'do' pulls learners to « faire un service », which is not idiomatic", "expl": "« Ça me rendrait service » = that would help me out. « Rendre » here means to give in return, as in « rendre visite »."},
+  {"id": "fv849", "level": "B1", "pos": "verb", "fr": "porter plainte", "en": "to file a complaint (with the police)", "format": "collocation", "q": "Comment dit-on « to report a crime to the police » ?", "options": ["porter plainte", "porter secours", "porter atteinte", "porter un jugement"], "a": 0, "trap": "porter atteinte à — to infringe or harm a right, which is what the complaint is about, not the act of filing it", "expl": "« Porter plainte au commissariat » — note no article. « Déposer une plainte » is the equivalent with an article."},
+  {"id": "fv850", "level": "B1", "pos": "verb", "fr": "faire appel à", "en": "to call on (bring in someone)", "format": "collocation", "q": "Comment dit-on « to bring in an outside expert » ?", "options": ["faire appel à un expert extérieur", "faire l'appel des experts", "faire un appel aux experts", "appeler à un expert"], "a": 0, "trap": "faire l'appel — to call the register, checking who is present", "expl": "« Faire appel à » = to call upon. In law « faire appel » alone means to lodge an appeal against a judgment."},
+  {"id": "fv851", "level": "B1", "pos": "verb", "fr": "avoir besoin de", "en": "to need", "format": "collocation", "q": "Comment dit-on « I need help » ?", "options": ["J'ai besoin d'aide", "J'ai envie d'aide", "J'ai droit à l'aide", "Je manque d'aide"], "a": 0, "trap": "« avoir envie de » means to feel like something, a want rather than a need", "expl": "« Avoir besoin de + nom/infinitif ». « Avoir droit à » = to be entitled to; « manquer de » = to be short of."},
+  {"id": "fv852", "level": "B1", "pos": "verb", "fr": "se mettre à", "en": "to start doing something", "format": "collocation", "q": "Comment dit-on « to start working » (s'y mettre) ?", "options": ["se mettre à travailler", "se mettre en route", "se mettre d'accord", "se mettre au vert"], "a": 0, "trap": "se mettre au travail is also right, but « se mettre en route » means to set off on a journey", "expl": "« Se mettre à + infinitif » marks the start of an activity: « il s'est mis à pleuvoir »."},
+  {"id": "fv853", "level": "B1", "pos": "verb", "fr": "laisser tomber", "en": "to drop it (give up on something)", "format": "collocation", "q": "Comment dit-on « forget it, drop it » (familier) ?", "options": ["laisse tomber", "laisse passer", "laisse faire", "laisse aller"], "a": 0, "trap": "« laisser passer » = to let it go by without reacting; close in feel but not the same", "expl": "« Laisse tomber, ce n'est pas grave. » « Laisser faire » = to let someone get on with it."},
+  {"id": "fv854", "level": "B1", "pos": "verb", "fr": "prendre part à", "en": "to take part in", "format": "collocation", "q": "Comment dit-on « to take part in the discussions » ?", "options": ["prendre part aux discussions", "prendre parti dans les discussions", "faire partie des discussions", "prendre place aux discussions"], "a": 0, "trap": "prendre parti — to take sides, one letter and a whole attitude away", "expl": "« Prendre part à » = to participate. « Faire partie de » = to be a member of a group."},
+  {"id": "fv855", "level": "B1", "pos": "verb", "fr": "tenir à", "en": "to be keen to (insist on)", "format": "collocation", "q": "Comment dit-on « I really want to thank you » (j'y tiens) ?", "options": ["Je tiens à vous remercier", "Je compte vous remercier", "J'entends vous remercier", "Je pense vous remercier"], "a": 0, "trap": "« j'entends vous remercier » is real formal French but means I intend to, with a note of assertion", "expl": "« Tenir à » expresses attachment: « je tiens à mon indépendance ». « Tenir de » means to take after someone."},
+  {"id": "fv856", "level": "B1", "pos": "verb", "fr": "venir de", "en": "to have just done something", "format": "collocation", "q": "Comment dit-on « I have just arrived » ?", "options": ["Je viens d'arriver", "Je vais arriver", "Je suis en train d'arriver", "J'allais arriver"], "a": 0, "trap": "« je vais arriver » is the near future — the same structure with the opposite time direction", "expl": "« Venir de + infinitif » is the recent past. In the imperfect it shifts back: « je venais d'arriver » = I had just arrived."},
+  {"id": "fv857", "level": "B2", "pos": "verb", "fr": "se rendre compte", "en": "to realise", "format": "collocation", "q": "Comment dit-on « to realise that there is a problem » ?", "options": ["se rendre compte qu'il y a un problème", "rendre compte d'un problème", "tenir compte d'un problème", "prendre en compte un problème"], "a": 0, "trap": "rendre compte de — to report back on something to a superior", "expl": "Four different verbs share « compte »: « tenir compte de » = to take into account, « prendre en compte » = to factor in."},
+  {"id": "fv858", "level": "B2", "pos": "verb", "fr": "mettre au point", "en": "to finalise / to clarify", "format": "collocation", "q": "Comment dit-on « to finalise the details of the agreement » ?", "options": ["mettre au point les détails", "mettre en point les détails", "faire le point sur les détails", "mettre à jour les détails"], "a": 0, "trap": "faire le point — to review where things stand, not to finish them off", "expl": "« Une mise au point » is also a clarification issued after a misunderstanding, and in photography the focus."},
+  {"id": "fv859", "level": "B2", "pos": "verb", "fr": "faire part de", "en": "to inform someone of (formal)", "format": "collocation", "q": "Comment dit-on « to inform the committee of a decision » (registre formel) ?", "options": ["faire part de la décision au comité", "faire partie de la décision", "faire état de la décision", "prendre part à la décision"], "a": 0, "trap": "faire état de — to mention or refer to something, without addressing it to anyone in particular", "expl": "« Je vous fais part de ma décision. » « Un faire-part » is the printed card announcing a birth, wedding or death."},
+  {"id": "fv860", "level": "B2", "pos": "verb", "fr": "donner lieu à", "en": "to give rise to", "format": "collocation", "q": "Comment dit-on « this may give rise to an appeal » ?", "options": ["Cela peut donner lieu à un recours", "Cela peut avoir lieu par un recours", "Cela peut tenir lieu de recours", "Cela peut prendre lieu d'un recours"], "a": 0, "trap": "tenir lieu de — to serve as, to stand in for: « ce document tient lieu de facture »", "expl": "« Avoir lieu » = to take place. « Donner lieu à » introduces a consequence, common in legal drafting."},
+  {"id": "fv861", "level": "B2", "pos": "verb", "fr": "mettre en cause", "en": "to implicate (call into question)", "format": "collocation", "q": "Comment dit-on « to implicate a senior official » ?", "options": ["mettre en cause un haut fonctionnaire", "remettre en cause un haut fonctionnaire", "mettre en garde un haut fonctionnaire", "mettre en œuvre un haut fonctionnaire"], "a": 0, "trap": "remettre en cause — to call something back into question, used of decisions and principles rather than people", "expl": "« Sa responsabilité est mise en cause. » « Mettre en garde » = to warn; « la mise en cause » names the person implicated."},
+  {"id": "fv862", "level": "B2", "pos": "verb", "fr": "rendre des comptes", "en": "to be accountable (answer for one's actions)", "format": "collocation", "q": "Comment dit-on « the agency must answer to Parliament » ?", "options": ["l'agence doit rendre des comptes au Parlement", "l'agence doit rendre compte du Parlement", "l'agence doit tenir les comptes du Parlement", "l'agence doit régler ses comptes au Parlement"], "a": 0, "trap": "régler ses comptes — to settle scores with someone, a hostile expression", "expl": "« La reddition de comptes » is accountability. « Rendre compte de quelque chose à quelqu'un » = to report on something."},
+  {"id": "fv863", "level": "B2", "pos": "verb", "fr": "procéder à", "en": "to carry out (a formal operation)", "format": "collocation", "q": "Comment dit-on « to carry out a check » (langue administrative) ?", "options": ["procéder à une vérification", "procéder d'une vérification", "provoquer une vérification", "se procurer une vérification"], "a": 0, "trap": "procéder de — to stem from, to originate in: « cette erreur procède d'une mauvaise lecture »", "expl": "« Il sera procédé à un vote » is impersonal administrative style. The preposition changes the meaning completely."},
+  {"id": "fv864", "level": "B2", "pos": "verb", "fr": "s'assurer que", "en": "to make sure that", "format": "collocation", "q": "Comment dit-on « make sure the file is complete » ?", "options": ["Assurez-vous que le dossier est complet", "Assurez que le dossier est complet", "Soyez assuré que le dossier est complet", "Assurez le dossier contre l'incendie"], "a": 0, "trap": "« assurer que » without the pronoun means to assert that something is true, not to check it", "expl": "« S'assurer de quelque chose » = to make certain of it. « Assurer » alone also means to insure and to cover a duty."},
+  {"id": "fv865", "level": "B2", "pos": "verb", "fr": "tenir une réunion", "en": "to hold a meeting", "format": "collocation", "q": "Comment dit-on « to hold a meeting » ?", "options": ["tenir une réunion", "prendre une réunion", "mener une réunion", "porter une réunion"], "a": 0, "trap": "« mener une réunion » exists but means to lead it; « prendre une réunion » is a calque of 'to take a meeting' and is not French", "expl": "You « tenez » a meeting, « convoquez » the participants and « reportez » it if needed. Informally « faire une réunion » is also heard."},
+  {"id": "fv866", "level": "B2", "pos": "verb", "fr": "lever la séance", "en": "to close the sitting", "format": "collocation", "q": "Comment dit-on « to close the sitting » à la fin d'une réunion formelle ?", "options": ["lever la séance", "ouvrir la séance", "suspendre la séance", "présider la séance"], "a": 0, "trap": "suspendre la séance — to break off temporarily, with the sitting resuming later", "expl": "« La séance est levée » ends official minutes. « Lever » here means to lift the sitting rather than to raise anything."},
+  {"id": "fv867", "level": "B2", "pos": "verb", "fr": "déposer un amendement", "en": "to table an amendment", "format": "collocation", "q": "Comment dit-on « to table an amendment » ?", "options": ["déposer un amendement", "retirer un amendement", "adopter un amendement", "rejeter un amendement"], "a": 0, "trap": "English 'to table' in American usage means to shelve; in French « déposer » is to put it forward", "expl": "The life of an amendment: « déposé », then « adopté » or « rejeté », unless its author « le retire »."},
+  {"id": "fv868", "level": "B2", "pos": "verb", "fr": "mettre en concurrence", "en": "to put out to competitive tender", "format": "collocation", "q": "Comment dit-on « to put the contract out to competition » ?", "options": ["mettre le marché en concurrence", "mettre le marché en commun", "mettre le marché en réseau", "mettre le marché en avant"], "a": 0, "trap": "mettre en avant — to highlight or promote something, a very common phrase in the same documents", "expl": "« La mise en concurrence » is required above certain thresholds. Awarding without it is « un marché de gré à gré »."},
+  {"id": "fv869", "level": "C1", "pos": "verb", "fr": "essuyer un refus", "en": "to meet with a refusal", "format": "collocation", "q": "Quel verbe s'emploie idiomatiquement avec « un refus » ou « un revers » ?", "options": ["essuyer un refus", "balayer un refus", "encaisser un refus", "avaler un refus"], "a": 0, "trap": "« encaisser » does mean to take a blow, but it is colloquial and not used with « un refus » in formal writing", "expl": "« Essuyer » literally means to wipe; idiomatically you « essuyez » a refusal, a setback (« un revers ») or criticism."},
+  {"id": "fv870", "level": "C1", "pos": "verb", "fr": "faire droit à", "en": "to uphold (grant a claim)", "format": "collocation", "q": "Comment dit-on « the Court upheld the applicant's claim » ?", "options": ["la Cour a fait droit à la demande", "la Cour a fait valoir la demande", "la Cour a fait état de la demande", "la Cour a fait suite à la demande"], "a": 0, "trap": "faire valoir — to assert one's own rights, which is what the applicant does, not the court", "expl": "« Faire droit à une demande » = to grant it. The opposite is « rejeter la demande » or « débouter le requérant »."},
+  {"id": "fv871", "level": "A2", "pos": "adj", "fr": "propre", "en": "clean (after the noun) / own (before it)", "format": "fr2en", "options": ["clean (after the noun) / own (before it)", "proper, correct", "tidy", "suitable"], "a": 0, "trap": "'proper' is the English lookalike; « propre » never means proper — that is « correct » or « convenable »", "expl": "Position changes the sense: « ma propre voiture » = my own car, « une voiture propre » = a clean car."},
+  {"id": "fv872", "level": "A2", "pos": "adj", "fr": "prêt", "en": "ready", "format": "fr2en", "options": ["ready", "lent out", "near", "willing but unable"], "a": 0, "trap": "« un prêt » as a noun means a loan, and « prêté » means lent — same letters, different word", "expl": "« Je suis prêt à partir. » Feminine « prête ». Not to be confused with « près (de) » = near."},
+  {"id": "fv873", "level": "A2", "pos": "adj", "fr": "occupé", "en": "busy / engaged", "format": "fr2en", "options": ["busy / engaged", "occupied by a foreign army only", "preoccupied and worried", "self-employed"], "a": 0, "trap": "« préoccupé » means worried, not busy", "expl": "« Je suis occupé cet après-midi. » A toilet or phone line is also « occupé »; the opposite is « libre »."},
+  {"id": "fv874", "level": "A2", "pos": "adj", "fr": "lourd", "en": "heavy", "format": "fr2en", "options": ["heavy", "loud", "slow", "clumsy in speech only"], "a": 0, "trap": "English 'loud' is a false friend of « lourd »; loud is « fort » or « bruyant »", "expl": "« Une valise lourde. » Figuratively « une lourde responsabilité »; a person who is « lourd » is tactless or heavy going."},
+  {"id": "fv875", "level": "A2", "pos": "adj", "fr": "pressé", "en": "in a hurry", "format": "fr2en", "options": ["in a hurry", "pressed for money", "under pressure at work", "squeezed flat"], "a": 0, "trap": "the passive look of the participle suggests being pressed by others; it simply means you are rushing", "expl": "« Je suis pressé, je dois filer. » « Un citron pressé » is a fresh lemon juice, from the same verb « presser »."},
+  {"id": "fv876", "level": "B1", "pos": "adj", "fr": "actuel", "en": "current (present-day)", "format": "fr2en", "options": ["current (present-day)", "actual, real", "topical in the news only", "up to date"], "a": 0, "trap": "the textbook false friend: 'actual' is « réel » or « véritable »", "expl": "« La situation actuelle » = the present situation. The adverb « actuellement » means currently, not actually."},
+  {"id": "fv877", "level": "B1", "pos": "adj", "fr": "éventuel", "en": "possible (which may or may not happen)", "format": "fr2en", "options": ["possible (which may or may not happen)", "eventual, final", "occasional", "imminent"], "a": 0, "trap": "'eventual' means final in English; « éventuel » only marks a possibility", "expl": "« Un éventuel recours » = a possible appeal. « Éventuellement » = possibly, not eventually (« finalement »)."},
+  {"id": "fv878", "level": "B1", "pos": "adj", "fr": "sensible", "en": "sensitive (also: noticeable)", "format": "fr2en", "options": ["sensitive (also: noticeable)", "sensible, level-headed", "reasonable", "perceptive"], "a": 0, "trap": "'sensible' in English is « raisonnable » or « sensé » — one letter from « sensible »", "expl": "« Des données sensibles » = sensitive data. « Une hausse sensible » = a noticeable rise."},
+  {"id": "fv879", "level": "B1", "pos": "adj", "fr": "ancien", "en": "former (before the noun) / old (after it)", "format": "fr2en", "options": ["former (before the noun) / old (after it)", "ancient in all positions", "antique and valuable", "previous but still in post"], "a": 0, "trap": "position decides: « un ancien collègue » is a former colleague, « un collègue ancien » would be an elderly one", "expl": "Same pattern as « propre », « cher » and « grand ». « L'ancien bâtiment » = the old one we used to be in."},
+  {"id": "fv880", "level": "B1", "pos": "adj", "fr": "valable", "en": "valid", "format": "fr2en", "options": ["valid", "valuable", "brave", "worth the money"], "a": 0, "trap": "« valeureux » means valiant and « de valeur » means valuable — all from the same root « valoir »", "expl": "« Un titre de transport valable une heure. » Also « un argument valable » = a fair point."},
+  {"id": "fv881", "level": "B1", "pos": "adj", "fr": "courant", "en": "common, everyday (also: current, of the month)", "format": "fr2en", "options": ["common, everyday (also: current, of the month)", "running fast", "fluent in a language", "short-lived"], "a": 0, "trap": "« être courant » is not used of people — fluency is « parler couramment »", "expl": "« Une expression courante » = an everyday phrase; « fin courant » = at the end of this month; « un compte courant » = a current account."},
+  {"id": "fv882", "level": "B2", "pos": "adj", "fr": "conséquent", "en": "sizeable, substantial", "format": "fr2en", "options": ["sizeable, substantial", "consequent, resulting", "logical and consistent", "final"], "a": 0, "trap": "'consequent' suggests a result; in modern usage « conséquent » usually means large: « un budget conséquent »", "expl": "Purists prefer « conséquent » = consistent with one's principles, but everyday French uses it for size. « Par conséquent » = consequently."},
+  {"id": "fv883", "level": "B2", "pos": "adj", "fr": "contraignant", "en": "binding (imposing constraints)", "format": "fr2en", "options": ["binding (imposing constraints)", "constrained by others", "restrictive of movement only", "compelling as an argument"], "a": 0, "trap": "« contraint » (past participle) describes the person under constraint; « contraignant » describes what imposes it", "expl": "« Un accord juridiquement contraignant. » A non-binding text is « non contraignant » or « une soft law »."},
+  {"id": "fv884", "level": "B2", "pos": "adj", "fr": "préalable", "en": "prior (required beforehand)", "format": "fr2en", "options": ["prior (required beforehand)", "preferable", "preliminary in a provisional sense", "probable"], "a": 0, "trap": "« préliminaire » suggests a first stage that may be revised; « préalable » is a precondition", "expl": "« Une autorisation préalable » must be obtained first. « Au préalable » = beforehand."},
+  {"id": "fv885", "level": "B2", "pos": "adj", "fr": "provisoire", "en": "temporary (pending something final)", "format": "fr2en", "options": ["temporary (pending something final)", "foreseeable", "provisional in the sense of stocked up", "precautionary"], "a": 0, "trap": "« prévisible » (foreseeable) is a near-lookalike used in the same sentences", "expl": "« À titre provisoire » = on a temporary basis. « Des mesures provisoires » in law are interim measures."},
+  {"id": "fv886", "level": "B2", "pos": "adj", "fr": "recevable", "en": "admissible (accepted for consideration)", "format": "fr2en", "options": ["admissible (accepted for consideration)", "receivable as a sum owed", "acceptable in tone", "well received"], "a": 0, "trap": "« les créances à recevoir » are receivables in accounting; the legal sense is about admissibility", "expl": "A court first rules on « la recevabilité », then on « le fond ». An out-of-time appeal is « irrecevable »."},
+  {"id": "fv887", "level": "B2", "pos": "adj", "fr": "tacite", "en": "tacit (implied, not stated)", "format": "fr2en", "options": ["tacit (implied, not stated)", "silent because nobody spoke", "spoken but off the record", "tactful"], "a": 0, "trap": "« la tacite reconduction » renews a contract by silence — silence itself is not the meaning of the word", "expl": "« Un accord tacite » needs no words. Opposite: « exprès » or « explicite »."},
+  {"id": "fv888", "level": "B2", "pos": "adj", "fr": "notoire", "en": "well known (widely acknowledged)", "format": "fr2en", "options": ["well known (widely acknowledged)", "notorious in a bad sense only", "noted in the minutes", "noteworthy"], "a": 0, "trap": "English 'notorious' is always negative; « notoire » is neutral: « un fait notoire »", "expl": "« Il est de notoriété publique que… » = it is common knowledge that. « Une incompétence notoire » is negative because of the noun."},
+  {"id": "fv889", "level": "C1", "pos": "adj", "fr": "caduc", "en": "lapsed (no longer valid)", "format": "fr2en", "options": ["lapsed (no longer valid)", "harsh", "hollow, empty of content", "cascading"], "a": 0, "trap": "« caduc » also describes deciduous trees (« à feuilles caduques »), which hides its legal sense of having lapsed", "expl": "« La proposition est devenue caduque » = it has lapsed. The noun is « la caducité »; feminine form « caduque »."},
+  {"id": "fv890", "level": "C1", "pos": "adj", "fr": "idoine", "en": "fitting, appropriate (formal)", "format": "fr2en", "options": ["fitting, appropriate (formal)", "idle", "identical", "idiomatic"], "a": 0, "trap": "it looks like 'idle' or 'idiom' but comes from Latin idoneus, meaning suitable", "expl": "« Trouver la formule idoine » = to find the right wording. Very formal, at home in legal drafting."},
+  {"id": "fv891", "level": "A2", "pos": "adj", "fr": "cassé", "en": "broken", "format": "en2fr", "options": ["cassé", "abîmé", "usé", "perdu"], "a": 0, "trap": "abîmé — damaged but still working; « cassé » means it no longer works at all", "expl": "« L'ascenseur est cassé » — though for machines you more often say « en panne ». « Usé » means worn out by use."},
+  {"id": "fv892", "level": "A2", "pos": "adj", "fr": "vide", "en": "empty", "format": "en2fr", "options": ["vide", "vidé", "plein", "léger"], "a": 0, "trap": "vidé — emptied by someone; « vide » simply describes the state", "expl": "« La salle est vide. » « Le frigo est vide » but « j'ai vidé le frigo » = I emptied it."},
+  {"id": "fv893", "level": "A2", "pos": "adj", "fr": "calme", "en": "quiet (peaceful)", "format": "en2fr", "options": ["calme", "bruyant", "agité", "animé"], "a": 0, "trap": "animé — lively; positive but the opposite of quiet", "expl": "« Un quartier calme » is what flat adverts promise. For a person keeping quiet, use « silencieux »."},
+  {"id": "fv894", "level": "A2", "pos": "adj", "fr": "gentil", "en": "kind (nice to others)", "format": "en2fr", "options": ["gentil", "poli", "agréable", "généreux"], "a": 0, "trap": "poli — polite, a matter of manners rather than kindness", "expl": "« C'est gentil de votre part. » Feminine « gentille »; the adverb is « gentiment »."},
+  {"id": "fv895", "level": "B1", "pos": "adj", "fr": "obligatoire", "en": "compulsory", "format": "en2fr", "options": ["obligatoire", "facultatif", "obligeant", "obligé"], "a": 0, "trap": "facultatif — optional, the exact opposite and a word that appears on the same forms", "expl": "« La déclaration est obligatoire. » « Obligeant » means helpful, willing to oblige; « je suis obligé » = I have no choice."},
+  {"id": "fv896", "level": "B1", "pos": "adj", "fr": "disponible", "en": "available", "format": "en2fr", "options": ["disponible", "joignable", "libre", "ouvert"], "a": 0, "trap": "joignable — reachable by phone or email, which is not the same as being free to act", "expl": "« Je suis disponible jeudi matin. » « Les places disponibles » = the seats still free; the noun is « la disponibilité »."},
+  {"id": "fv897", "level": "B1", "pos": "adj", "fr": "ponctuel", "en": "punctual (also: one-off)", "format": "en2fr", "options": ["ponctuel", "précis", "exact", "régulier"], "a": 0, "trap": "« ponctuel » has a second sense — a one-off event: « une aide ponctuelle » is one-off support, not punctual support", "expl": "« Il est toujours ponctuel » = he is never late. Context separates the two senses."},
+  {"id": "fv898", "level": "B1", "pos": "adj", "fr": "souple", "en": "flexible (accommodating)", "format": "en2fr", "options": ["souple", "mou", "fluide", "léger"], "a": 0, "trap": "mou — soft or limp, and of a person spineless; not a compliment", "expl": "« Des horaires souples » = flexible hours. « Assouplir les règles » = to relax the rules."},
+  {"id": "fv899", "level": "B1", "pos": "adj", "fr": "fiable", "en": "reliable", "format": "en2fr", "options": ["fiable", "viable", "valable", "faible"], "a": 0, "trap": "viable — capable of surviving; three near-rhymes that turn up in the same reports", "expl": "« Des données fiables » = reliable data. From « se fier à » = to trust; the noun is « la fiabilité »."},
+  {"id": "fv900", "level": "B2", "pos": "adj", "fr": "pertinent", "en": "relevant", "format": "en2fr", "options": ["pertinent", "permanent", "persistant", "patent"], "a": 0, "trap": "there is no French adjective « relevant » in this sense — « relevant de » is a participle meaning falling under", "expl": "« Une remarque pertinente » = a relevant, apt remark. « Les éléments pertinents » = the relevant material."},
+  {"id": "fv901", "level": "B2", "pos": "adj", "fr": "exhaustif", "en": "exhaustive (complete)", "format": "en2fr", "options": ["exhaustif", "extensif", "excessif", "expansif"], "a": 0, "trap": "extensif — broad in coverage, e.g. « une interprétation extensive », but not complete", "expl": "« Une liste non exhaustive » = a non-exhaustive list, very common in legal texts. Do not confuse with « épuisant » (exhausting)."},
+  {"id": "fv902", "level": "B2", "pos": "adj", "fr": "définitif", "en": "final (settled once and for all)", "format": "en2fr", "options": ["définitif", "provisoire", "indicatif", "tacite"], "a": 0, "trap": "provisoire — provisional; the two are the standard pair on draft documents", "expl": "« Le texte définitif » is the final version. « En définitive » as an adverb phrase means in the end."},
+  {"id": "fv903", "level": "B2", "pos": "adj", "fr": "opportun", "en": "timely, appropriate (in the circumstances)", "format": "en2fr", "options": ["opportun", "importun", "opportuniste", "ponctuel"], "a": 0, "trap": "importun — unwelcome, intrusive; the same root with the opposite prefix", "expl": "« Le moment opportun » = the right moment. « Juger opportun de faire » = to think it appropriate to do."},
+  {"id": "fv904", "level": "B2", "pos": "adj", "fr": "ciblé", "en": "targeted", "format": "en2fr", "options": ["ciblé", "chiffré", "cadré", "calibré"], "a": 0, "trap": "chiffré — quantified, put into figures; both describe a well-defined measure", "expl": "« Des mesures ciblées » aim at a specific group. « La cible » is the target; « cibler » is the verb."},
+  {"id": "fv905", "level": "C1", "pos": "adj", "fr": "opposable", "en": "enforceable against (binding on third parties)", "format": "en2fr", "options": ["opposable", "imposable", "opposé", "opposant"], "a": 0, "trap": "imposable — taxable, from « impôt »; a single letter apart in the same documents", "expl": "« Une clause opposable aux tiers » can be relied on against third parties. « L'opposabilité » is the noun."},
+  {"id": "fv906", "level": "A2", "pos": "adj", "fr": "sale", "en": "dirty", "format": "cloze", "q": "Mes mains sont ___ , je vais les laver avant de manger.", "options": ["sales", "propres", "sèches", "mouillées"], "a": 0, "trap": "« propre » is the opposite and, placed before a noun, means own", "expl": "« Sale » goes before the noun in insults: « un sale caractère » = a nasty temper. After the noun it is literal."},
+  {"id": "fv907", "level": "A2", "pos": "adj", "fr": "bondé", "en": "packed (full of people)", "format": "cloze", "q": "Le tram 81 est ___ à huit heures du matin.", "options": ["bondé", "vide", "libre", "calme"], "a": 0, "trap": "« complet » is used for a hotel or a train with no seats left; « bondé » describes the crush", "expl": "« Une rame bondée » = a packed carriage. « Il y a foule » is another way to say it."},
+  {"id": "fv908", "level": "A2", "pos": "adj", "fr": "ouvert", "en": "open", "format": "cloze", "q": "Le guichet de la commune est ___ jusqu'à 16 h le mardi.", "options": ["ouvert", "fermé", "libre", "disponible"], "a": 0, "trap": "« libre » means free or unoccupied — a counter can be « libre » and still closed", "expl": "« Ouvert du lundi au vendredi ». Note « les horaires d'ouverture » = opening hours."},
+  {"id": "fv909", "level": "A2", "pos": "adj", "fr": "neuf", "en": "brand new (never used)", "format": "cloze", "q": "J'ai acheté un vélo ___ , pas un vélo d'occasion.", "options": ["neuf", "nouveau", "jeune", "récent"], "a": 0, "trap": "« nouveau » means new to me — « ma nouvelle voiture » may well be second-hand", "expl": "« Neuf » = never used before; « nouveau » = new in my life. « Quoi de neuf ? » = what's new?"},
+  {"id": "fv910", "level": "A2", "pos": "adj", "fr": "proche", "en": "nearby", "format": "cloze", "q": "Le supermarché le plus ___ est à deux rues d'ici.", "options": ["proche", "prochain", "éloigné", "ancien"], "a": 0, "trap": "« prochain » means next in a sequence: « le prochain arrêt » = the next stop", "expl": "« Un proche » as a noun is a close relative or friend. « Près de » is the preposition for near."},
+  {"id": "fv911", "level": "A2", "pos": "adj", "fr": "désolé", "en": "sorry", "format": "cloze", "q": "Je suis ___ , je ne pourrai pas venir à la réunion de jeudi.", "options": ["désolé", "déçu", "fâché", "gêné"], "a": 0, "trap": "« déçu » means disappointed — what the other person may feel, not an apology", "expl": "« Désolé » apologises; « pardon » and « excusez-moi » do the same job. « Fâché » means annoyed or on bad terms."},
+  {"id": "fv912", "level": "B1", "pos": "adj", "fr": "quotidien", "en": "daily", "format": "cloze", "q": "Le trajet ___ entre Ixelles et Schuman me prend vingt-cinq minutes.", "options": ["quotidien", "hebdomadaire", "mensuel", "annuel"], "a": 0, "trap": "the four rhythm adjectives are formed on completely different roots, so none of them helps you guess the others", "expl": "quotidien (day), hebdomadaire (week), mensuel (month), annuel (year). « Le quotidien » as a noun is a daily newspaper or daily life."},
+  {"id": "fv913", "level": "B1", "pos": "adj", "fr": "mensuel", "en": "monthly", "format": "cloze", "q": "Le loyer ___ est de 950 euros, charges comprises.", "options": ["mensuel", "annuel", "ponctuel", "éventuel"], "a": 0, "trap": "« éventuel » sounds like a time word but means possible, not recurring", "expl": "« Une mensualité » is a monthly instalment. « Bimensuel » is twice a month, « bimestriel » every two months."},
+  {"id": "fv914", "level": "B1", "pos": "adj", "fr": "complet", "en": "complete (nothing missing)", "format": "cloze", "q": "Votre dossier n'est pas ___ : il manque l'attestation de domicile.", "options": ["complet", "compliqué", "complexe", "correct"], "a": 0, "trap": "« complexe » describes difficulty, not completeness — two lookalikes with different jobs", "expl": "« Complet » also means full up: « l'hôtel est complet ». Feminine « complète »."},
+  {"id": "fv915", "level": "B1", "pos": "adj", "fr": "précis", "en": "precise (specific)", "format": "cloze", "q": "Pouvez-vous être plus ___ sur les dates de votre disponibilité ?", "options": ["précis", "précieux", "pressé", "prudent"], "a": 0, "trap": "« précieux » means valuable or precious; the first four letters are shared", "expl": "« À dix heures précises » = at ten o'clock sharp. « Préciser » is to specify; « la précision » is the detail given."},
+  {"id": "fv916", "level": "B1", "pos": "adj", "fr": "énervant", "en": "annoying", "format": "cloze", "q": "Ce bruit de travaux est vraiment ___ quand on essaie de travailler.", "options": ["énervant", "énervé", "nerveux", "énergique"], "a": 0, "trap": "« énervé » describes the person who is irritated; « énervant » describes what irritates them", "expl": "The -ant/-é pair runs through French: fatigant/fatigué, intéressant/intéressé, inquiétant/inquiet."},
+  {"id": "fv917", "level": "B1", "pos": "adj", "fr": "satisfaisant", "en": "satisfactory", "format": "cloze", "q": "Les résultats du premier trimestre sont ___ mais peuvent encore progresser.", "options": ["satisfaisants", "satisfaits", "suffisants", "satisfiables"], "a": 0, "trap": "« satisfaits » describes people who are pleased, not results that are good enough", "expl": "Same -ant/-é logic: « les clients sont satisfaits », « le service est satisfaisant »."},
+  {"id": "fv918", "level": "B1", "pos": "adj", "fr": "expérimenté", "en": "experienced", "format": "cloze", "q": "Nous cherchons un juriste ___ , avec au moins cinq ans de pratique.", "options": ["expérimenté", "expérimental", "expert", "exigeant"], "a": 0, "trap": "« expérimental » means at the trial stage — the opposite of what an employer wants", "expl": "« Un candidat expérimenté » has done the job before. « Expert » is used as a noun: « un expert national détaché »."},
+  {"id": "fv919", "level": "B2", "pos": "adj", "fr": "cohérent", "en": "consistent (hanging together)", "format": "cloze", "q": "Votre argumentation doit rester ___ du début à la fin de la note.", "options": ["cohérente", "consistante", "constante", "concordante"], "a": 0, "trap": "« consistant » in French means substantial or thick (« un repas consistant »); English 'consistent' is « cohérent »", "expl": "« Une politique cohérente » holds together logically. « La cohérence » is a standard criterion in EU evaluations."},
+  {"id": "fv920", "level": "B2", "pos": "adj", "fr": "durable", "en": "sustainable / lasting", "format": "cloze", "q": "L'objectif est un développement ___ qui préserve les ressources.", "options": ["durable", "dur", "durci", "permanent"], "a": 0, "trap": "« permanent » would say it never stops, which is not what sustainability means", "expl": "« Le développement durable » = sustainable development. « Durablement » = lastingly; « la durabilité » is sustainability."},
+  {"id": "fv921", "level": "B2", "pos": "adj", "fr": "conjoint", "en": "joint (done together)", "format": "cloze", "q": "Les deux institutions ont publié une déclaration ___ sur la question migratoire.", "options": ["conjointe", "jointe", "adjointe", "disjointe"], "a": 0, "trap": "« jointe » means attached, as in « la pièce jointe »", "expl": "« Une action conjointe », « conjointement avec ». As a noun « le conjoint » is a spouse."},
+  {"id": "fv922", "level": "B2", "pos": "adj", "fr": "forfaitaire", "en": "flat-rate", "format": "cloze", "q": "Les frais de repas sont remboursés sur une base ___ de 25 euros par jour.", "options": ["forfaitaire", "variable", "réelle", "proportionnelle"], "a": 0, "trap": "« réelle » is the alternative system: reimbursement of actual costs on receipts", "expl": "« Un forfait » is a fixed all-in amount — also your mobile phone plan. « Une somme forfaitaire » is a lump sum."},
+  {"id": "fv923", "level": "B2", "pos": "adj", "fr": "litigieux", "en": "disputed (in issue)", "format": "cloze", "q": "Les points ___ seront tranchés par le juge en septembre.", "options": ["litigieux", "prioritaires", "techniques", "mineurs"], "a": 0, "trap": "« litigieux » is not about being difficult or minor — it means the parties disagree about it", "expl": "« L'acte litigieux » is the contested measure. From « un litige », a dispute."},
+  {"id": "fv924", "level": "B2", "pos": "adj", "fr": "transversal", "en": "cross-cutting", "format": "cloze", "q": "La lutte contre la fraude est une priorité ___ à tous les services.", "options": ["transversale", "transitoire", "transparente", "transférable"], "a": 0, "trap": "« transitoire » means transitional, lasting only for a period", "expl": "« Une compétence transversale » is a soft skill useful everywhere. Plural masculine: « transversaux »."},
+  {"id": "fv925", "level": "C1", "pos": "adj", "fr": "prépondérant", "en": "casting, decisive (of a vote)", "format": "cloze", "q": "En cas de partage des voix, la voix du président est ___ .", "options": ["prépondérante", "prédominante", "préalable", "préliminaire"], "a": 0, "trap": "« prédominante » describes what is most common; « prépondérante » is the technical term for the casting vote", "expl": "« Une voix prépondérante » breaks a tie. More widely: « jouer un rôle prépondérant » = to play a leading role."},
+  {"id": "fv926", "level": "A2", "pos": "adj", "fr": "fort", "en": "strong / heavy (of rain, fever)", "format": "collocation", "q": "Comment dit-on « heavy rain » ?", "options": ["une forte pluie", "une lourde pluie", "une pluie pesante", "une grande pluie"], "a": 0, "trap": "English 'heavy' pulls you to « lourde », which is only used for weight", "expl": "« Fort » covers intensity: « une forte fièvre », « un fort accent », « une forte hausse ». « Il pleut fort » = it's raining hard."},
+  {"id": "fv927", "level": "A2", "pos": "adj", "fr": "grand", "en": "tall (of a person) / big", "format": "collocation", "q": "Comment dit-on « a tall man » ?", "options": ["un homme grand", "un homme gros", "un homme long", "un homme large"], "a": 0, "trap": "« gros » means fat — a mistake that causes real offence", "expl": "« Grand » is tall for people and big for things. Before the noun it can mean great: « un grand homme » = a great man."},
+  {"id": "fv928", "level": "A2", "pos": "adj", "fr": "bon", "en": "right, correct (the right one)", "format": "collocation", "q": "Comment dit-on « this isn't the right bus » ?", "options": ["ce n'est pas le bon bus", "ce n'est pas le juste bus", "ce n'est pas le vrai bus", "ce n'est pas le droit bus"], "a": 0, "trap": "« vrai » means real or genuine, not correct", "expl": "« La bonne réponse » = the right answer, « le bon numéro » = the right number. « Bon » before the noun covers English right."},
+  {"id": "fv929", "level": "B1", "pos": "adj", "fr": "grave", "en": "serious (severe)", "format": "collocation", "q": "Comment dit-on « never mind, it doesn't matter » ?", "options": ["ce n'est pas grave", "ce n'est pas sérieux", "ce n'est pas important", "ce n'est pas gênant"], "a": 0, "trap": "« ce n'est pas sérieux » means it is not to be taken seriously, i.e. it is sloppy — quite a different message", "expl": "« Pas grave ! » is the everyday reassurance. « Une erreur grave » is a serious mistake; « grave » is also slang for very among teenagers."},
+  {"id": "fv930", "level": "B1", "pos": "adj", "fr": "élevé", "en": "high (of a figure)", "format": "collocation", "q": "Comment dit-on « a high price » ?", "options": ["un prix élevé", "un prix haut", "un prix grand", "un prix large"], "a": 0, "trap": "« le prix fort » exists but means the full, undiscounted price — not simply a high one", "expl": "Figures are « élevés » or « bas », never « hauts »: « un taux élevé », « des coûts élevés »."},
+  {"id": "fv931", "level": "B1", "pos": "adj", "fr": "large", "en": "broad (wide-ranging)", "format": "collocation", "q": "Comment dit-on « a broad consensus » ?", "options": ["un large consensus", "un grand consensus", "un gros consensus", "un long consensus"], "a": 0, "trap": "'large' in English means big, so learners avoid the word that actually fits", "expl": "« Une large majorité », « au sens large » = in the broad sense. « Large » never means big in size overall."},
+  {"id": "fv932", "level": "B1", "pos": "adj", "fr": "net", "en": "net (after deductions) / clear", "format": "collocation", "q": "Comment dit-on « the net salary » (ce qui arrive sur le compte) ?", "options": ["le salaire net", "le salaire brut", "le salaire propre", "le salaire clair"], "a": 0, "trap": "« brut » is the gross figure before tax and contributions — the pair to learn together", "expl": "Belgian payslips show « brut » then « net » after « le précompte professionnel ». « Net » also means clear: « une nette amélioration »."},
+  {"id": "fv933", "level": "B2", "pos": "adj", "fr": "brut", "en": "gross (before deductions)", "format": "collocation", "q": "Comment dit-on « the gross annual salary » ?", "options": ["le salaire annuel brut", "le salaire annuel brutal", "le salaire annuel entier", "le salaire annuel total"], "a": 0, "trap": "« brutal » means violent or abrupt; « brut » is the accounting term", "expl": "« Le PIB » is « le produit intérieur brut ». « Des données brutes » are raw data."},
+  {"id": "fv934", "level": "B2", "pos": "adj", "fr": "majeur", "en": "major (also: of age)", "format": "collocation", "q": "Comment dit-on « a case of force majeure » ?", "options": ["un cas de force majeure", "un cas de force supérieure", "un cas de force extérieure", "un cas de force imprévue"], "a": 0, "trap": "the idea is unforeseeable external force, which tempts « extérieure » or « imprévue »; the fixed phrase is « force majeure »", "expl": "« La force majeure » excuses non-performance. « Être majeur » means to be of age; « un enjeu majeur » is a major issue."},
+  {"id": "fv935", "level": "B2", "pos": "adj", "fr": "interne", "en": "internal, in-house", "format": "collocation", "q": "Comment dit-on « an in-house lawyer » ?", "options": ["un juriste interne", "un juriste intérieur", "un juriste intégré", "un juriste domestique"], "a": 0, "trap": "« intérieur » is spatial (« la cour intérieure ») and « le marché intérieur » is the internal market — a fixed exception", "expl": "« En interne » = in-house: « la formation est assurée en interne ». Its opposite is « externe » or « externalisé »."},
+  {"id": "fv936", "level": "B2", "pos": "adj", "fr": "compétent", "en": "having jurisdiction (responsible for)", "format": "collocation", "q": "Comment dit-on « the competent authority » dans un texte officiel ?", "options": ["l'autorité compétente", "l'autorité compétitive", "l'autorité capable", "l'autorité qualifiée"], "a": 0, "trap": "in administrative French « compétent » means legally responsible, not skilled", "expl": "« Le service compétent » is the department that deals with it. « La compétence » is both a power and a skill."},
+  {"id": "fv937", "level": "B2", "pos": "adj", "fr": "raisonnable", "en": "reasonable", "format": "collocation", "q": "Comment dit-on « within a reasonable time » ?", "options": ["dans un délai raisonnable", "dans un délai raisonné", "dans un délai rationnel", "dans un délai modéré"], "a": 0, "trap": "« raisonné » means reasoned or thought through, not moderate in length", "expl": "« Le délai raisonnable » is a right under Article 41 of the Charter. « Raisonnablement » = reasonably."},
+  {"id": "fv938", "level": "B2", "pos": "adj", "fr": "probant", "en": "conclusive (of evidence)", "format": "collocation", "q": "Comment dit-on « conclusive evidence » ?", "options": ["des éléments probants", "des éléments probables", "des éléments prouvés", "des éléments approbateurs"], "a": 0, "trap": "« probable » looks closest but means likely, which is the opposite of conclusive", "expl": "« La force probante » is evidential weight. « Une pièce probante » proves the point; « prouvé » says the fact itself is established."},
+  {"id": "fv939", "level": "B2", "pos": "adj", "fr": "susceptible de", "en": "liable to / open to", "format": "collocation", "q": "Comment dit-on « a decision open to appeal » ?", "options": ["une décision susceptible de recours", "une décision capable de recours", "une décision possible de recours", "une décision éventuelle de recours"], "a": 0, "trap": "of people, « susceptible » means touchy — « il est très susceptible » = he takes offence easily", "expl": "« Susceptible de + nom/infinitif » = liable to. « Les décisions non susceptibles de recours » cannot be challenged."},
+  {"id": "fv940", "level": "C1", "pos": "adj", "fr": "afférent", "en": "relating to (pertaining to)", "format": "collocation", "q": "Comment dit-on « the related costs » en langue juridique ?", "options": ["les frais y afférents", "les frais afférés", "les frais adjacents", "les frais attenants"], "a": 0, "trap": "« attenant » means physically adjoining, used of buildings and land", "expl": "« Les droits et obligations y afférents » = the rights and obligations relating thereto. Always « afférent à » or « y afférent »."},
+  {"id": "fv941", "level": "A2", "pos": "adv", "fr": "bientôt", "en": "soon", "format": "fr2en", "options": ["soon", "early", "for a long time", "in a moment, right now"], "a": 0, "trap": "« tôt » alone means early — « bientôt » is about how soon, not how early in the day", "expl": "« À bientôt ! » = see you soon. « Tout à l'heure » covers later today; « tout de suite » means straight away."},
+  {"id": "fv942", "level": "A2", "pos": "adv", "fr": "plutôt", "en": "rather (instead / fairly)", "format": "fr2en", "options": ["rather (instead / fairly)", "earlier", "later", "more often"], "a": 0, "trap": "« plus tôt » in two words means earlier — the space changes the meaning completely", "expl": "« Il est plutôt sympa » = he's rather nice; « prends le tram plutôt que le bus » = rather than. Compare « je suis arrivé plus tôt »."},
+  {"id": "fv943", "level": "A2", "pos": "adv", "fr": "déjà", "en": "already", "format": "fr2en", "options": ["already", "still", "yet (in questions about the future)", "just now"], "a": 0, "trap": "« encore » means still or again; learners mix the two up in the perfect tense", "expl": "« Tu as déjà mangé ? » = have you eaten yet/already? « Pas encore » = not yet. Also useful: « C'est quoi son nom, déjà ? » = what's his name again?"},
+  {"id": "fv944", "level": "B1", "pos": "adv", "fr": "notamment", "en": "in particular, including", "format": "fr2en", "options": ["in particular, including", "notably in the sense of famously", "namely (an exhaustive list)", "normally"], "a": 0, "trap": "« à savoir » introduces a complete list; « notamment » always leaves the list open", "expl": "« Plusieurs États, notamment la Belgique… » gives examples, not the full set. Very common in official French."},
+  {"id": "fv945", "level": "B1", "pos": "adv", "fr": "davantage", "en": "more (a greater quantity)", "format": "fr2en", "options": ["more (a greater quantity)", "an advantage", "from now on", "besides"], "a": 0, "trap": "it looks like 'advantage' but is simply a more formal way of saying « plus »", "expl": "« Il faudrait davantage de personnel. » Unlike « plus », it never introduces a comparison with « que »."},
+  {"id": "fv946", "level": "B1", "pos": "adv", "fr": "apparemment", "en": "apparently", "format": "fr2en", "options": ["apparently", "obviously", "in appearance only, but not really", "visibly"], "a": 0, "trap": "« manifestement » or « visiblement » state that something is plain to see; « apparemment » reports what others say", "expl": "« Apparemment, la réunion est reportée. » Note the spelling: -emment, pronounced « -amment »."},
+  {"id": "fv947", "level": "B2", "pos": "adv", "fr": "guère", "en": "hardly, scarcely (with ne)", "format": "fr2en", "options": ["hardly, scarcely (with ne)", "a lot", "almost", "war-like"], "a": 0, "trap": "« la guerre » is war and « naguère » means formerly — near-homophones of a negative adverb", "expl": "« Cette solution n'est guère satisfaisante » = hardly satisfactory. Formal; the spoken equivalent is « pas très »."},
+  {"id": "fv948", "level": "B2", "pos": "adv", "fr": "sensiblement", "en": "noticeably (to a significant degree)", "format": "fr2en", "options": ["noticeably (to a significant degree)", "sensibly, wisely", "slightly", "emotionally"], "a": 0, "trap": "'sensibly' is « raisonnablement »; « sensiblement » is about a perceptible amount", "expl": "« Les délais ont sensiblement augmenté. » It can also mean roughly: « sensiblement le même résultat »."},
+  {"id": "fv949", "level": "B2", "pos": "adv", "fr": "dûment", "en": "duly (as required)", "format": "fr2en", "options": ["duly (as required)", "doubtfully", "reluctantly", "promptly"], "a": 0, "trap": "it looks like « doux/doucement »; the circumflex marks it as coming from « dû », owed", "expl": "« Un formulaire dûment complété et signé » = duly completed. Standard wording on administrative forms."},
+  {"id": "fv950", "level": "C1", "pos": "adv", "fr": "sciemment", "en": "knowingly (deliberately)", "format": "fr2en", "options": ["knowingly (deliberately)", "scientifically", "silently", "occasionally"], "a": 0, "trap": "the spelling suggests science; it comes from « savoir » via Latin sciens", "expl": "« Il a sciemment omis cette information. » Pronounced « si-a-man ». Its opposite here is « par inadvertance »."},
+  {"id": "fv951", "level": "A2", "pos": "adv", "fr": "surtout", "en": "above all, especially", "format": "en2fr", "options": ["surtout", "partout", "toujours", "souvent"], "a": 0, "trap": "partout — everywhere; the « -tout » ending groups these words in the mind", "expl": "« Surtout, n'oublie pas ta carte d'identité ! » It also warns: « surtout pas ! » = definitely not."},
+  {"id": "fv952", "level": "A2", "pos": "adv", "fr": "enfin", "en": "finally (at last)", "format": "en2fr", "options": ["enfin", "en fin de compte", "à la fin", "finalement"], "a": 0, "trap": "« finalement » means in the end, after a change of course: « finalement, je reste »", "expl": "« Enfin ! » expresses relief at last. As a filler it softens what you just said: « c'est bien, enfin, ça peut aller »."},
+  {"id": "fv953", "level": "B1", "pos": "adv", "fr": "également", "en": "also, equally", "format": "en2fr", "options": ["également", "aussi", "pareillement", "totalement"], "a": 0, "trap": "« aussi » means the same thing but is informal; at the start of a sentence it means therefore", "expl": "« Le rapport traite également de la mobilité. » In writing « également » often replaces « aussi » for register."},
+  {"id": "fv954", "level": "B2", "pos": "adv", "fr": "nettement", "en": "clearly, markedly", "format": "en2fr", "options": ["nettement", "proprement", "légèrement", "franchement"], "a": 0, "trap": "« proprement » comes from « propre » and means properly or strictly: « à proprement parler »", "expl": "« Les résultats sont nettement meilleurs. » From « net » = clear-cut."},
+  {"id": "fv955", "level": "C1", "pos": "adv", "fr": "expressément", "en": "expressly (in so many words)", "format": "en2fr", "options": ["expressément", "rapidement", "implicitement", "tacitement"], "a": 0, "trap": "the root suggests speed, as in « un train express »; here it means explicitly stated", "expl": "« Sauf disposition expressément contraire » = unless expressly provided otherwise. Its opposite is « tacitement »."},
+  {"id": "fv956", "level": "A2", "pos": "adv", "fr": "encore", "en": "still / again / more", "format": "cloze", "q": "Il est huit heures et il travaille ___ au bureau.", "options": ["encore", "déjà", "bientôt", "souvent"], "a": 0, "trap": "« déjà » fits the slot grammatically and would mean he is at work already, which is the opposite picture", "expl": "« Encore » = still (« il dort encore »), again (« encore une fois ») and more (« encore du café ? »)."},
+  {"id": "fv957", "level": "A2", "pos": "adv", "fr": "ensuite", "en": "then, next", "format": "cloze", "q": "D'abord je passe à la commune, ___ je vais au bureau.", "options": ["ensuite", "enfin", "d'abord", "pourtant"], "a": 0, "trap": "« enfin » closes a list; « ensuite » just moves to the next step", "expl": "The sequence is « d'abord… ensuite… enfin ». « Puis » is a lighter alternative to « ensuite »."},
+  {"id": "fv958", "level": "B1", "pos": "adv", "fr": "rarement", "en": "rarely", "format": "cloze", "q": "Je prends ___ la voiture : deux ou trois fois par an tout au plus.", "options": ["rarement", "souvent", "toujours", "régulièrement"], "a": 0, "trap": "« souvent » and « régulièrement » fit the slot perfectly but contradict the figures given in the sentence", "expl": "Frequency scale: jamais – rarement – parfois – souvent – toujours. These adverbs sit after the conjugated verb."},
+  {"id": "fv959", "level": "B1", "pos": "adv", "fr": "exprès", "en": "on purpose", "format": "cloze", "q": "Je ne l'ai pas fait ___ , c'était une erreur d'inattention.", "options": ["exprès", "sûrement", "volontiers", "rapidement"], "a": 0, "trap": "« volontiers » means willingly, gladly — and is the standard reply to an offer, not to an accusation", "expl": "« Faire exprès » = to do it deliberately. Note « un courrier exprès » is express post, a different word with the same spelling."},
+  {"id": "fv960", "level": "B1", "pos": "adv", "fr": "entre-temps", "en": "meanwhile", "format": "cloze", "q": "La réponse arrivera en mars ; ___ , continuez à préparer le dossier.", "options": ["entre-temps", "auparavant", "désormais", "dorénavant"], "a": 0, "trap": "« auparavant » means beforehand, pointing backwards instead of into the gap", "expl": "« Entre-temps » covers the interval between two moments. « Pendant ce temps » is the everyday equivalent."},
+  {"id": "fv961", "level": "B1", "pos": "adv", "fr": "aussitôt", "en": "immediately (straight after)", "format": "cloze", "q": "Il a reçu la convocation et a ___ répondu au secrétariat.", "options": ["aussitôt", "autant", "aussi", "plutôt"], "a": 0, "trap": "« aussi » in this position would mean he replied too, alongside someone else", "expl": "« Aussitôt dit, aussitôt fait. » « Aussitôt que » = as soon as, like « dès que »."},
+  {"id": "fv962", "level": "B2", "pos": "adv", "fr": "à peine", "en": "barely, only just", "format": "cloze", "q": "Le taux de participation atteint ___ 30 %, ce qui est très faible.", "options": ["à peine", "au moins", "environ", "largement"], "a": 0, "trap": "« au moins » sets a floor and sounds positive; « à peine » stresses how little it is", "expl": "« À peine arrivé, il est reparti » = no sooner had he arrived. Do not confuse with « avec peine » (with difficulty)."},
+  {"id": "fv963", "level": "B2", "pos": "adv", "fr": "dorénavant", "en": "from now on", "format": "cloze", "q": "___ , toutes les demandes devront être introduites en ligne.", "options": ["Dorénavant", "Auparavant", "Entre-temps", "Récemment"], "a": 0, "trap": "« auparavant » points to how things used to be — the exact opposite direction in time", "expl": "« Dorénavant » and « désormais » are interchangeable in most contexts, both formal and forward-looking."},
+  {"id": "fv964", "level": "B2", "pos": "adv", "fr": "ultérieurement", "en": "at a later date", "format": "cloze", "q": "Les modalités pratiques seront communiquées ___ par courriel.", "options": ["ultérieurement", "antérieurement", "immédiatement", "provisoirement"], "a": 0, "trap": "« antérieurement » means earlier — the pair ultérieur/antérieur runs through administrative French", "expl": "« Une date ultérieure » = a later date. « Ultérieurement » is the formal way of saying « plus tard »."},
+  {"id": "fv965", "level": "B2", "pos": "adv", "fr": "préalablement", "en": "beforehand (as a precondition)", "format": "cloze", "q": "Toute absence doit être ___ autorisée par le chef d'unité.", "options": ["préalablement", "postérieurement", "tacitement", "exceptionnellement"], "a": 0, "trap": "« exceptionnellement » would also fit the sentence but says the authorisation is unusual, not prior", "expl": "« Préalablement à » = prior to. The noun phrase « au préalable » does the same job at the end of a sentence."},
+  {"id": "fv966", "level": "A2", "pos": "adv", "fr": "beaucoup", "en": "a lot, much", "format": "collocation", "q": "Comment dit-on « thank you very much » ?", "options": ["merci beaucoup", "merci très", "merci bien fort", "merci trop"], "a": 0, "trap": "« très » cannot modify a noun or stand alone like this — « merci très » is impossible", "expl": "« Très » goes with adjectives and adverbs (« très content »), « beaucoup » with verbs and quantities (« beaucoup de travail »)."},
+  {"id": "fv967", "level": "B1", "pos": "adv", "fr": "bien", "en": "well, indeed (also: quite a lot)", "format": "collocation", "q": "Comment dit-on « I do understand » (avec insistance) ?", "options": ["je comprends bien", "je comprends bon", "je comprends beaucoup", "je comprends très"], "a": 0, "trap": "« bon » is the adjective; the adverb after a verb is « bien »", "expl": "« Bien » reinforces: « c'est bien noté », « il y a bien un problème ». « Bien des gens » = quite a few people."},
+  {"id": "fv968", "level": "B1", "pos": "adv", "fr": "tout à fait", "en": "absolutely, exactly", "format": "collocation", "q": "Comment répond-on « absolutely, that's right » en réunion ?", "options": ["tout à fait", "tout de suite", "tout de même", "tout à l'heure"], "a": 0, "trap": "« tout de même » means all the same, expressing a reservation rather than agreement", "expl": "« Tout à fait ! » is the standard emphatic yes. « Tout à l'heure » = earlier or later today; « tout de suite » = right away."},
+  {"id": "fv969", "level": "B2", "pos": "adv", "fr": "largement", "en": "by a wide margin, amply", "format": "collocation", "q": "Comment dit-on « the text was adopted by a large majority » ?", "options": ["le texte a été largement adopté", "le texte a été grandement adopté", "le texte a été fortement adopté", "le texte a été hautement adopté"], "a": 0, "trap": "« fortement » works with verbs of pressure or recommendation (« fortement conseillé »), not with margins", "expl": "« Largement » also means amply: « le délai est largement suffisant » = more than enough."},
+  {"id": "fv970", "level": "B2", "pos": "adv", "fr": "pleinement", "en": "fully", "format": "collocation", "q": "Comment dit-on « the regulation applies in full » ?", "options": ["le règlement s'applique pleinement", "le règlement s'applique plainement", "le règlement s'applique complètement", "le règlement s'applique totalement"], "a": 0, "trap": "« complètement » and « totalement » are grammatical but belong to everyday register; legal French says « pleinement »", "expl": "« Exercer pleinement ses compétences », « pleinement conscient de ». From « plein » = full."},
+  {"id": "fv971", "level": "A2", "pos": "expr", "fr": "s'il vous plaît", "en": "please — and, in Belgium, 'here you go'", "format": "fr2en", "options": ["please — and, in Belgium, 'here you go'", "please, and nothing else", "excuse me, sorry", "you're welcome"], "a": 0, "trap": "in France it only means please; Belgians also use it when handing something over", "expl": "A Belgian handing you your change says « s'il vous plaît » where a French speaker would say « voilà ». Learn both uses."},
+  {"id": "fv972", "level": "B1", "pos": "expr", "fr": "du coup", "en": "so, as a result (informal)", "format": "fr2en", "options": ["so, as a result (informal)", "suddenly", "at once", "by chance"], "a": 0, "trap": "« tout à coup » means suddenly — same noun, opposite job", "expl": "« Le train était supprimé, du coup j'ai pris le bus. » Very frequent in speech, but avoid it in written EPSO answers: use « par conséquent »."},
+  {"id": "fv973", "level": "B1", "pos": "expr", "fr": "par contre", "en": "on the other hand (however)", "format": "fr2en", "options": ["on the other hand (however)", "against it", "by contrast in a formal report", "despite that"], "a": 0, "trap": "it looks like 'against', and purists in France still prefer « en revanche » in writing", "expl": "« C'est cher ; par contre, la qualité est là. » Perfectly current in Belgium and in speech; « en revanche » is the safer written choice."},
+  {"id": "fv974", "level": "B2", "pos": "expr", "fr": "à titre indicatif", "en": "for guidance only (not binding)", "format": "fr2en", "options": ["for guidance only (not binding)", "as an official title", "by way of exception", "as an example of good practice"], "a": 0, "trap": "« à titre exceptionnel » and « à titre gracieux » share the pattern but mean by way of exception and free of charge", "expl": "« Ces chiffres sont donnés à titre indicatif. » The « à titre… » family is everywhere in administrative French."},
+  {"id": "fv975", "level": "C1", "pos": "expr", "fr": "force est de constater", "en": "one is bound to note (it must be acknowledged)", "format": "fr2en", "options": ["one is bound to note (it must be acknowledged)", "force must be used", "it is forbidden to note", "the finding is disputed"], "a": 0, "trap": "« force » here has nothing to do with strength; it is an impersonal formula meaning it is unavoidable", "expl": "« Force est de constater que les objectifs n'ont pas été atteints. » A useful, slightly regretful way to open a critical paragraph."},
+  {"id": "fv976", "level": "A2", "pos": "expr", "fr": "ça marche", "en": "that works / OK then", "format": "en2fr", "options": ["ça marche", "ça roule", "ça y est", "ça va"], "a": 0, "trap": "« ça va » means it's fine / how are you, not agreement to a plan", "expl": "« On se voit à 14h ? — Ça marche ! » « Ça roule » is a more familiar version; « ça marche » also means a machine works."},
+  {"id": "fv977", "level": "B1", "pos": "expr", "fr": "en tout cas", "en": "in any case, anyway", "format": "en2fr", "options": ["en tout cas", "en cas de", "le cas échéant", "dans ce cas"], "a": 0, "trap": "« le cas échéant » means if applicable, where relevant — much narrower", "expl": "« En tout cas, préviens-moi. » « Dans ce cas » means in that case, pointing at one situation."},
+  {"id": "fv978", "level": "B2", "pos": "expr", "fr": "dans les meilleurs délais", "en": "as soon as possible (formal)", "format": "en2fr", "options": ["dans les meilleurs délais", "dans les temps", "à brève échéance", "sans délai"], "a": 0, "trap": "« sans délai » means immediately, with no time allowed at all — a stronger demand", "expl": "« Merci de nous répondre dans les meilleurs délais. » The polite formal equivalent of ASAP in an email."},
+  {"id": "fv979", "level": "B2", "pos": "expr", "fr": "en connaissance de cause", "en": "with full knowledge of the facts", "format": "en2fr", "options": ["en connaissance de cause", "en toute connaissance", "à bon escient", "de bonne foi"], "a": 0, "trap": "« de bonne foi » means in good faith, which says nothing about being informed", "expl": "« Décider en connaissance de cause » = to decide fully informed. « À bon escient » means used judiciously, at the right moment."},
+  {"id": "fv980", "level": "C1", "pos": "expr", "fr": "à bon escient", "en": "judiciously, where appropriate", "format": "en2fr", "options": ["à bon escient", "à bon droit", "à juste titre", "à dessein"], "a": 0, "trap": "« à dessein » means on purpose, deliberately — same register, different idea", "expl": "« Utiliser cette procédure à bon escient » = to use it wisely. « À bon droit » and « à juste titre » both mean rightly, justifiably."},
+  {"id": "fv981", "level": "A2", "pos": "expr", "fr": "ça y est", "en": "that's it, it's done", "format": "cloze", "q": "___ , j'ai enfin reçu ma carte d'identité !", "options": ["Ça y est", "Ça va", "Ça marche", "Ça suffit"], "a": 0, "trap": "« ça suffit » means that's enough — a reprimand, not good news", "expl": "« Ça y est ? Tu as fini ? » announces completion. Note the pronunciation runs together: « sa-i-è »."},
+  {"id": "fv982", "level": "A2", "pos": "expr", "fr": "au fait", "en": "by the way", "format": "cloze", "q": "___ , tu as pensé à prévenir le syndic pour l'ascenseur ?", "options": ["Au fait", "En fait", "De fait", "Tout à fait"], "a": 0, "trap": "« en fait » means actually, correcting what was just said — one letter apart and constantly confused", "expl": "« Au fait » introduces a new topic; « en fait » corrects: « en fait, ce n'est pas lui »."},
+  {"id": "fv983", "level": "B1", "pos": "expr", "fr": "au fur et à mesure", "en": "as you go along (progressively)", "format": "cloze", "q": "Je classe les documents ___ , pour ne pas laisser le retard s'accumuler.", "options": ["au fur et à mesure", "dans la foulée", "à la longue", "en fin de compte"], "a": 0, "trap": "« dans la foulée » means straight afterwards, in one go — not steadily as things arrive", "expl": "« Au fur et à mesure que je les reçois » adds a clause. « Le fur » survives only in this phrase; « à la longue » means in the long run."},
+  {"id": "fv984", "level": "B1", "pos": "expr", "fr": "ça vaut le coup", "en": "it's worth it", "format": "cloze", "q": "L'abonnement annuel coûte plus cher au départ, mais ___ .", "options": ["ça vaut le coup", "ça vaut le coût", "ça tient le coup", "ça vaut mieux"], "a": 0, "trap": "« ça vaut le coût » is a written pun on « coût » (cost); the standard spelling is « coup »", "expl": "« Ça vaut la peine » is the more formal twin. « Tenir le coup » means to hold out, to cope."},
+  {"id": "fv985", "level": "B1", "pos": "expr", "fr": "tomber à l'eau", "en": "to fall through (come to nothing)", "format": "cloze", "q": "Faute de budget, le projet est ___ .", "options": ["tombé à l'eau", "tombé malade", "tombé d'accord", "tombé sur nous"], "a": 0, "trap": "« tomber d'accord » means to reach agreement — the same verb, the opposite outcome", "expl": "« Nos vacances sont tombées à l'eau. » « Tomber sur quelqu'un » = to bump into them."},
+  {"id": "fv986", "level": "B1", "pos": "expr", "fr": "à la limite", "en": "at a push, if it comes to it", "format": "cloze", "q": "___ , on peut reporter la réunion à vendredi, mais ce n'est pas idéal.", "options": ["À la limite", "À la fin", "À la longue", "À la place"], "a": 0, "trap": "« à la longue » means in the long run, and « à la place » means instead — both fit the slot but change the offer", "expl": "« À la limite » concedes a fallback you are not keen on; « à la rigueur » is its close synonym. Do not confuse with « être à la limite » = to be on the edge."},
+  {"id": "fv987", "level": "B2", "pos": "expr", "fr": "mettre les points sur les i", "en": "to spell things out clearly", "format": "cloze", "q": "La réunion a été tendue : le directeur a dû ___ .", "options": ["mettre les points sur les i", "mettre les pieds dans le plat", "mettre la main à la pâte", "mettre de l'eau dans son vin"], "a": 0, "trap": "« mettre les pieds dans le plat » is to blunder in tactlessly — also a confrontation, but an accidental one", "expl": "« Mettre de l'eau dans son vin » = to tone down one's demands; « mettre la main à la pâte » = to muck in."},
+  {"id": "fv988", "level": "B2", "pos": "expr", "fr": "dans les grandes lignes", "en": "in broad outline", "format": "cloze", "q": "Je vous présente le dispositif ___ ; le détail figure en annexe.", "options": ["dans les grandes lignes", "dans les moindres détails", "en dernier ressort", "en tout état de cause"], "a": 0, "trap": "« dans les moindres détails » is the exact opposite: down to the last detail", "expl": "« Les grandes lignes du projet » = the broad thrust. « Les lignes directrices » are formal guidelines, a different thing."},
+  {"id": "fv989", "level": "B2", "pos": "expr", "fr": "au vu de", "en": "in the light of (given)", "format": "cloze", "q": "___ ces éléments, la Commission a décidé de clôturer la procédure.", "options": ["Au vu de", "À la vue de", "En vue de", "Au su de"], "a": 0, "trap": "« en vue de » means with a view to, looking forward to a purpose rather than back at evidence", "expl": "« Au vu des résultats » bases a decision on evidence. « À la vue de » is literal: on seeing something."},
+  {"id": "fv990", "level": "B2", "pos": "expr", "fr": "en dernier ressort", "en": "as a last resort / at final instance", "format": "cloze", "q": "Le recours au juge n'intervient qu'___ , après épuisement des voies internes.", "options": ["en dernier ressort", "en premier lieu", "en tout état de cause", "en l'espèce"], "a": 0, "trap": "« en dernier lieu » just means lastly in a list, without the idea of a final fallback", "expl": "« Statuer en dernier ressort » = to rule with no further appeal. « En l'espèce » = in the present case."},
+  {"id": "fv991", "level": "A2", "pos": "expr", "fr": "de rien", "en": "you're welcome (it's nothing)", "format": "collocation", "q": "Quelqu'un vous dit « Merci beaucoup ! ». Que répondez-vous ?", "options": ["De rien", "Pas de quoi ?", "S'il vous plaît", "Bienvenue"], "a": 0, "trap": "« bienvenue » is a calque of 'you're welcome' — in France and Belgium it only greets an arrival", "expl": "« De rien », « je vous en prie » (more formal) or « pas de quoi » (familiar). In Quebec « bienvenue » is used, elsewhere it is not."},
+  {"id": "fv992", "level": "A2", "pos": "expr", "fr": "quand même", "en": "all the same, still", "format": "collocation", "q": "Comment dit-on « it was expensive, but I bought it all the same » ?", "options": ["c'était cher, mais je l'ai quand même acheté", "c'était cher, mais je l'ai même acheté", "c'était cher, mais je l'ai tout de même acheté aussi", "c'était cher, mais je l'ai encore acheté"], "a": 0, "trap": "« tout de même » is a true synonym, but piling it up with « aussi » makes the sentence wrong", "expl": "« Quand même » also expresses mild indignation: « tu exagères, quand même ! »"},
+  {"id": "fv993", "level": "B1", "pos": "expr", "fr": "être à jour", "en": "to be up to date", "format": "collocation", "q": "Comment dit-on « my file is up to date » ?", "options": ["mon dossier est à jour", "mon dossier est au jour", "mon dossier est du jour", "mon dossier est le jour"], "a": 0, "trap": "« mettre au jour » (to unearth) and « mettre à jour » (to update) differ by one letter", "expl": "« Être à jour de ses cotisations » = to be up to date with payments. « La mise à jour » is the update itself."},
+  {"id": "fv994", "level": "B1", "pos": "expr", "fr": "avoir hâte de", "en": "to look forward to (be eager to)", "format": "collocation", "q": "Comment dit-on « I'm looking forward to meeting you » ?", "options": ["j'ai hâte de vous rencontrer", "je regarde en avant de vous rencontrer", "j'ai envie de vous rencontrer", "je me réjouis à vous rencontrer"], "a": 0, "trap": "« j'ai envie de » means I feel like — much weaker and more casual than looking forward", "expl": "Formal alternative: « je me réjouis de vous rencontrer » (with « de », not « à »), very common in Belgian professional French."},
+  {"id": "fv995", "level": "B2", "pos": "expr", "fr": "faire l'unanimité", "en": "to command unanimous support", "format": "collocation", "q": "Comment dit-on « the proposal was unanimously welcomed » ?", "options": ["la proposition a fait l'unanimité", "la proposition a pris l'unanimité", "la proposition a eu l'unanimité", "la proposition a tenu l'unanimité"], "a": 0, "trap": "the verb is fixed: « faire », not « avoir » — even though English says 'to have unanimous support'", "expl": "« Ce choix ne fait pas l'unanimité » = it is not universally accepted. To vote unanimously is « à l'unanimité »."},
+  {"id": "fv996", "level": "B2", "pos": "expr", "fr": "avoir voix au chapitre", "en": "to have a say", "format": "collocation", "q": "Comment dit-on « the staff have a say in the decision » ?", "options": ["le personnel a voix au chapitre", "le personnel a une voix au chapitre", "le personnel prend voix au chapitre", "le personnel donne voix au chapitre"], "a": 0, "trap": "the phrase takes no article: « avoir voix au chapitre », never « une voix »", "expl": "From the chapter of a monastery, where only some members could speak. « Donner de la voix » means to speak up loudly."},
+  {"id": "fv997", "level": "B2", "pos": "expr", "fr": "de bonne foi", "en": "in good faith", "format": "collocation", "q": "Comment dit-on « the parties negotiated in good faith » ?", "options": ["les parties ont négocié de bonne foi", "les parties ont négocié en bonne foi", "les parties ont négocié de bonne volonté", "les parties ont négocié en confiance"], "a": 0, "trap": "« de bonne volonté » means willing, well-intentioned; good faith is a legal standard", "expl": "Its opposite « de mauvaise foi » also means being dishonest in an argument. « Un acquéreur de bonne foi » is a good-faith purchaser."},
+  {"id": "fv998", "level": "B2", "pos": "expr", "fr": "à titre gracieux", "en": "free of charge", "format": "collocation", "q": "Comment dit-on « the service is provided free of charge » ?", "options": ["le service est fourni à titre gracieux", "le service est fourni à titre gratuit", "le service est fourni à titre libre", "le service est fourni à titre indicatif"], "a": 0, "trap": "« à titre indicatif » means for guidance; the « à titre… » family looks interchangeable but is not", "expl": "« À titre gracieux » is the administrative way to say free. Also « à titre onéreux » = for consideration, i.e. paid for."},
+  {"id": "fv999", "level": "B2", "pos": "expr", "fr": "il en va de même", "en": "the same applies", "format": "collocation", "q": "Comment dit-on « the same applies to the other Member States » ?", "options": ["il en va de même pour les autres États membres", "il en va pareil pour les autres États membres", "il va de même pour les autres États membres", "il en est de même façon pour les autres États membres"], "a": 0, "trap": "the « en » is obligatory: « il en va de même », never « il va de même »", "expl": "A useful written alternative: « il en est de même de… ». Both avoid repeating the whole idea."},
+  {"id": "fv1000", "level": "B2", "pos": "expr", "fr": "être dans les temps", "en": "to be on schedule", "format": "collocation", "q": "Comment dit-on « we are on schedule » ?", "options": ["nous sommes dans les temps", "nous sommes à temps", "nous sommes dans le temps", "nous sommes à l'heure"], "a": 0, "trap": "« à l'heure » means punctual for a fixed appointment; « dans les temps » is about a whole timetable", "expl": "« Le chantier est dans les temps. » « À temps » means in time to do something: « arriver à temps pour signer »."}
 ];

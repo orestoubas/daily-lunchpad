@@ -39,6 +39,10 @@ function render() {
   else if (App.view === "mockresult") renderMockResult();
   else if (App.view === "library") renderLibrary();
   else if (App.view === "wordindex") renderWordIndex();
+  else if (App.view === "topics") renderTopicsView();
+  else if (App.view === "topic") renderTopicView();
+  else if (App.view === "dialogue") renderDialogueView();
+  else if (App.view === "roleplay") renderRoleplayView();
   else if (App.view === "writing") renderWriting();
   else if (App.view === "settings") renderSettings();
   window.scrollTo(0, 0);
@@ -79,8 +83,9 @@ function frenchCard(st, g, done) {
   const unseen = FRENCH_VOCAB.filter(c => !st.srs[c.id]).length;
   const newLeft = Math.max(0, (st.settings.newPerDay || 10) - (st.newCards[today] || 0));
   const acc = rollingAvg(st, "french", 5);
-  const mastered = LEVELS.reduce((n, l) => n + fp.mastery[l].mastered, 0);
-  const seen = LEVELS.reduce((n, l) => n + fp.mastery[l].seen, 0);
+  const lvls = vocabLevels();
+  const mastered = lvls.reduce((n, l) => n + fp.mastery[l].mastered, 0);
+  const seen = lvls.reduce((n, l) => n + fp.mastery[l].seen, 0);
 
   const kinds = [
     ["Vocabulary", "spaced repetition, " + FRENCH_VOCAB.length + " cards"],
@@ -122,7 +127,7 @@ function frenchCard(st, g, done) {
           <div class="fw-b2"><div class="f" style="width:${fp.pct}%"></div></div>
           <div class="fw-band">${esc(fp.band)}</div>
           <div class="fw-levels">
-            ${LEVELS.map(l => {
+            ${lvls.map(l => {
               const m = fp.mastery[l];
               const pctv = m.total ? Math.round(100 * m.mastered / m.total) : 0;
               return `<div class="fw-lv">
@@ -244,6 +249,8 @@ function renderHome() {
         </div>`;
       }).join("")}
     </div>
+
+    ${topicsAvailable() ? topicsHomeCard(st) : ""}
 
     <h2>Weekly quests</h2>
     <div class="card">
@@ -400,7 +407,8 @@ function renderSession() {
     eu: "var(--c-eu)", verbal: "var(--c-verbal)", numerical: "var(--c-numerical)", abstract: "var(--c-abstract)",
     digital: "var(--c-abstract)", sjt: "var(--c-abstract)",
     dictation: "var(--c-french)", reading: "var(--c-french)",
-    prep: "var(--c-french)", verbprep: "var(--c-french)" }[it.kind];
+    prep: "var(--c-french)", verbprep: "var(--c-french)",
+    topic: "var(--c-french)", phrase: "var(--c-french)" }[it.kind];
   const kindLabel = {
     vocab: it.listen ? `Listening ${it.level} · FR audio` : `Vocabulary ${it.level} · ${it.direction}${it.isNew ? " · NEW WORD" : ""}`,
     grammar: `Grammar ${it.level}`, conj: `Conjugation ${it.level}`,
@@ -409,7 +417,9 @@ function renderSession() {
     digital: `Digital skills · ${it.area}`, sjt: `Situational judgement · ${it.competency}`,
     dictation: `Dictée ${it.level} · listening`, reading: `Compréhension écrite ${it.level}`,
     prep: `Prépositions ${it.level}${it.group ? " · " + it.group : ""}`,
-    verbprep: `Verbe + préposition ${it.level}${it.verb ? " · " + it.verb : ""}`
+    verbprep: `Verbe + préposition ${it.level}${it.verb ? " · " + it.verb : ""}`,
+    topic: `${it.topicTitle || "Conversation"} · ${it.level}`,
+    phrase: `Phrase ${it.level}`
   }[it.kind] || `French ${it.level || ""}`.trim();
 
   let body = "";
@@ -574,6 +584,23 @@ function finishSession(completed) {
   const s = App.session;
   if (!s) return;
   const st = App.state;
+
+  if (s.module === "topic") {
+    // A topic stage is not a daily block: it must not touch the routine, the
+    // streak or the rolling averages. It completes its stage and pays its XP.
+    const answered = s.results.filter(r => r.answered);
+    const correct = answered.filter(r => r.correct).length;
+    const pct = answered.length ? Math.round(100 * correct / answered.length) : 0;
+    completeTopicStage(s.topicKey, s.stage, pct);
+    questProgress(st, "xp", TOPIC_STAGE_XP[s.stage] || 0);
+    saveState(st);
+    App.lastSummary = null;
+    App.session = null;
+    App.topicKey = s.topicKey;
+    if (pct >= 80) confetti();
+    go("topic");
+    return;
+  }
 
   if (s.mock) {
     const seconds = Math.round((Date.now() - s.startedAt) / 1000);
@@ -1091,7 +1118,7 @@ function renderStats() {
     <h2>French — road to B2 (${fp.pct}%)</h2>
     <div class="chart-grid">
       <div class="card chart-card"><h3>Vocabulary mastery by level</h3>
-        ${svgBarsH(LEVELS.map(lv => ({
+        ${svgBarsH(vocabLevels().map(lv => ({
           label: `${lv} (${m[lv].mastered}/${m[lv].total})`,
           pct: m[lv].total ? Math.round(100 * m[lv].mastered / m[lv].total) : 0, n: m[lv].seen
         })), "var(--c-french)", 80)}

@@ -4,6 +4,14 @@
 const SRS_INTERVALS = { 1: 0, 2: 1, 3: 3, 4: 7, 5: 14 }; // box -> days until next review
 const MASTERED_BOX = 4;
 const LEVELS = ["A2", "B1", "B2"];
+/* Levels the deck actually contains, in CEFR order. The working levels above
+   stop at B2 because that is the goal, but the bank carries a C1 slice, and
+   anything that counts cards must not silently drop it. */
+const CEFR_ORDER = ["A1", "A2", "B1", "B2", "C1", "C2"];
+function vocabLevels() {
+  const have = new Set(FRENCH_VOCAB.map(c => c.level));
+  return CEFR_ORDER.filter(l => have.has(l));
+}
 
 const MODULES = {
   french:    { name: "French",       color: "var(--c-french)",    icon: "🇫🇷" },
@@ -40,9 +48,9 @@ function applySrsResult(state, id, correct) {
 
 function vocabMastery(state) {
   const per = {};
-  for (const lv of LEVELS) per[lv] = { total: 0, mastered: 0, seen: 0 };
+  for (const lv of vocabLevels()) per[lv] = { total: 0, mastered: 0, seen: 0 };
   for (const c of FRENCH_VOCAB) {
-    const p = per[c.level];
+    const p = per[c.level] || (per[c.level] = { total: 0, mastered: 0, seen: 0 });
     p.total++;
     const e = state.srs[c.id];
     if (e) {
@@ -253,10 +261,29 @@ function targetQuestionCount(state, module, fallback) {
 
 /* ---------- Question item builders ---------- */
 
+/* Distractors must never give the answer away by grammar alone. A noun question
+   whose other options are two verbs and a preposition is answerable with no
+   French at all, so the pool is narrowed to the same part of speech and, for
+   nouns, the same gender — falling back only when there are too few to choose
+   from. Cards that ship their own authored options (with a deliberate near-miss
+   trap) use those instead. */
+function vocabDistractorPool(card) {
+  const others = FRENCH_VOCAB.filter(c => c.id !== card.id);
+  const samePos = card.pos ? others.filter(c => c.pos === card.pos) : others;
+  const tight = card.pos === "noun" && card.gender
+    ? samePos.filter(c => c.gender === card.gender)
+    : samePos;
+  const byLevel = tight.filter(c => c.level === card.level);
+  if (byLevel.length >= 3) return byLevel;
+  if (tight.length >= 3) return tight;
+  if (samePos.length >= 3) return samePos;
+  return others;
+}
+
 function buildVocabItem(card, state, rng) {
+  if (Array.isArray(card.options) && card.options.length === 4) return buildAuthoredVocabItem(card, state, rng);
   const toEn = rng() < 0.5;
-  const sameLevel = FRENCH_VOCAB.filter(c => c.id !== card.id && c.level === card.level);
-  const pool = sameLevel.length >= 3 ? sameLevel : FRENCH_VOCAB.filter(c => c.id !== card.id);
+  const pool = vocabDistractorPool(card);
   const distractors = seededShuffle(pool, rng).slice(0, 3);
   const correctText = toEn ? card.en : card.fr;
   const options = seededShuffle([correctText, ...distractors.map(c => (toEn ? c.en : c.fr))], rng);
@@ -270,6 +297,28 @@ function buildVocabItem(card, state, rng) {
     listen,
     options, answer: options.indexOf(correctText),
     ex: card.ex, fr: card.fr, en: card.en,
+    isNew: !state.srs[card.id]
+  };
+}
+
+/* Cards written with their own four options: the stem depends on the format,
+   and the options are shuffled so the keyed index is never a tell. */
+function buildAuthoredVocabItem(card, state, rng) {
+  const idx = card.options.map((_, i) => i);
+  const order = seededShuffle(idx, rng);
+  const prompt = card.format === "fr2en" ? card.fr
+    : card.format === "en2fr" ? card.en
+    : (card.q || card.fr);
+  const direction = { fr2en: "FR → EN", en2fr: "EN → FR", cloze: "in a sentence", collocation: "which goes together" }[card.format] || "";
+  const listen = card.format === "fr2en" && !!state.srs[card.id] && rng() < 0.35 &&
+    typeof window !== "undefined" && "speechSynthesis" in window;
+  return {
+    kind: "vocab", id: card.id, level: card.level,
+    prompt, direction, listen,
+    options: order.map(i => card.options[i]),
+    answer: order.indexOf(card.a),
+    ex: card.ex, fr: card.fr, en: card.en,
+    expl: card.expl, trap: card.trap,
     isNew: !state.srs[card.id]
   };
 }

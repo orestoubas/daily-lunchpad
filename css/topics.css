@@ -1,0 +1,115 @@
+/* Conversations — topic list, dialogue with hover glosses, and the typing
+   role-play. Light-only, using the same tokens as the rest of the app; no
+   prefers-color-scheme or [data-theme] block anywhere in this file. */
+
+.tp-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.tp-summary div { display: flex; flex-direction: column; gap: 1px; }
+.tp-summary b { font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+.tp-summary span { font-size: .7rem; color: var(--text-muted); }
+
+.tp-levels { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.tp-levels button { min-height: 42px; }
+
+.topiccard { display: flex; flex-direction: column; gap: 10px; }
+.topiccard.locked { opacity: .62; }
+.topiccard.done { background: linear-gradient(180deg,#f2fbf3,var(--surface-1)); border-color: #bfe6c6; }
+.tp-head { display: flex; align-items: center; gap: 10px; }
+.tp-n {
+  flex: none; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--surface-2); color: var(--text-secondary);
+  display: grid; place-items: center; font-size: .78rem; font-weight: 800;
+}
+.tp-title { font-weight: 800; font-size: .98rem; line-height: 1.25; }
+.tp-place { font-size: .74rem; color: var(--text-muted); }
+.tp-reg {
+  margin-left: auto; font-size: .68rem; font-weight: 800; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-muted);
+  background: var(--surface-2); border-radius: var(--r-pill); padding: 3px 8px;
+}
+.tp-meta { font-size: .74rem; color: var(--text-muted); }
+.tp-dots { display: flex; gap: 5px; }
+.tp-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--grid); }
+.tp-dot.on { background: var(--c-french); border-color: var(--c-french); }
+
+.tp-note { font-size: .85rem; color: var(--text-secondary); margin-bottom: 14px; }
+.tp-stages { display: flex; flex-direction: column; gap: 10px; }
+.tp-stage {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: var(--surface-1); border: 2px solid var(--grid);
+  border-radius: var(--r-lg); padding: 12px 14px;
+}
+.tp-stage.done { border-color: #bfe6c6; background: linear-gradient(180deg,#f2fbf3,var(--surface-1)); }
+.tp-stage.locked { opacity: .6; }
+.tp-stage-i {
+  flex: none; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--surface-2); display: grid; place-items: center;
+  font-weight: 800; font-size: .82rem; color: var(--text-secondary);
+}
+.tp-stage.done .tp-stage-i { background: var(--c-verbal); color: #fff; }
+.tp-stage-b { flex: 1; min-width: 180px; }
+.tp-stage-t { font-weight: 800; font-size: .92rem; }
+.tp-stage-d { font-size: .76rem; color: var(--text-muted); }
+.tp-stage-x { font-size: .74rem; font-weight: 800; color: var(--c-xp-text); white-space: nowrap; }
+.tp-stage button { min-width: 92px; }
+
+.tp-phrase { display: flex; gap: 12px; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--grid); flex-wrap: wrap; }
+.tp-phrase:last-of-type { border-bottom: none; }
+.tp-phrase-n { flex: 1; min-width: 180px; font-size: .74rem; color: var(--text-muted); }
+
+/* ---- dialogue ---- */
+.dialogue { display: flex; flex-direction: column; gap: 10px; }
+.dl-turn { display: flex; gap: 10px; align-items: flex-start; }
+.dl-turn.me { flex-direction: row-reverse; }
+.dl-who {
+  flex: none; width: 46px; padding-top: 6px; font-size: .66rem; font-weight: 800;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted);
+  text-align: right;
+}
+.dl-turn.me .dl-who { text-align: left; }
+.dl-bubble {
+  background: var(--surface-2); border-radius: var(--r-lg);
+  padding: 10px 13px; max-width: 640px;
+}
+.dl-turn.me .dl-bubble { background: #e8f1fb; }
+.dl-fr { font-size: .98rem; line-height: 1.5; }
+.dl-en { font-size: .78rem; color: var(--text-muted); margin-top: 3px; }
+.gl {
+  border-bottom: 2px dotted var(--c-french); cursor: help;
+  border-radius: 2px;
+}
+.gl:focus-visible { outline: 2px solid var(--c-french); outline-offset: 2px; }
+
+/* ---- role-play ---- */
+.rp-scroll { max-height: 40vh; overflow-y: auto; }
+.rp-now { margin-top: 12px; }
+.rp-en { font-size: .92rem; margin-bottom: 8px; }
+.rp-ask input {
+  width: 100%; font: inherit; font-size: 1.02rem; padding: 12px 14px;
+  border-radius: var(--r-md); border: 2px solid var(--grid); background: var(--surface-1);
+}
+.rp-ask input:focus-visible { outline: 2px solid var(--c-french); outline-offset: 1px; }
+.rp-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.rp-them .dl-fr { font-size: 1.05rem; }
+.rp-them button { margin-top: 12px; }
+.rp-ok { margin-top: 12px; color: var(--good-text); font-weight: 700; }
+.rp-alts { font-weight: 400; font-size: .8rem; color: var(--text-secondary); margin-top: 5px; }
+.rp-no { margin-top: 12px; }
+.rp-line { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; margin-bottom: 6px; }
+.rp-lbl {
+  flex: none; min-width: 116px; font-size: .68rem; font-weight: 800;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted);
+}
+.w-ok { color: var(--text-primary); }
+.w-bad {
+  color: var(--status-critical); font-weight: 700;
+  text-decoration: underline; text-decoration-style: wavy; text-underline-offset: 3px;
+}
+.rp-hint { font-size: .76rem; color: var(--text-muted); margin-top: 4px; }
+
+@media (max-width: 700px) {
+  .tp-summary { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .tp-summary b { font-size: 1.1rem; }
+  .dl-who { width: 38px; font-size: .6rem; }
+  .rp-lbl { min-width: 100%; }
+  .rp-scroll { max-height: 34vh; }
+}

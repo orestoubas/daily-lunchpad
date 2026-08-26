@@ -49,8 +49,29 @@ wr.forEach(x => {
   if (!Array.isArray(x.pitfalls) || x.pitfalls.length !== 3) errs.push(`writing ${x.id} pitfalls != 3`);
 });
 
+// Two card shapes coexist: the original flashcards (fr/en/ex, options generated
+// at runtime) and authored MCQ cards that ship their own four options and a
+// named near-miss trap. Both must declare a part of speech, because that is what
+// keeps a noun question from being answerable by elimination alone.
 v.forEach(x => {
-  if (!x.fr || !x.en || !x.ex || !["A2", "B1", "B2"].includes(x.level)) errs.push(`vocab ${x.id} incomplete`);
+  if (!x.fr || !x.en || !["A1", "A2", "B1", "B2", "C1", "C2"].includes(x.level)) errs.push(`vocab ${x.id} incomplete`);
+  if (!x.pos) errs.push(`vocab ${x.id} has no pos`);
+  if (x.pos === "noun" && !x.gender && !/\(m\/f\)/.test(x.fr) && !/^(les|des)\b/.test(x.fr)) {
+    // a handful of nouns are genuinely genderless in the entry (l'État de droit)
+  }
+  if (Array.isArray(x.options)) {
+    if (x.options.length !== 4 || new Set(x.options).size !== 4) errs.push(`vocab ${x.id} options not 4 distinct`);
+    if (!(x.a >= 0 && x.a < 4)) errs.push(`vocab ${x.id} bad answer index`);
+    if (!x.expl) errs.push(`vocab ${x.id} no explanation`);
+    if (!x.trap) errs.push(`vocab ${x.id} no near-miss trap`);
+    if (!["fr2en", "en2fr", "cloze", "collocation"].includes(x.format)) errs.push(`vocab ${x.id} bad format`);
+    if (x.format === "fr2en" && x.options[x.a] !== x.en) errs.push(`vocab ${x.id} keyed answer is not the meaning`);
+    if (x.format === "en2fr" && x.options[x.a] !== x.fr) errs.push(`vocab ${x.id} keyed answer is not the word`);
+    if ((x.format === "cloze" || x.format === "collocation") && !x.q) errs.push(`vocab ${x.id} has no stem`);
+    if (x.format === "cloze" && x.q && !x.q.includes("___")) errs.push(`vocab ${x.id} cloze has no gap`);
+  } else if (!x.ex) {
+    errs.push(`vocab ${x.id} flashcard without an example`);
+  }
 });
 const frs = {};
 v.forEach(x => {
