@@ -43,6 +43,7 @@ function render() {
   else if (App.view === "topic") renderTopicView();
   else if (App.view === "dialogue") renderDialogueView();
   else if (App.view === "write") renderWriteView();
+  else if (App.view === "wordtest") renderWordTestView();
   else if (App.view === "roleplay") renderRoleplayView();
   else if (App.view === "writing") renderWriting();
   else if (App.view === "settings") renderSettings();
@@ -251,7 +252,11 @@ function renderHome() {
       }).join("")}
     </div>
 
-    ${topicsAvailable() ? topicsHomeCard(st) : ""}
+    <h2>Practice on the side <span class="muted small">— not part of the daily routine</span></h2>
+    <div class="practice-row">
+      ${topicsAvailable() ? topicsHomeCard(st) : ""}
+      ${wordTestHomeCard(st)}
+    </div>
 
     <h2>Weekly quests</h2>
     <div class="card">

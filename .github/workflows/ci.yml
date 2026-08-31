@@ -21,6 +21,9 @@ jobs:
       - name: Sync merge unit tests
         run: node test/sync-merge.cjs
 
+      - name: Written-answer grading unit tests
+        run: node test/grading.cjs
+
       - name: Install Playwright
         run: |
           npm install playwright-core@^1.49.0 --no-audit --no-fund

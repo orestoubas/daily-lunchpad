@@ -639,15 +639,33 @@ function writeSet(t) {
     .slice(0, 14);
 }
 
-function stripArticle(s) {
-  return normFr(s).replace(/^(le|la|les|l'|un|une|des)\s*/, "").trim();
+/* The article an entry leads with, "" when it has none.
+   Alternation is longest-first and the space is required, because /un|une/ would
+   match the "un" inside "une" and leave a stray "e" behind — which scored a
+   wrong gender as a typo. `l'` is matched separately: it takes no space. */
+function leadArticle(s) {
+  const n = normFr(s);
+  const m = n.match(/^(les|le|la|une|un|des)\s/) || n.match(/^(l')/);
+  return m ? m[1] : "";
 }
+function stripArticle(s) {
+  const n = normFr(s);
+  const a = leadArticle(n);
+  return (a ? n.slice(a.length) : n).trim();
+}
+/* Only these four carry a gender you can get wrong; l', les and des hide it. */
+const GENDERED_ARTICLES = { le: "m", la: "f", un: "m", une: "f" };
 
 function gradeWritten(input, target) {
   const a = normFr(input), b = normFr(target);
   if (!a) return { verdict: "empty" };
   if (a === b) return { verdict: "correct" };
-  if (stripArticle(a) === stripArticle(b) && stripArticle(b)) {
+  const bare = stripArticle(b);
+  if (stripArticle(a) === bare && bare) {
+    const ga = GENDERED_ARTICLES[leadArticle(a)], gb = GENDERED_ARTICLES[leadArticle(target)];
+    // right noun, wrong article: a gender gap, not a vocabulary gap. Worth its
+    // own verdict because it is invisible in multiple choice.
+    if (ga && gb && ga !== gb) return { verdict: "gender", need: target };
     return { verdict: "article", need: target };
   }
   // one wrong letter is a typo worth flagging rather than failing outright

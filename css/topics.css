@@ -126,3 +126,21 @@
 .wr-card input:focus-visible { outline: 2px solid var(--c-french); outline-offset: 1px; }
 .wr-card .rp-row { justify-content: center; }
 .wr-card .rp-line { justify-content: center; }
+
+/* ---- Practice row + word test ---- */
+.practice-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.practice-row .mission { margin-bottom: 0; }
+.wt-setup { text-align: center; }
+.wt-ask { font-weight: 800; font-size: 1.05rem; margin-bottom: 12px; }
+.wt-sizes { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.wt-sizes button { min-width: 84px; font-size: 1.15rem; font-weight: 800; padding: 14px 18px; }
+.wt-note { font-size: .76rem; color: var(--text-muted); margin-top: 14px; line-height: 1.5; }
+.wt-genders { display: flex; flex-wrap: wrap; gap: 7px; }
+.wt-gchip {
+  display: inline-flex; align-items: baseline; gap: 5px;
+  background: #fdeeee; border: 1px solid #f2cccc; color: var(--text-primary);
+  border-radius: var(--r-pill); padding: 4px 11px; font-size: .82rem;
+}
+.wt-gchip i { font-style: normal; font-size: .68rem; color: var(--status-critical); font-weight: 700; }
+.wt-grow { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 7px 0; border-bottom: 1px solid var(--grid); }
+.wt-grow:last-of-type { border-bottom: none; }
