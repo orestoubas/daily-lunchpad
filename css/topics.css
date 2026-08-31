@@ -144,3 +144,22 @@
 .wt-gchip i { font-style: normal; font-size: .68rem; color: var(--status-critical); font-weight: 700; }
 .wt-grow { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 7px 0; border-bottom: 1px solid var(--grid); }
 .wt-grow:last-of-type { border-bottom: none; }
+
+/* ---- Grammar lesson ---- */
+.lesson { line-height: 1.6; }
+.ls-n { font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); }
+.ls-h { margin: 6px 0 10px; font-size: 1.2rem; }
+.ls-body { margin: 0 0 14px; color: var(--text-secondary); }
+.ls-tablewrap { overflow-x: auto; margin: 0 0 14px; }
+.ls-table { border-collapse: collapse; width: 100%; font-size: .84rem; }
+.ls-table th, .ls-table td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+.ls-table th { background: var(--surface-2); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-secondary); }
+.ls-ex { background: var(--surface-2); border-radius: var(--r-md); padding: 10px 13px; margin-bottom: 9px; }
+.ls-fr { font-size: 1rem; }
+.ls-en { font-size: .8rem; color: var(--text-muted); margin-top: 3px; }
+.ls-note { font-size: .76rem; color: var(--text-secondary); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--grid); }
+.ga-sit { font-size: .82rem; color: var(--text-muted); margin-bottom: 8px; }
+.ga-task { font-size: 1.05rem; font-weight: 700; margin-bottom: 12px; }
+.card .ga-task + input, #g-input { width: 100%; font: inherit; font-size: 1.02rem; padding: 12px 14px;
+  border-radius: var(--r-md); border: 2px solid var(--grid); background: var(--surface-1); }
+#g-input:focus-visible { outline: 2px solid var(--c-french); outline-offset: 1px; }

@@ -44,6 +44,11 @@ function render() {
   else if (App.view === "dialogue") renderDialogueView();
   else if (App.view === "write") renderWriteView();
   else if (App.view === "wordtest") renderWordTestView();
+  else if (App.view === "grammar") renderGrammarView();
+  else if (App.view === "grammartopic") renderGrammarTopicView();
+  else if (App.view === "lesson") renderLessonView();
+  else if (App.view === "gwrite") renderGrammarWriteView();
+  else if (App.view === "gapply") renderGrammarApplyView();
   else if (App.view === "roleplay") renderRoleplayView();
   else if (App.view === "writing") renderWriting();
   else if (App.view === "settings") renderSettings();
@@ -255,6 +260,7 @@ function renderHome() {
     <h2>Practice on the side <span class="muted small">— not part of the daily routine</span></h2>
     <div class="practice-row">
       ${topicsAvailable() ? topicsHomeCard(st) : ""}
+      ${grammarAvailable() ? grammarHomeCard(st) : ""}
       ${wordTestHomeCard(st)}
     </div>
 
@@ -413,13 +419,14 @@ function renderSession() {
   const it = s.items[s.idx];
   const modName = s.mock ? `${s.exam.icon} ${s.exam.name} — MOCK` : s.challenge ? "🛡️ Weekly challenge" :
     s.module === "topic" ? `🗣️ ${(TOPICS[s.topicKey] || {}).title || "Conversation"}${s.stage ? " · " + (TOPIC_STAGE_LABEL[s.stage] || s.stage) : ""}` :
+    s.module === "grammar" ? `📐 ${(GRAMMAR_TOPICS[s.topicKey] || {}).title || "Grammar"}${s.stage ? " · " + (GRAMMAR_STAGE_LABEL[s.stage] || s.stage) : ""}` :
     ({ french: "🇫🇷 French", eu: "🇪🇺 EU Knowledge", reasoning: "🧠 Reasoning", epso: "💼 Digital & SJT" }[s.module] || "Practice");
   const kindColor = { vocab: "var(--c-french)", grammar: "var(--c-french)", conj: "var(--c-french)",
     eu: "var(--c-eu)", verbal: "var(--c-verbal)", numerical: "var(--c-numerical)", abstract: "var(--c-abstract)",
     digital: "var(--c-abstract)", sjt: "var(--c-abstract)",
     dictation: "var(--c-french)", reading: "var(--c-french)",
     prep: "var(--c-french)", verbprep: "var(--c-french)",
-    topic: "var(--c-french)", phrase: "var(--c-french)" }[it.kind];
+    topic: "var(--c-french)", phrase: "var(--c-french)", grammarq: "var(--c-french)" }[it.kind];
   const kindLabel = {
     vocab: it.listen ? `Listening ${it.level} · FR audio` : `Vocabulary ${it.level} · ${it.direction}${it.isNew ? " · NEW WORD" : ""}`,
     grammar: `Grammar ${it.level}`, conj: `Conjugation ${it.level}`,
@@ -430,7 +437,8 @@ function renderSession() {
     prep: `Prépositions ${it.level}${it.group ? " · " + it.group : ""}`,
     verbprep: `Verbe + préposition ${it.level}${it.verb ? " · " + it.verb : ""}`,
     topic: `${it.topicTitle || "Conversation"} · ${it.level}${it.direction ? " · " + it.direction : ""}`,
-    phrase: `Phrase ${it.level}`
+    phrase: `Phrase ${it.level}`,
+    grammarq: `${it.topicTitle || "Grammar"} · ${it.level}`
   }[it.kind] || `French ${it.level || ""}`.trim();
 
   let body = "";
@@ -596,20 +604,22 @@ function finishSession(completed) {
   if (!s) return;
   const st = App.state;
 
-  if (s.module === "topic") {
+  if (s.module === "topic" || s.module === "grammar") {
     // A topic stage is not a daily block: it must not touch the routine, the
     // streak or the rolling averages. It completes its stage and pays its XP.
     const answered = s.results.filter(r => r.answered);
     const correct = answered.filter(r => r.correct).length;
     const pct = answered.length ? Math.round(100 * correct / answered.length) : 0;
-    completeTopicStage(s.topicKey, s.stage, pct);
-    questProgress(st, "xp", TOPIC_STAGE_XP[s.stage] || 0);
+    const isGrammar = s.module === "grammar";
+    if (isGrammar) completeGrammarStage(s.topicKey, s.stage, pct);
+    else completeTopicStage(s.topicKey, s.stage, pct);
+    questProgress(st, "xp", (isGrammar ? GRAMMAR_STAGE_XP : TOPIC_STAGE_XP)[s.stage] || 0);
     saveState(st);
     App.lastSummary = null;
     App.session = null;
-    App.topicKey = s.topicKey;
+    if (isGrammar) { App.gKey = s.topicKey; } else { App.topicKey = s.topicKey; }
     if (pct >= 80) confetti();
-    go("topic");
+    go(isGrammar ? "grammartopic" : "topic");
     return;
   }
 

@@ -16,6 +16,7 @@ const wr = load("writing.js", "WRITING_PROMPTS");
 const learn = load("eu-learn.js", "EU_LEARN");
 const vp = load("verb-prep.js", "VERB_PREP");
 const topics = load("topics.js", "TOPICS");
+const gram = load("grammar-topics.js", "GRAMMAR_TOPICS");
 const pp = load("prepositions.js", "PREPOSITIONS");
 
 let errs = [];
@@ -114,7 +115,15 @@ const topicStem = q => {
   if (q.format === "en2fr") return q.en;
   return q.fr || q.en || "";
 };
-const tnorm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+/* Mirrors normFr in js/topics.js, which is what actually decides whether a typed
+   answer matches: accents, case, punctuation and elision spacing all ignored.
+   Comparing any other way makes the check disagree with the app. */
+const tnorm = s => String(s || "").toLowerCase()
+  .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  .replace(/[\u2019`]/g, "'")
+  .replace(/[.,!?;:\u2026\u00ab\u00bb]/g, " ")
+  .replace(/\s*'\s*/g, "'")
+  .replace(/\s+/g, " ").trim();
 
 Object.entries(topics).forEach(([key, t]) => {
   if (!t.slug || !t.level) errs.push(`topic ${key} missing slug or level`);
@@ -155,6 +164,63 @@ Object.entries(topics).forEach(([key, t]) => {
   });
 });
 
+
+/* Grammar chapters. Same stem rule and same distractor rule as the topic bank;
+   plus the lesson's own integrity, since a lesson is the teaching and a gloss
+   pointing at a word that is not in the sentence is a dead hover. */
+Object.entries(gram).forEach(([key, t]) => {
+  if (key !== `${t.slug}-${t.level}`) errs.push(`grammar ${key} key does not match slug and level`);
+  if (!t.title || !t.summary) errs.push(`grammar ${key} missing title or summary`);
+  (t.lesson || []).forEach((sec, i) => {
+    if (!sec.heading || !sec.body) errs.push(`grammar ${key} lesson ${i} incomplete`);
+    if (sec.table) {
+      const w = (sec.table.cols || []).length;
+      if (!w) errs.push(`grammar ${key} lesson ${i} table has no columns`);
+      (sec.table.rows || []).forEach((r, j) => {
+        if (r.length !== w) errs.push(`grammar ${key} lesson ${i} table row ${j} has ${r.length} cells, not ${w}`);
+      });
+    }
+    (sec.examples || []).forEach(ex => {
+      if (!ex.fr) errs.push(`grammar ${key} lesson ${i} example without French`);
+      Object.keys(ex.gloss || {}).forEach(g => {
+        if (!ex.fr.includes(g)) errs.push(`grammar ${key} lesson ${i} glosses "${g}", not in the sentence`);
+      });
+    });
+  });
+  [["recognise", t.recognise], ["drill", t.drills]].forEach(([what, arr]) => {
+    (arr || []).forEach(q => {
+      if (ids.has(q.id)) errs.push(`grammar ${what} dup id ${q.id}`);
+      ids.add(q.id);
+      const stem = topicStem(q);
+      if (!stem) errs.push(`grammar ${what} ${q.id} has no stem`);
+      if (!Array.isArray(q.options) || q.options.length !== 4) errs.push(`grammar ${what} ${q.id} options != 4`);
+      else {
+        if (new Set(q.options).size !== 4) errs.push(`grammar ${what} ${q.id} duplicate options`);
+        if (!(q.a >= 0 && q.a < 4)) errs.push(`grammar ${what} ${q.id} bad answer index`);
+        else if (tnorm(stem) === tnorm(q.options[q.a])) errs.push(`grammar ${what} ${q.id} asks its own answer`);
+      }
+      if (!q.expl) errs.push(`grammar ${what} ${q.id} has no explanation`);
+      if (!q.trap) errs.push(`grammar ${what} ${q.id} has no near-miss trap`);
+    });
+  });
+  [["write", t.write], ["apply", t.apply]].forEach(([what, arr]) => {
+    (arr || []).forEach(it => {
+      if (ids.has(it.id)) errs.push(`grammar ${what} dup id ${it.id}`);
+      ids.add(it.id);
+      if (!Array.isArray(it.accept) || !it.accept.length) errs.push(`grammar ${what} ${it.id} has no accepted answers`);
+      else it.accept.forEach(a => {
+        if (a !== a.toLowerCase().trim() || /[.!?]$/.test(a)) errs.push(`grammar ${what} ${it.id} accept not normalised: "${a}"`);
+      });
+      const model = it.model || it.answer;
+      if (!model) errs.push(`grammar ${what} ${it.id} has no model answer`);
+      else if (it.accept && !it.accept.some(a => tnorm(a) === tnorm(model))) {
+        errs.push(`grammar ${what} ${it.id} model answer is not in its own accept list`);
+      }
+      if (what === "apply" && !it.task) errs.push(`grammar apply ${it.id} has no task`);
+    });
+  });
+});
+
 const total = v.length+g.length+c.length+e.length+r.length+n.length+dg.length+sj.length+dc.length+rd.length+wr.length+vp.length+pp.length;
 console.log("vocab", v.length, JSON.stringify(perLv), "| grammar", g.length, "| conj", c.length,
   "\n eu", e.length, JSON.stringify(perTopic),
@@ -163,6 +229,9 @@ console.log("vocab", v.length, JSON.stringify(perLv), "| grammar", g.length, "| 
   "\n verb+prep", vp.length, "| prepositions", pp.length,
   "| topic-levels", Object.keys(topics).length,
   "| topic questions", Object.values(topics).reduce((n, t) => n + t.vocab.length + t.exercises.length, 0),
+  "\n grammar chapters", Object.keys(gram).length,
+  "| lesson sections", Object.values(gram).reduce((n, t) => n + t.lesson.length, 0),
+  "| grammar questions", Object.values(gram).reduce((n, t) => n + t.recognise.length + t.drills.length + t.write.length + t.apply.length, 0),
   "\n TOTAL", total, "items");
 console.log(errs.length ? "ERRORS:\n" + errs.join("\n") : "all banks valid");
 process.exit(errs.length ? 1 : 0);
