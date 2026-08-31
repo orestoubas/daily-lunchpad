@@ -196,6 +196,32 @@ function buildPhraseItem(p) {
 
 /* ---------- sessions ---------- */
 
+const TOPIC_DIRECTION = {
+  fr2en: "FR → EN", en2fr: "EN → FR",
+  cloze: "in a sentence", collocation: "which goes together"
+};
+
+/* The stem depends entirely on the format. Reading `fr` for an en2fr item shows
+   the French word — which is the answer — so the question answers itself. That
+   is a silent, total failure of the exercise, which is why topicSelfAnswering
+   below is asserted over the whole bank in CI. */
+function topicPrompt(q) {
+  // An explicit stem always wins. Exercise items carry only `q` — no fr/en pair —
+  // whatever their format, so reading the format first leaves them with no
+  // question at all.
+  if (q.q) return q.q;
+  if (q.format === "fr2en") return q.fr;
+  if (q.format === "en2fr") return q.en;
+  return q.fr || q.en || q.prompt || "";
+}
+
+/* True when the stem gives the answer away outright. */
+function topicSelfAnswering(q) {
+  const stem = normFr(topicPrompt(q));
+  const answer = normFr((q.options || [])[q.a]);
+  return !!stem && !!answer && stem === answer;
+}
+
 /* Vocabulary and Exercises stages reuse the ordinary question runner, so they
    get the same shuffling, keyboard shortcuts, XP and combo behaviour as the
    daily blocks. */
@@ -213,7 +239,8 @@ function buildTopicSession(state, key, stage) {
     return {
       kind: "topic", id: q.id, level: q.level || t.level,
       topicKey: key, topicTitle: t.title,
-      prompt: q.q || q.fr || q.prompt,
+      prompt: topicPrompt(q),
+      direction: TOPIC_DIRECTION[q.format] || "",
       options: order.map(i => opts[i]),
       answer: order.indexOf(q.a),
       expl: q.expl || "",
@@ -360,8 +387,6 @@ function startTopicStage(key, stage) {
   App.topicStage = stage;
   App.chain = [];
   beginSession(s, "topic");
-  App.session.topicKey = key;
-  App.session.stage = stage;
 }
 
 /* ---------- dialogue with hover glosses ---------- */

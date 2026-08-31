@@ -374,6 +374,10 @@ function startChallenge() {
 function beginSession(s, module) {
   App.session = {
     module, items: s.items, idx: 0, challenge: !!s.challenge,
+    // carried in with the session, not bolted on afterwards: the first render
+    // happens inside go("session") below, and a header set later than that
+    // shows a placeholder on the very first question
+    topicKey: s.topicKey, stage: s.stage,
     results: s.items.map(it => ({ item: it, answered: false, correct: false })),
     secondsLeft: (App.state.settings.minutesPerBlock || 10) * 60,
     answeredCurrent: false, combo: 0, startedAt: Date.now()
@@ -403,7 +407,8 @@ function renderSession() {
   const s = App.session;
   const it = s.items[s.idx];
   const modName = s.mock ? `${s.exam.icon} ${s.exam.name} — MOCK` : s.challenge ? "🛡️ Weekly challenge" :
-    { french: "🇫🇷 French", eu: "🇪🇺 EU Knowledge", reasoning: "🧠 Reasoning", epso: "💼 Digital & SJT" }[s.module];
+    s.module === "topic" ? `🗣️ ${(TOPICS[s.topicKey] || {}).title || "Conversation"}${s.stage ? " · " + (TOPIC_STAGE_LABEL[s.stage] || s.stage) : ""}` :
+    ({ french: "🇫🇷 French", eu: "🇪🇺 EU Knowledge", reasoning: "🧠 Reasoning", epso: "💼 Digital & SJT" }[s.module] || "Practice");
   const kindColor = { vocab: "var(--c-french)", grammar: "var(--c-french)", conj: "var(--c-french)",
     eu: "var(--c-eu)", verbal: "var(--c-verbal)", numerical: "var(--c-numerical)", abstract: "var(--c-abstract)",
     digital: "var(--c-abstract)", sjt: "var(--c-abstract)",
@@ -419,7 +424,7 @@ function renderSession() {
     dictation: `Dictée ${it.level} · listening`, reading: `Compréhension écrite ${it.level}`,
     prep: `Prépositions ${it.level}${it.group ? " · " + it.group : ""}`,
     verbprep: `Verbe + préposition ${it.level}${it.verb ? " · " + it.verb : ""}`,
-    topic: `${it.topicTitle || "Conversation"} · ${it.level}`,
+    topic: `${it.topicTitle || "Conversation"} · ${it.level}${it.direction ? " · " + it.direction : ""}`,
     phrase: `Phrase ${it.level}`
   }[it.kind] || `French ${it.level || ""}`.trim();
 
