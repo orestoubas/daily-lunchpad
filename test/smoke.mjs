@@ -386,6 +386,54 @@ const survived = await off.evaluate(async () => {
 });
 ok(survived.same, "a failed pull must leave local history untouched");
 
+/* The token travels in the URL fragment so that saving survives a browser
+   clearing its storage — which is the whole reason the bookmark exists. */
+const tokPage = await newPage({ viewport: { width: 1200, height: 900 } });
+await tokPage.goto(APP + "#t=ghp_SMOKE_TEST_TOKEN");
+await tokPage.waitForTimeout(400);
+const adopted = await tokPage.evaluate(() => ({
+  token: syncToken(),
+  canWrite: syncCanWrite(App.state),
+  hash: location.hash,
+  bookmark: syncBookmarkUrl()
+}));
+ok(adopted.token === "ghp_SMOKE_TEST_TOKEN", "a token in the fragment should be adopted on load");
+ok(adopted.canWrite, "adopting a token should make the device a writer");
+ok(adopted.hash === "", "the token must be stripped from the address bar");
+ok(adopted.bookmark.includes("#t=ghp_SMOKE_TEST_TOKEN"), "the bookmark link should carry the token");
+
+// it must survive an ordinary reload...
+await tokPage.goto(APP);
+await tokPage.waitForTimeout(300);
+ok(await tokPage.evaluate(() => syncCanWrite(App.state)), "a writer must stay a writer across reloads");
+
+// ...and, after the browser clears everything, come back from the bookmark
+await tokPage.evaluate(() => localStorage.clear());
+await tokPage.goto(APP);
+await tokPage.waitForTimeout(300);
+ok(!(await tokPage.evaluate(() => syncCanWrite(App.state))), "a cleared browser should lose the token");
+await tokPage.goto("about:blank");
+await tokPage.goto(APP + "#t=ghp_SMOKE_TEST_TOKEN");
+await tokPage.waitForTimeout(300);
+ok(await tokPage.evaluate(() => syncCanWrite(App.state)),
+   "reopening the bookmark after a wipe must restore saving");
+
+// and the link must work on a tab that is already open, which is only a
+// fragment change and does not re-run the boot code
+await tokPage.evaluate(() => localStorage.clear());
+await tokPage.goto(APP);
+await tokPage.waitForTimeout(300);
+await tokPage.evaluate(() => { location.hash = "t=ghp_OPEN_TAB"; });
+await tokPage.waitForTimeout(400);
+ok(await tokPage.evaluate(() => syncCanWrite(App.state)),
+   "opening the bookmark on an already-open tab must adopt the token too");
+
+// a read-only device must say so rather than looking identical to a writer
+await tokPage.evaluate(() => localStorage.clear());
+await tokPage.goto(APP);
+await tokPage.waitForTimeout(400);
+ok(!!(await tokPage.$(".sync-warn")), "a read-only device must say it cannot save");
+
 await browser.close();
 
 /* ---------- report ---------- */

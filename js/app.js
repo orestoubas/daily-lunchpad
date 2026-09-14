@@ -157,6 +157,27 @@ function frenchCard(st, g, done) {
     </div>`;
 }
 
+
+/* Whether progress is actually being saved online is the one thing that must
+   never be silent: a device that only reads looks identical to one that writes
+   until the day the browser clears its storage. */
+function syncBanner(st) {
+  if (!syncCanRead(st)) return "";
+  if (syncCanWrite(st)) {
+    const c = syncCfg(st);
+    const when = c.lastSync ? new Date(c.lastSync).toLocaleString("en-GB") : "not yet";
+    return `<div class="sync-ok">☁️ Saved online · last sync ${esc(when)}</div>`;
+  }
+  return `
+    <div class="card sync-warn">
+      <b>☁️ This device is read-only</b>
+      <div class="muted small" style="margin-top:4px">It pulls your progress every time it opens,
+      but it cannot save anything back — so anything you practise here is kept only until this
+      browser clears its storage. One token, pasted once, turns that on permanently.</div>
+      <div style="margin-top:10px"><button class="ghost" data-nav="settings">⚙️ Turn on saving</button></div>
+    </div>`;
+}
+
 function renderHome() {
   const st = App.state;
   const g = ensureGame(st);
@@ -256,6 +277,8 @@ function renderHome() {
         </div>`;
       }).join("")}
     </div>
+
+    ${syncBanner(st)}
 
     <h2>Practice on the side <span class="muted small">— not part of the daily routine</span></h2>
     <div class="practice-row">
@@ -1273,6 +1296,17 @@ function syncPanel(st) {
         <input type="password" id="sync-token" placeholder="${tok ? "•••••• saved" : "github_pat_…"}"
                autocomplete="off" style="width:200px">
       </div>
+      ${canWrite ? `
+      <div class="set-row">
+        <div style="flex:1"><b>Your bookmark link</b>
+          <div class="s-desc">Bookmark this, and add it to your home screen instead of the plain
+          address. It carries the token in the part of the URL that is never sent to a server, so
+          if the browser ever clears its storage — Safari does this after seven days away —
+          opening the bookmark hands the token straight back and saving keeps working without you
+          doing anything. Anyone you give this link to can write your progress file, so keep it to
+          your own devices.</div></div>
+        <button id="sync-link">🔗 Copy link</button>
+      </div>` : ""}
       <div class="set-row">
         <div><b>Status</b><div class="s-desc" id="sync-status">${status}</div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1302,6 +1336,19 @@ function bindSyncPanel(st) {
   document.getElementById("sync-path").onchange = e => { c.path = e.target.value.trim() || "launchpad-state.json"; save(); };
   document.getElementById("sync-token").onchange = e => {
     if (e.target.value.trim()) { setSyncToken(e.target.value.trim()); e.target.value = ""; render(); }
+  };
+  const linkBtn = document.getElementById("sync-link");
+  if (linkBtn) linkBtn.onclick = async () => {
+    const url = syncBookmarkUrl();
+    if (!url) return;
+    try {
+      await navigator.clipboard.writeText(url);
+      linkBtn.textContent = "✓ Copied";
+      setStatus("Bookmark that link on every device you practise on.");
+    } catch (e) {
+      // clipboard is blocked in some contexts; show it so it can be copied by hand
+      setStatus("Copy this: " + url, false);
+    }
   };
   document.getElementById("sync-run").onclick = async () => {
     setStatus("Syncing…");
@@ -1599,6 +1646,17 @@ function syncSoon(delay) {
   }, delay === undefined ? 2500 : delay);
 }
 
+/* A debounced push is still pending when a tab is closed or backgrounded, and
+   on a phone that is the normal way a session ends. Flush it while the page is
+   still alive rather than losing the block that was just finished. */
+function flushSync() {
+  if (!syncCanWrite(App.state)) return;
+  clearTimeout(syncTimer);
+  syncNow(App.state).then(r => { if (r.ok && r.state) { App.state = r.state; saveState(App.state); } });
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushSync(); });
+window.addEventListener("pagehide", flushSync);
+
 /* boot */
 /* Progress lives only in this browser's localStorage. Browsers are free to
    evict that when space runs low — Safari also clears it for sites left
@@ -1615,6 +1673,21 @@ applyStreakFreeze(App.state);
 ensureQuests(App.state);
 saveState(App.state);
 render();
+
+/* A bookmark may be carrying the write token; take it before the first sync so
+   this load can already publish rather than only read. Opening the bookmark
+   while the app is already open changes only the fragment, which is a
+   same-document navigation and does not re-run any of this — so listen for that
+   too, or the link would appear to do nothing on an open tab or a running
+   home-screen app. */
+adoptTokenFromUrl();
+window.addEventListener("hashchange", () => {
+  if (adoptTokenFromUrl()) {
+    saveState(App.state);
+    render();
+    syncSoon(0);
+  }
+});
 
 /* Pull on every open. Reading the public repo needs no credential, so a device
    that has never been set up still shows your history the moment it loads. */

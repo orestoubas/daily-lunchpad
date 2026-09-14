@@ -44,6 +44,37 @@ function setSyncToken(t) {
   try { t ? localStorage.setItem(SYNC_TOKEN_KEY, t) : localStorage.removeItem(SYNC_TOKEN_KEY); }
   catch (e) { /* private mode — sync simply stays off */ }
 }
+
+/* The token can also travel in the URL fragment, and that is what makes this
+   survive a browser that clears site data.
+
+   Safari evicts everything script-writable for a site you have not opened in
+   seven days — localStorage and the token with it — so a token typed once is a
+   token lost every week. A fragment is never sent to the server, but it IS kept
+   in a bookmark and on a home-screen shortcut, so opening the trainer from that
+   bookmark hands the token back and the device silently becomes a writer again.
+   The fragment is consumed on arrival and wiped from the address bar so it does
+   not sit on screen or land in a screenshot. */
+function adoptTokenFromUrl() {
+  try {
+    const h = location.hash || "";
+    const m = h.match(/[#&](?:t|token)=([^&]+)/);
+    if (!m) return false;
+    const tok = decodeURIComponent(m[1]).trim();
+    if (!tok) return false;
+    setSyncToken(tok);
+    const clean = h.replace(/[#&](?:t|token)=[^&]*/, "").replace(/^[#&]+/, "");
+    history.replaceState(null, "", location.pathname + location.search + (clean ? "#" + clean : ""));
+    return true;
+  } catch (e) { return false; }
+}
+
+/* The link to bookmark: this page, plus the token in the fragment. */
+function syncBookmarkUrl() {
+  const t = syncToken();
+  if (!t) return "";
+  return location.origin + location.pathname + "#t=" + encodeURIComponent(t);
+}
 /* Configured well enough to fetch. No token required. */
 function syncCanRead(state) {
   const c = syncCfg(state);

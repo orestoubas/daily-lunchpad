@@ -163,3 +163,7 @@
 .card .ga-task + input, #g-input { width: 100%; font: inherit; font-size: 1.02rem; padding: 12px 14px;
   border-radius: var(--r-md); border: 2px solid var(--grid); background: var(--surface-1); }
 #g-input:focus-visible { outline: 2px solid var(--c-french); outline-offset: 1px; }
+
+/* ---- Sync state on the dashboard ---- */
+.sync-ok { font-size: .76rem; color: var(--good-text); font-weight: 700; margin-bottom: 12px; }
+.sync-warn { margin-bottom: 14px; border-color: #f0cf8e; background: linear-gradient(180deg,#fff8e8,var(--surface-1)); }
