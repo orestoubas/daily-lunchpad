@@ -21,6 +21,12 @@ const errors = [];
 
 async function newPage(opts) {
   const p = await browser.newPage(opts);
+  // The app pulls saved progress from GitHub on every load, which is the whole
+  // point of it — but it makes the suite depend on whatever is in that file.
+  // A cleared browser stopped meaning an empty app the moment real progress was
+  // published there. Block the call so every test starts from a known state;
+  // section 11 exercises the sync logic directly instead.
+  await p.route("https://api.github.com/**", r => r.abort());
   p.on("pageerror", e => errors.push("PAGEERROR: " + e.message));
   p.on("console", m => {
     if (m.type() !== "error") return;
